@@ -1,0 +1,325 @@
+{% extends 'base1.html' %}
+
+{% block header_js %}
+    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/jpage.css">
+    <!-- Morris chart -->
+    <link rel="stylesheet" href="/static/plugins/morris/morris.css">
+{% endblock %}
+
+
+{% block content %}
+<div class="modal fade" id="modify" tabindex="-1"
+     role="dialog" aria-labelledby="modifyLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+                <h5 class="modal-title" id="modifyLabel" style="font-weight:bold">修改用户信息</h5>
+            </div>
+            <form style=";float:none" class="form-horizontal">
+                <div class="modal-form" style="padding-top: 0">
+                    <div class="col-sm-6" style=";height:45px;text-align:center">
+                        <div style="margin-top: 8px">
+                            <label for="modify_name" class="control-label">用户</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="modify_name" name="modify_name"
+                                    placeholder="请输入用户名" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="height:45px;text-align:center">
+                        <div style="margin-top: 8px">
+                            <label for="modify_gender" class="control-label">性别</label>
+                                <div class="col-sm-10">
+                                    <select type="text" id="modify_gender" name="modify_gender" class="form-control">
+                                        <option value="0">女</option>
+                                        <option value="1" selected>男</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    <div class="col-sm-6" style="height:45px;text-align:center">
+                        <div style="margin-top: 8px">
+                            <label for="modify_company" class="control-label">公司</label>
+                                <div class="col-sm-10">
+                                    <select type="text" id="modify_company" name="modify_company" class="form-control">
+                                        <option value="0">股份</option>
+                                        <option value="1">精一</option>
+                                        <option value="2">科威</option>
+                                        <option value="3">医疗</option>
+                                        <option value="4">柏克</option>
+                                        <option value="5">科技</option>
+                                        <option value="6">浙子</option>
+                                        <option value="7" selected>所有</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    <div class="col-sm-6" style="height:45px;text-align:center">
+                        <div style="margin-top: 8px">
+                            <label for="modify_department" class="control-label">部门</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="modify_department" name="modify_department" class="form-control" value="" placeholder="部门">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="height:45px;text-align: center">
+                        <div style="margin-top: 8px">
+                            <label for="modify_position" class="control-label">职位</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="modify_position" name="modify_position" class="form-control" value="" placeholder="职位">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="height:45px;text-align: center">
+            <div style="margin-top: 8px">
+                 <label for="role" class="control-label">角色</label>
+                 <div class="col-sm-10">
+                    <select type="text" id="modify_role" name="modify_role" class="form-control">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7" selected>所有</option>
+                    </select>
+                 </div>
+             </div>
+         </div>
+                    <div class="col-sm-6" style=";height:45px;text-align:center">
+                        <div style="margin-top: 8px">
+                            <label for="modify_phone" class="control-label">电话</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="modify_phone" name="modify_phone"
+                                    placeholder="请输入电话" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style=";height:45px;text-align:center">
+                        <div style="margin-top: 8px">
+                            <label for="modify_email" class="control-label">邮箱</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="modify_email" name="modify_email"
+                                    placeholder="请输入邮箱" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-12" style="height: 20px;margin-top:8px"></div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">确认</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+<div class="modal fade" id="delete" tabindex="-1"
+     role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h5 class="modal-title" id="deleteLabel" style="font-weight: bold">删除用户信息</h5>
+            </div>
+            <div class="modal-body" style="padding-top: 0">
+                这将删除该用户在数据库中的所有信息，确认删除吗？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger">确认</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+<div class="container">
+    <div style=";height: 40px">
+        <h1 style="font-weight: bold;padding-left: 30px">用户管理</h1>
+    </div>
+    <div style=";height:125px">
+        <form style=";float:none" class="form-horizontal">
+         <div class="col-sm-4" style=";height:60px;text-align: center">
+             <div style="margin-top: 15px">
+                 <label for="name" class="control-label">用户名</label>
+                 <div class="col-sm-10">
+                    <input type="text" id="name" name="name"
+                        placeholder="请输入用户名" class="form-control">
+                 </div>
+             </div>
+         </div>
+         <div class="col-sm-4" style="height:60px;text-align:center">
+                <div style="margin-top: 15px">
+                 <label for="company" class="control-label">公司</label>
+                 <div class="col-sm-10">
+                    <select type="text" id="company" name="company" class="form-control">
+                        <option value="0">股份</option>
+                        <option value="1">精一</option>
+                        <option value="2">科威</option>
+                        <option value="3">医疗</option>
+                        <option value="4">柏克</option>
+                        <option value="5">科技</option>
+                        <option value="6">浙子</option>
+                        <option value="7" selected>所有</option>
+                    </select>
+                 </div>
+             </div>
+         </div>
+         <div class="col-sm-4" style="height:60px;text-align:center">
+            <div style="margin-top: 15px">
+                 <label for="department" class="control-label">部门</label>
+                 <div class="col-sm-10">
+                    <input type="text" id="department" name="department" class="form-control" placeholder="部门" value="">
+                 </div>
+             </div>
+         </div>
+         <div class="col-sm-4" style="height:60px;text-align: center">
+            <div style="margin-top: 15px">
+                 <label for="position" class="control-label">职位</label>
+                 <div class="col-sm-10">
+                    <input type="text" id="position" name="position" class="form-control" placeholder="职位">
+                 </div>
+             </div>
+         </div>
+         <div class="col-sm-4" style="height:60px;text-align: center">
+            <div style="margin-top: 15px">
+                 <label for="role" class="control-label">角色</label>
+                 <div class="col-sm-10">
+                    <select type="text" id="role" name="role" class="form-control">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7" selected>所有</option>
+                    </select>
+                 </div>
+             </div>
+         </div>
+         <div class="col-sm-4" style="height:60px">
+            <div style="margin-top: 15px" class="col-sm-10">
+                <input type="submit" id="search" name="search" value="查询"
+                       class="btn btn-large btn-primary btn-block">
+             </div>
+         </div>
+    </form>
+    </div>
+    <div style=";height: 60px">
+        <div class="col-sm-6" >
+            <h1 style="font-weight: bold;text-align: left;padding-left: 10px;margin-top: 10px">查询结果</h1>
+        </div>
+        <div class="col-sm-6">
+            <input type="button" class="btn  btn-success" value="新增用户" style=";margin-top:5px;font-size: 25px;margin-left: 260px">
+        </div>
+    </div>
+    <div style="height:500px;margin-top:15px;">
+        <div class="box">
+            <div class="box-header">
+              <h3 class="box-title" style=";font-weight: bold;margin-left: 15px">用户信息表</h3>
+            </div>
+            <div class="box-body">
+              <table id="userInfo" class="table table-bordered table-hover" >
+                <thead>
+                <tr >
+                  <th style="text-align: center">用户名</th>
+                  <th style="text-align: center">性别</th>
+                  <th style="text-align: center">所属公司</th>
+                  <th style="text-align: center">所属部门</th>
+                  <th style="text-align: center">职位</th>
+                  <th style="text-align: center">角色</th>
+                  <th style="text-align: center">电话</th>
+                  <th style="text-align: center">邮箱</th>
+                  <th style="text-align: center">创建时间</th>
+                  <th style="text-align: center">用户状态</th>
+                  <th style="text-align: center">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr style="text-align: center">
+                  <td>陈继伟</td>
+                  <td>男</td>
+                  <td>未知</td>
+                  <td>未知</td>
+                  <td>未知</td>
+                  <td>普通用户</td>
+                  <td>17801006742</td>
+                  <td>17801006742@163.com</td>
+                  <td>2019-9-12 7:18:24</td>
+                  <td>已停用</td>
+                  <td>
+                      <button type="button"class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify">修改</button>
+                      <button type="button"class="btn  btn-info btn-sm" >停用</button>
+                      <button type="button"class="btn  btn-danger btn-sm" data-toggle="modal" data-target="#delete">删除</button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="userInfoSum" id="userInfoSum" role="status" aria-live="polite" style="margin-left: 5px">
+                        共有<span>100</span>个用户,这里展示了其中的第<span>1</span>位到第<span>1</span>位用户
+                    </div>
+                </div>
+                <div class="col-sm-7">
+                    <div class="dataTables_paginate paging_simple_numbers" id="paginate">
+                        <ul class="pagination">
+                            <li class="paginate_button previous" id="userInfo_previous">
+                                <a href="#" aria-controls="userInfo" data-dt-idx="0" tabindex="0">
+                                    上一页
+                                </a>
+                            </li>
+                            <li class="paginate_button ">
+                                <a href="#" aria-controls="userInfo" data-dt-idx="1" tabindex="0">
+                                    1
+                                </a>
+                            </li>
+                            <li class="paginate_button active">
+                                <a href="#" aria-controls="userInfo" data-dt-idx="2" tabindex="0">
+                                    2
+                                </a>
+                            </li>
+                            <li class="paginate_button ">
+                                <a href="#" aria-controls="userInfo" data-dt-idx="3" tabindex="0">
+                                    3
+                                </a>
+                            </li>
+                            <li class="paginate_button ">
+                                <a href="#" aria-controls="userInfo" data-dt-idx="4" tabindex="0">
+                                    4
+                                </a>
+                            </li>
+                            <li class="paginate_button next" id="userInfo_next">
+                                <a href="#" aria-controls="userInfo" data-dt-idx="5" tabindex="0">
+                                    下一页
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+          </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer_js %}
+    <!-- Morris.js charts -->
+    <script src="/static/js/raphael/raphael-min.js"></script>
+    <script src="/static/plugins/morris/morris.min.js"></script>
+
+    <script src="/static/plugins/jquery.blockui.min.js"></script>
+    <script src="/static/plugins/datatables/jquery.dataTables.js"></script>
+    <script src="/static/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="/static/js/metronic.js"></script>
+    <script src="/static/js/table-ext.js"></script>
+    <script src="/static/js/datatable.js"></script>
+    <script src="/static/js/jPages.js"></script>
+{% endblock %}

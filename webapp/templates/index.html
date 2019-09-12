@@ -1,0 +1,72 @@
+{% extends 'base1.html' %}
+
+{% block header_js %}
+    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/jpage.css">
+    <!-- Morris chart -->
+    <link rel="stylesheet" href="/static/plugins/morris/morris.css">
+{% endblock %}
+
+{% block content %}
+    <div style="min-height:800px">
+        <div class="info-box " style="height: 400px; background-color: #7cc6f2; margin-bottom: 50px;padding-top: 50px;text-align: center">
+            <div class="col-md-5" >
+                <img src="/static/dist/img/mi.png" height="300px" width="500px">
+            </div>
+            <div class="col-md-2" style="padding-top: 100px">
+                <h3 style="color: white"><b>产品属性化分类交叉矩阵</b></h3>
+            </div>
+            <div class="col-md-5" >
+                <img src="/static/dist/img/bt.png"height="300px" width="500px">
+            </div>
+        </div>
+
+        <div class="col-md-4" >
+            <div class="box box-primary" style="height: 300px">
+                <div style="text-align: center; margin-top: 20px">
+                    <img src="/static/dist/img/upload.png" height="70px" width="70px" class="img-circle">
+                    <h3><b>新建产品</b></h3><br>
+                    <p>批量或单个提交产品信息并上传相关审批附件</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+        <div class="box box-warning" style="height: 300px">
+                <div style="text-align: center; margin-top: 20px">
+                    <img src="/static/dist/img/update.png" height="70px" width="70px" class="img-circle">
+                    <h3><b>更新产品</b></h3><br>
+                    <p>批量或单个提交更新的产品信息并上传相关审批附件</p>
+                </div>
+        </div>
+        </div>
+
+        <div class="col-md-4">
+        <div class="box box-success" style="height: 300px">
+            <div style="text-align: center; margin-top: 20px">
+                <img src="/static/dist/img/user.png" height="70px" width="70px" class="img-circle">
+                <h3><b>用户管理</b></h3><br>
+                <p>修改用户信息或用户权限</p>
+            </div>
+        </div>
+        </div>
+
+
+
+    </div>
+{% endblock %}
+
+{% block footer_js %}
+    <!-- Morris.js charts -->
+    <script src="/static/js/raphael/raphael-min.js"></script>
+    <script src="/static/plugins/morris/morris.min.js"></script>
+
+    <script src="/static/plugins/jquery.blockui.min.js"></script>
+    <script src="/static/plugins/datatables/jquery.dataTables.js"></script>
+    <script src="/static/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="/static/js/metronic.js"></script>
+    <script src="/static/js/table-ext.js"></script>
+    <script src="/static/js/datatable.js"></script>
+    <script src="/static/js/jPages.js"></script>
+{% endblock %}
