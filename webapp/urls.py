@@ -17,3 +17,4 @@ url(r'^$', RedirectView.as_view(url='/index/', permanent=True), name="default"),
     url(r'^user/', include('webapp.user.urls')),
 ]
 urlpatterns += static(settings.FILES_PATH, document_root=settings.FILES_PATH)
+
