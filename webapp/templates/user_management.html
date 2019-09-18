@@ -19,7 +19,7 @@
                 <h5 class="modal-title" id="modifyLabel" style="font-weight:bold">修改用户信息</h5>
             </div>
             <form style=";float:none" class="form-horizontal">
-                <div class="modal-form" style="padding-top: 0">
+                <div class="modal-form" style="-top: 0">
                     <div class="col-sm-6" style=";height:45px;text-align:center">
                         <div style="margin-top: 8px">
                             <label for="modify_name" class="control-label">用户</label>
@@ -89,7 +89,7 @@
                     </select>
                  </div>
              </div>
-         </div>
+            </div>
                     <div class="col-sm-6" style=";height:45px;text-align:center">
                         <div style="margin-top: 8px">
                             <label for="modify_phone" class="control-label">电话</label>
@@ -242,30 +242,40 @@
                 </tr>
                 </thead>
                 <tbody>
+                {% for user in users %}
                 <tr style="text-align: center">
-                  <td>陈继伟</td>
-                  <td>男</td>
-                  <td>未知</td>
-                  <td>未知</td>
-                  <td>未知</td>
-                  <td>普通用户</td>
-                  <td>17801006742</td>
-                  <td>17801006742@163.com</td>
-                  <td>2019-9-12 7:18:24</td>
-                  <td>已停用</td>
+                  <td>{{ user.userName }}</td>
+                  <td>{{ user.gender }}</td>
+                  <td>{{ user.uCompany }}</td>
+                  <td>{{ user.department }}</td>
+                  <td>{{ user.position }}</td>
+                  <td>{{ user.userRole }}</td>
+                  <td>{{ user.phone }}</td>
+                  <td>{{ user.uEmail }}</td>
+                  <td>{{ user.createDate }}</td>
+                    {% if user.isValid %}
+                        <td>正在使用</td>
+                    {% else %}
+                        <td>已停用</td>
+                    {% endif %}
                   <td>
                       <button type="button"class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify">修改</button>
-                      <button type="button"class="btn  btn-info btn-sm" >停用</button>
+                      {% if isValid %}
+                          <button type="button"class="btn  btn-info btn-sm" >正在使用</button>
+                      {% else %}
+                          <button type="button"class="btn  btn-info btn-sm" >已停用</button>
+                      {% endif %}
                       <button type="button"class="btn  btn-danger btn-sm" data-toggle="modal" data-target="#delete">删除</button>
                   </td>
                 </tr>
+                {% endfor %}
                 </tbody>
               </table>
             </div>
             <div class="row">
                 <div class="col-sm-5">
                     <div class="userInfoSum" id="userInfoSum" role="status" aria-live="polite" style="margin-left: 5px">
-                        共有<span>100</span>个用户,这里展示了其中的第<span>1</span>位到第<span>1</span>位用户
+                        共有{{ counts }}个用户,这里展示了其中的第{{ start }}位到第{{ end }}位用户
                     </div>
                 </div>
                 <div class="col-sm-7">

@@ -63,16 +63,40 @@ STATUS_CHOICE = (
     (ProductStatus.FAIL, "审核不通过"),
     )
 
+APPLY_CHOICE = (
+    (ApplyStatus.NEW, "新建"),
+    (ApplyStatus.ALTER, "修改"),
+    (ApplyStatus.DELETE, "删除"),
+    (ApplyStatus.INVALID, "停用"),
+    (ApplyStatus.FINISHED, "完成"),
+)
+
 
 # 产品
 class Product(models.Model):
-    productNum = models.CharField("产品编号", max_length=32, blank=False, null=False)
-    productName = models.CharField("产品名称", max_length=64, blank=False, null=False)
-    pCompany = models.IntegerField("公司", blank=True, null=True, choices=COMPANY_CHOICE)
-    department = models.CharField("部门", max_length=32, blank=True, null=True)
+    product_num = models.CharField("产品编号", max_length=32, blank=False, null=False)
+    product_name = models.CharField("产品名称", max_length=64, blank=False, null=False, default="")
+    old_product_name = models.CharField("旧产品名称", max_length=64, blank=True, null=True)
+
+    introduction = models.CharField("产品描述", max_length=1024, blank=True, null=True)
+    is_overlap = models.BooleanField("是否重叠", blank=True, null=False,default=False)
+    target_field = models.CharField("目标行业", max_length=1024, blank=True, null=True)
+    apply_situation = models.CharField("应用场景", max_length=1024, blank=True, null=True)
+    example = models.CharField("市场案例", max_length=1024, blank=True, null=True)
+    one_year_money = models.FloatField("过去一年销售额", default=0)
+    one_year_num = models.IntegerField("过去一年销售数量", default=0)
+    three_year_money = models.FloatField("过去三年销售额", default=0)
+    three_year_num = models.IntegerField("过去三年销售数量", default=0)
+    pCompany = models.IntegerField("所属公司", blank=True, null=True, choices=COMPANY_CHOICE)
+    contact_people = models.CharField("联系人", max_length=64, blank=True, null=True)
+    remark = models.CharField("联系人", max_length=1024, blank=True, null=True)
     uploader = models.ForeignKey(UserProfile, verbose_name="上传者", related_name="uploader", blank=True, null=True)
-    upload_time = models.DateField("审核通过日期", null=True, blank=True)
-    introduction = models.CharField("产品介绍", max_length=1024, blank=True, null=True)
+
+    upload_time = models.DateField("提交时间", null=True, blank=True)
+    pass_time = models.DateField("发布时间", null=True, blank=True)
+
+    real_name = models.CharField("文件原名", max_length=64, blank=True, null=True, default="")
+    save_name = models.CharField("文件原名", max_length=64, blank=True, null=True, default="")
 
     maturity = models.ForeignKey(Attribute, verbose_name="成熟度", related_name="maturity", blank=True, null=True)
     independence = models.ForeignKey(Attribute, verbose_name="自主程度", related_name="independence", blank=True, null=True)
@@ -81,9 +105,10 @@ class Product(models.Model):
 
     attribute_num = models.CharField("属性编号", max_length=32, blank=True, null=True)
     status = models.IntegerField("产品状态", choices=STATUS_CHOICE, default=ProductStatus.WAIT_SUBMIT)
+    apply_type = models.IntegerField("产品状态", choices=APPLY_CHOICE, default=ApplyStatus.NEW)
     reason = models.CharField("不通过原因", max_length=1024, blank=True, null=True)
-    fileName = models.CharField("审核文件", max_length=64, blank=True, null=True)
-    isVaild = models.BooleanField("是否有效", default=True, blank=False, null=False)
+    version = models.IntegerField("产品版本", default=1)
+    is_vaild = models.BooleanField("是否有效", default=True, blank=False, null=False)
 
 
 

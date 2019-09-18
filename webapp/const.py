@@ -23,3 +23,13 @@ class Company:
     KE_JI = 6    # 科技
     ZHE_ZI = 7   # 浙子
 
+
+class ApplyStatus:
+    """申请类型"""
+    NEW = 1    # 新建
+    ALTER = 2    # 修改
+    DELETE = 3    # 删除
+    INVALID = 4    # 停用
+
+    FINISHED = 0    # 申请完成
+
