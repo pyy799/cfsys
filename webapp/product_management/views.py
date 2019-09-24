@@ -6,6 +6,7 @@ from django.shortcuts import render
 from webapp.shortcuts.ajax import ajax_success, ajax_error
 from cfsys.settings import *
 
+
 def index(request, template_name):
 
     return render(request, template_name)
