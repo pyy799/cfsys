@@ -1,5 +1,4 @@
 from django.conf.urls import include, url
-from django.contrib import admin
 from webapp.product_management import views
 
 urlpatterns = [
@@ -8,4 +7,6 @@ urlpatterns = [
     url(r'^page_pass_product/$', views.index, {"template_name": "pass_product.html"}, name="page_pass_product"),
     url(r'^page_table/$', views.jump, {"template_name": "table.html"}, name="page_table"),
     url(r'^upload_many/$', views.upload_many, name="upload_many"),
+    url(r'^edit_product/(?P<pid>\d+)/$', views.edit_product, {"template_name": "edit_product.html"}, name="edit_product"),
+
 ]

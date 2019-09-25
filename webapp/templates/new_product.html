@@ -23,7 +23,6 @@
                 <li><a href="#waitsubmit" data-toggle="tab">待提交</a></li>
                 <li><a href="#waitpass" data-toggle="tab">待审批</a></li>
                 <li><a href="#passed" data-toggle="tab">已审批</a></li>
-                <li><a href="#test" data-toggle="tab">测试</a></li>
             </ul>
             <div style="clear:both"></div>
             <div class="tab-content">
@@ -31,7 +30,7 @@
                     <div class="table-actions-wrapper">
 
                         <a type="button" class="btn btn-block btn-default"  target="_blank"
-                        href="{{ download_path_excel }}" download="{{ excel_name }}">批量上传excel模版下载</a>
+                        href="{{ download_path_excel }}" download="产品信息模版">批量新建产品excel模版下载</a>
 
                         <div class="modal fade" id="many" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
@@ -50,7 +49,7 @@
                                                 <label class="control-label">请上传包含产品信息的文件(.xlsx)*请使用指定模版进行批量上传</label>
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <input type="file" class="form-control" name="excel" id="excel" accept=".xlsx" required/>
+                                                    <input type="file" class="form-control" name="excel" id="excel" accept=".xlsx,.xls" required/>
                                                 </div>
                                             </div>
                                             <div class="col-sm-12">
@@ -58,7 +57,7 @@
                                                 <label class="control-label">请上传包含审批信息的压缩文件(.zip)</label>
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <input type="file" class="form-control" name="zip" id="zip" accept=".zip" required/>
+                                                    <input type="file" class="form-control" name="zip" id="zip" accept=".zip,.rar" required/>
                                                 </div>
                                             </div>
                                             </div>
@@ -79,12 +78,11 @@
                         </div>
 
                         <button type="button" class="btn btn-block btn-default"  data-toggle="modal" data-target="#many">
-                            <i class="fa fa-plus"></i> 批量上传产品
+                            <i class="fa fa-plus"></i> 批量新建产品
                         </button>
 
-
-
-                        <button type="button" class="btn btn-block btn-default">单个上传产品</button>
+                        <a href="/product_management/edit_product/0" type="button" class="btn btn-block btn-default">
+                        单个新建产品</a>
                     </div>
                 </div>
                 <div class="table-container no-padding tab-pane" id="update" style="padding:14px">
