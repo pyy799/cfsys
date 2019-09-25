@@ -3,21 +3,6 @@ from django.contrib.auth.models import User, Group
 from webapp.const import *
 
 
-# 角色
-class Role(Group):
-    roleName = models.CharField("角色名称", max_length=32, blank=False, null=False)
-    pSearch = models.BooleanField("产品信息查询权限", default=False)
-    pInfoNew = models.BooleanField("产品信息管理_新建", default=False)
-    pInfoUpdate = models.BooleanField("产品信息管理_更新", default=False)
-    pInfoCheck = models.BooleanField("产品信息管理_审核", default=False)
-    pAttritube = models.BooleanField("产品属性管理", default=False)
-    userManagement = models.BooleanField("用户权限管理_用户", default=False)
-    roleManagement = models.BooleanField("用户权限管理_角色", default=False)
-
-    def __str__(self):
-        return self.roleName
-
-
 COMPANY_CHOICE = (
     (Company.GU_FEN, "股份"),
     (Company.JING_YI, "精一"),
@@ -31,13 +16,29 @@ COMPANY_CHOICE = (
 
 # 用户
 class UserProfile(User):
-    userName = models.CharField("中文名", max_length=32, blank=False, null=False, default="")
-    userPassword = models.CharField("密码", max_length=32, blank=False, null=False, default="123456")
+    userName = models.CharField("用户名", max_length=32, blank=True, null=True, default="")
+    gender = models.BooleanField("性别", default=True, blank=False, null=False)
+    userPassword = models.CharField("密码", max_length=32, blank=True, null=True, default="123456")
     uCompany = models.IntegerField("公司", blank=True, null=True, choices=COMPANY_CHOICE)
     department = models.CharField("部门", max_length=32, blank=True, null=True)
-    userRole = models.ForeignKey(Role, verbose_name="用户角色", related_name="user_role",
-                                 default=1, blank=True, null=False)
+    position = models.CharField("职位", max_length=32, blank=True, null=True)
+    # 角色采用Group直接替代了
+    phone = models.CharField("电话", max_length=32, blank=True, null=True)
+    # 邮箱已经在AbstractUser中定义了
+    createDate = models.DateField('创建时间', null=True, blank=True)
     isValid = models.BooleanField("是否有效", default=True, blank=False, null=False)
+
+    class Meta:
+        permissions = [
+            ('user_right_management_user','用户权限管理_用户'),
+            ('user_right_management_role','用户权限管理_角色'),
+        ]
+        default_permissions = []
+        verbose_name = "用户"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.userName
 
 
 ACT_CHOICE = (
@@ -54,6 +55,12 @@ class Attribute(models.Model):
     second_class = models.CharField("小类缩写", max_length=32, blank=True, null=True)
     meaning = models.CharField("含义", max_length=32, blank=True, null=True)
     information = models.CharField("备注", max_length=1024, blank=True, null=True)
+
+    class Meta:
+        permissions = [
+            ('product_attribute_management','产品属性管理'),
+        ]
+        default_permissions = []
 
 
 STATUS_CHOICE = (
@@ -122,4 +129,12 @@ class Product(models.Model):
         """申请类型"""
         return dict(APPLY_CHOICE).get(anum)
 
+    class Meta:
+        permissions = [
+            ('product_information_inquiry','产品信息查询'),
+            ('product_information_manage_new','产品信息管理_新建'),
+            ('product_information_manage_update','产品信息管理_更新'),
+            ('product_information_manege_check','产品信息管理_审核')
+        ]
+        default_permissions = []
 
