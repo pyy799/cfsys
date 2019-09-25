@@ -1,0 +1,255 @@
+{% extends 'base1.html' %}
+
+{% block header_js %}
+    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/jpage.css">
+    <!-- Morris chart -->
+    <link rel="stylesheet" href="/static/plugins/morris/morris.css">
+{% endblock %}
+
+
+{% block content %}
+    <div class="box box-solid" id="tablebox" style="padding-left: 100px">
+        <div class="box-header with-border">
+            <h3>提交产品信息</h3>
+        </div>
+        <div class="box-body">
+
+            <div class="box box-primary" style="min-height:990px">
+        <!--上传合同 -->
+        <div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style="margin-top: 100px">
+                        <h4 class="modal-title" id="myModalLabel">上传合同</h4>
+
+                        <div class="box box-primary">
+                            <div class="row" style="width:180%;margin:0 auto;margin-top:40px">
+                                <form id="uploadForm" class="form-horizontal" enctype="multipart/form-data" method="post">
+                                    {% csrf_token %}
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">上传Word（只能识别.docx格式文件）</label>
+
+                                            <div class="col-sm-4">
+                                                <input type="file" class="form-control" name="word" id="word" accept=".docx" required/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer" style="width:50%">
+                                        <button type="submit" class="btn btn-primary">提交</button>
+                                        <button class="btn btn-default" data-dismiss="modal">关闭</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal -->
+        </div>
+        <div class="box-header">
+        <button class="btn btn-sm" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i> 上传合同</button>
+        {% if temp_file %}
+            <a href="/contract/contract_info/edit/contract_delet_file/{{ cid }}/" class="btn btn-sm blue"
+               type="button"> {{ temp_file }}<i class="fa fa-times"></i></a>
+        {% endif %}
+        </div>
+        <div class="box-body" style="width: 100%">
+        <form id="contractForm" class="form-horizontal" style="width: 100%" method="post"
+              action="/contract/add/{{ cid }}/">
+            <div class="box box-default" style=" ">
+                <div class="box-header with-border">
+                    <h3 class="box-title">基本信息</h3>（带有<span style="color:red">*</span>标识的为必填项）
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                {% csrf_token %}
+                <div class="box-body">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color:red">*</span>客户名称</label>
+
+                        <div class="col-sm-8">
+                            <select class="form-control select" required name="customer">
+                                <option selected value="{{ contract.customer }}">{{ contract.customer }}</option>
+                                {% for s in customer %}
+                                    <option value="{{ s.name }}">{{ s.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="button" class="btn btn-primary" id="addCustomerModal" value="新建客户">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">联系人</label>
+
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="contact_person"
+                                   value="{{ contract.contact_person }}" style="width: 354px">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">联系电话</label>
+
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="contact_tel"
+                                   value="{{ contract.contact_tel }}" style="width: 354px">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">联系邮箱</label>
+
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="contact_email"
+                                   value="{{ contract.contact_email }}" style="width: 354px">
+                            <label class="col-sm-3">(若邮箱未填则默认为销售邮箱)</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color:red">*</span>签单类型</label>
+
+                        <div class="col-sm-8">
+                            <select class="form-control" name="deal_type" style="width: 354px" required>
+                                <option class="defaultval" selected
+                                        value="{{ contract.deal_type }}">{{ contract.deal_type_name }}</option>
+                                <option value="1">新签合同</option>
+                                <option value="2">新增合同</option>
+                                <option value="3">续签合同</option>
+                                <option value="4">其他</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color:red">*</span>签单渠道</label>
+
+                        <div class="col-sm-8">
+                            <select class="form-control" name="deal_path" style="width: 354px" required>
+                                <option class="defaultval" selected
+                                        value="{{ contract.deal_path }}">{{ contract.deal_path_name }}</option>
+                                <option value="1">自行开发</option>
+                                <option value="2">咨询签单</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color:red">*</span>合同类型</label>
+
+                        <div class="col-sm-8">
+                            <select class="form-control sign_type" name="sign_type" style="width: 354px" required>
+                                <option class="defaultval" selected
+                                        value="{{ contract.sign_type }}">{{ contract.sign_type_name }}</option>
+                                <option value="1">技术服务合同</option>
+                                <option value="2">补充协议</option>
+                                <option value="3">续签合同</option>
+                                <option value="4">临时合同</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color:red">*</span>相关合同编号</label>
+
+                        <div class="col-sm-8">
+                            <select class="form-control select related_num" disabled name="related">
+                                <option selected
+                                        value="{{ contract.contract_related }}">{{ contract.contract_related }}</option>
+                                {% for s in contract_list %}
+                                    <option value="{{ s.contract_number }}">{{ s.contract_number }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color:red">*</span>服务类型</label>
+
+                        <div class="col-sm-8">
+                            <select class="form-control" name="service_type" style="width: 354px" required>
+                                <option value="{{ contract.service_type }}"
+                                        selected>{{ contract.service_type_name }}</option>
+                                <option value="1">点播</option>
+                                <option value="2">直播</option>
+                                <option value="3">技术服务</option>
+                                <option value="4">互动</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">预存费用</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="prestore" value="{{ contract.prestore }}"
+                                   style="width: 354px">
+                        </div>
+                    </div>
+                    <div class="form-group has-feedback">
+                        <label class="col-sm-4 control-label"><span style="color:red">*</span>服务起始/结束日期</label>
+
+                        <div class="col-sm-8">
+                            {% if contract.contract_start_date %}
+                                <input class="form-control" id="contract_date" style="width: 354px; float: left"
+                                       name="contract_date"
+                                       value="{{ contract.contract_start_date }} - {{ contract.contract_end_date }}"
+                                       required>
+                            {% else %}
+                                <input type="text" class="form-control dateRange " required name="contract_date"
+                                       style="width: 354px">
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color:red">*</span>售后服务等级</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" name="service_rank" style="width: 354px" required>
+                                <option value="{{ contract.service_rank }}"
+                                        selected>{{ contract.service_rank_name }}</option>
+                                <option value="1">金牌售后</option>
+                                <option value="2">银牌售后</option>
+                                <option value="3">标准售后</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">售后费用</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="service_rank_money" value="{{ contract.service_rank_money }}"
+                                   style="width: 354px">
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.box-body -->
+            </div>
+
+            <div class="well contractAdd form-group">
+                <button id="form_submit" type="submit" class="btn btn-primary addButton"
+                        style="width:170px;margin:0 auto;display: block">提交
+                </button>
+            </div>
+        </form>
+        </div>
+    </div>
+
+
+
+        </div>
+
+
+    <input id="pid" value="{{ pid }}" style="display: none">
+
+{% endblock %}
+
+{% block footer_js %}
+    <!-- Morris.js charts -->
+    <script src="/static/js/raphael/raphael-min.js"></script>
+    <script src="/static/plugins/morris/morris.min.js"></script>
+
+    <script src="/static/plugins/jquery.blockui.min.js"></script>
+    <script src="/static/plugins/datatables/jquery.dataTables.js"></script>
+    <script src="/static/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="/static/js/metronic.js"></script>
+    <script src="/static/js/table-ext.js"></script>
+    <script src="/static/js/datatable.js"></script>
+    <script src="/static/js/jPages.js"></script>
+{% endblock %}

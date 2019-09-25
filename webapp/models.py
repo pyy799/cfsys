@@ -89,7 +89,7 @@ class Product(models.Model):
     three_year_num = models.IntegerField("过去三年销售数量", default=0)
     pCompany = models.IntegerField("所属公司", blank=True, null=True, choices=COMPANY_CHOICE)
     contact_people = models.CharField("联系人", max_length=64, blank=True, null=True)
-    remark = models.CharField("联系人", max_length=1024, blank=True, null=True)
+    remark = models.CharField("备注", max_length=1024, blank=True, null=True)
     uploader = models.ForeignKey(UserProfile, verbose_name="上传者", related_name="uploader", blank=True, null=True)
 
     upload_time = models.DateField("提交时间", null=True, blank=True)
@@ -104,17 +104,22 @@ class Product(models.Model):
     technology = models.ForeignKey(Attribute, verbose_name="技术形态", related_name="technology", blank=True, null=True)
 
     attribute_num = models.CharField("属性编号", max_length=32, blank=True, null=True)
-    status = models.IntegerField("产品状态", choices=STATUS_CHOICE, default=ProductStatus.WAIT_SUBMIT)
-    apply_type = models.IntegerField("产品状态", choices=APPLY_CHOICE, default=ApplyStatus.NEW)
+    status = models.IntegerField("审批状态", choices=STATUS_CHOICE, default=ProductStatus.WAIT_SUBMIT)
+    apply_type = models.IntegerField("申请类型", choices=APPLY_CHOICE, default=ApplyStatus.NEW)
     reason = models.CharField("不通过原因", max_length=1024, blank=True, null=True)
     version = models.IntegerField("产品版本", default=1)
     is_vaild = models.BooleanField("是否有效", default=True, blank=False, null=False)
 
+    def company_name(self, cnum):
+        """公司名称"""
+        return dict(COMPANY_CHOICE).get(cnum)
 
+    def status_name(self, snum):
+        """审批状态"""
+        return dict(STATUS_CHOICE).get(snum)
 
-
-
-
-
+    def apply_name(self, anum):
+        """申请类型"""
+        return dict(APPLY_CHOICE).get(anum)
 
 
