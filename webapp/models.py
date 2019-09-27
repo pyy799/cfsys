@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from django.contrib.auth.models import User, Group
 from webapp.const import *
@@ -75,7 +76,6 @@ APPLY_CHOICE = (
     (ApplyStatus.ALTER, "修改"),
     (ApplyStatus.DELETE, "删除"),
     (ApplyStatus.INVALID, "停用"),
-    (ApplyStatus.FINISHED, "完成"),
 )
 
 
@@ -106,7 +106,7 @@ class Product(models.Model):
     save_name = models.CharField("文件原名", max_length=64, blank=True, null=True, default="")
 
     maturity = models.ForeignKey(Attribute, verbose_name="成熟度", related_name="maturity", blank=True, null=True)
-    independence = models.ForeignKey(Attribute, verbose_name="自主程度", related_name="independence", blank=True, null=True)
+    independence = models.ForeignKey(Attribute, verbose_name="自主度", related_name="independence", blank=True, null=True)
     business = models.ForeignKey(Attribute, verbose_name="业务领域", related_name="business", blank=True, null=True)
     technology = models.ForeignKey(Attribute, verbose_name="技术形态", related_name="technology", blank=True, null=True)
 
@@ -128,6 +128,32 @@ class Product(models.Model):
     def apply_name(self, anum):
         """申请类型"""
         return dict(APPLY_CHOICE).get(anum)
+
+    def pack_data(self):
+        """
+        数据打包
+        """
+        def get_value(s, field):
+            if isinstance(getattr(self, field.name), datetime.date):
+                return getattr(self, field.name).strftime("%Y-%m-%d")
+            elif field.name in ["maturity", "independence", "business", "technology"]:
+                return getattr(getattr(self, field.name), "meaning", '')
+            elif field.name == "uploader":
+                return getattr(getattr(self, field.name), "userName", '')
+            return getattr(s, field.name) or ''
+
+        data = []
+        [data.append((f.name, get_value(self, f) or '')) for f in self._meta.fields]
+
+        data.append(("is_overlap", "是" if self.is_overlap else "否"))
+        data.append(("pCompany_name", self.company_name(self.pCompany)))
+        data.append(("status_name", self.status_name(self.status)))
+        data.append(("apply_type_name", self.apply_name(self.apply_type)))
+        data.append(("is_vaild", "是" if self.is_vaild else "否"))
+
+        return dict(data)
+
+
 
     class Meta:
         permissions = [
