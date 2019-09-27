@@ -1,16 +1,16 @@
 import os
 import re
 import shutil
-
 import datetime
 import xlrd
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 
 from webapp.models import *
 from webapp.shortcuts.ajax import ajax_success, ajax_error
 from cfsys.settings import *
-from webapp.tools import *
+from webapp.utils.query import get_query, create_data
 
 
 def index(request, template_name):
@@ -27,9 +27,21 @@ def page_new_product(request, template_name):
     page_dict = {}
     template_file = "template.xlsx"
     download_path_excel = os.path.join(FILES_PATH, template_file)
-    page_dict.update({"download_path_excel": download_path_excel, "excel_name": template_file})
+    company_choice = COMPANY_CHOICE
+    apply_choice = APPLY_CHOICE
+    page_dict.update({"download_path_excel": download_path_excel, "excel_name": template_file,
+                      "company_choice": company_choice, "apply_choice": apply_choice})
 
     return render(request, template_name, page_dict)
+
+@csrf_exempt
+# 新建及更新页面“待提交”页签数据
+def wait_submit(request):
+    fil = {"status": ProductStatus.WAIT_SUBMIT, "is_vaild": True}
+    product_list, count, error = get_query(request, Product, **fil)
+    pack_list = [i.pack_data() for i in product_list]
+    res = create_data(request.POST.get("draw", 1), pack_list, count)
+    return HttpResponse(res)
 
 
 # 批量上传
@@ -134,16 +146,69 @@ def upload_many(request):
     # '产品名称', '旧产品名称', '产品描述', '是否重叠', '目标行业', '应用场景', '市场案例', '过去一年销售额（万元）',
     # '过去一年销售数量（套/件/组）', '过去三年销售数量（万元）', '过去三年销售数量（套/件/组）', '公司', 'M\n（成熟度）',
     # 'I\n（自主度）', 'B\n（业务类别）', 'T\n（技术形态）', '联系人及联系方式', '备注'
+
     return ajax_success()
 
 
 # 新建/修改产品页面
-def edit_product(request,pid, template_name):
-    page_dict = {"pid": pid}
+def edit_product(request, pid, template_name):
     pid = int(pid)
+    if pid != 0 :
+        try:
+            product = Product.objects.get(id=pid)
+        except Exception as e:
+            # log.log_error("审批通过：找不到合同！\n%s" % e)
+            return ajax_error("审批失败!")
 
 
-
-
-
+    page_dict = {"pid": pid}
     return render(request, template_name, page_dict)
+
+
+# 取消提交操作
+def cancel_submit_product(request, pid):
+    try:
+        product = Product.objects.get(id=pid)
+    except Exception as e:
+        # log.log_error("审批通过：找不到合同！\n%s" % e)
+        return ajax_error("取消失败!")
+    print(product.product_name)
+    product.delete()
+    return ajax_success()
+
+
+# 提交操作
+def submit_product(request, pid):
+    try:
+        product = Product.objects.get(id=pid)
+    except Exception as e:
+        # log.log_error("审批通过：找不到合同！\n%s" % e)
+        return ajax_error("提交失败!")
+    print(product.product_name)
+    product.status=ProductStatus.WAIT_PASS
+    product.save()
+    return ajax_success()
+
+
+@csrf_exempt
+# 新建及更新页面“待审核”页签数据
+def wait_pass(request):
+    fil = {"status": ProductStatus.WAIT_PASS, "is_vaild": True}
+    product_list, count, error = get_query(request, Product, **fil)
+    pack_list = [i.pack_data() for i in product_list]
+    res = create_data(request.POST.get("draw", 1), pack_list, count)
+    return HttpResponse(res)
+
+
+@csrf_exempt
+# 新建及更新页面“已审核”页签数据
+def passed(request):
+    fil = {"status__gte": ProductStatus.PASS, "is_vaild": True}
+    product_list, count, error = get_query(request, Product, **fil)
+    pack_list = [i.pack_data() for i in product_list]
+    res = create_data(request.POST.get("draw", 1), pack_list, count)
+    return HttpResponse(res)
+
+
+def get_key(dict, value):
+    return [k for k, v in dict.items() if v == value]

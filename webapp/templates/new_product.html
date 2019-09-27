@@ -6,6 +6,19 @@
     <link rel="stylesheet" href="/static/css/jpage.css">
     <!-- Morris chart -->
     <link rel="stylesheet" href="/static/plugins/morris/morris.css">
+    <style>
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            top: -2px
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 23px
+        }
+
+        .select2-container--default .select2-selection--single, .select2-selection .select2-selection--single {
+            height: 28px
+        }
+    </style>
 {% endblock %}
 
 
@@ -18,11 +31,11 @@
             <div class="nav-tabs-custom">
             <!-- Tabs within a box -->
             <ul class="nav nav-tabs pull-left">
-                <li class="active"><a href="#new" data-toggle="tab">新建产品</a></li>
+                <li {% if request.path == '/product_management/page_new_product/' %}class="active" {% endif %}><a href="#new" data-toggle="tab">新建产品</a></li>
                 <li><a href="#update" data-toggle="tab">更新产品</a></li>
-                <li><a href="#waitsubmit" data-toggle="tab">待提交</a></li>
-                <li><a href="#waitpass" data-toggle="tab">待审批</a></li>
-                <li><a href="#passed" data-toggle="tab">已审批</a></li>
+                <li {% if request.path == '/product_management/upload_many/' %}class="active" {% endif %}><a href="#waitsubmit" data-toggle="tab">待提交</a></li>
+                <li><a href="#waitpass" data-toggle="tab">待审核</a></li>
+                <li><a href="#passed" data-toggle="tab">已审核</a></li>
             </ul>
             <div style="clear:both"></div>
             <div class="tab-content">
@@ -85,6 +98,7 @@
                         单个新建产品</a>
                     </div>
                 </div>
+
                 <div class="table-container no-padding tab-pane" id="update" style="padding:14px">
                     <div class="table-actions-wrapper">
                         <input type="text" class="form-control input-inline input-middle input-sm form-filter"
@@ -116,155 +130,100 @@
                         <tbody></tbody>
                     </table>
                 </div>
+
                 <div class="table-container no-padding tab-pane" id="waitsubmit" style="padding:14px">
                     <div class="table-actions-wrapper">
+                    <label>产品名称</label>
                         <input type="text" class="form-control input-inline input-middle input-sm form-filter"
-                               name="contract_number__icontains" placeholder="合同编号" style="width: 200px">
-                        <input type="text" class="form-control input-inline input-middle input-sm form-filter"
-                               name="customer__name__icontains" placeholder="客户名称" style="width: 200px">
+                               name="product_name__icontains" placeholder="产品名称" style="width: 200px">
+                        <label>公司</label>
                         <select class="form-control input-inline input-small input-sm form-filter select"
-                                name="salesman__pk" data-placeholder='销售'>
+                                name="pCompany" data-placeholder='公司'>
                             <option value=''></option>
-                            {% for s in salesmen %}
-                                <option value="{{ s.pk }}">{{ s.cname }}</option>
+                            {% for s in company_choice %}
+                                <option value="{{ s.0 }}">{{ s.1 }}</option>
+                            {% endfor %}
+                        </select>
+                        <label>申请类型</label>
+                        <select class="form-control input-inline input-small input-sm form-filter select"
+                                name="apply_type" data-placeholder='申请类型'>
+                            <option value=''></option>
+                            {% for s in apply_choice %}
+                                <option value="{{ s.0 }}">{{ s.1 }}</option>
                             {% endfor %}
                         </select>
                         <button class="btn btn-sm yellow filter-submit"><i class="fa fa-search"></i> 查询</button>
                         <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> 取消查询</button>
-
+                        <button class="btn btn-sm green checkall" id="checkall"><i class="fa fa-check"></i> 全选/反选</button>
                     </div>
-                    <div class="modal fade" id="approval_note_dialog" role="dialog" aria-labelledby="myModalLabel"
-                         aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header" style="margin-top: 100px">
-                                    <h4 class="modal-title" id="myModalLabel">添加审批意见</h4>
-
-                                    <div class="box box-primary">
-                                        <form id="approval_note_form">
-                                            {% csrf_token %}
-                                            <div class="box-body">
-                                                <div class="col-sm-6">
-                                                    <textarea id="approval_note" name="approval_note"
-                                                              style="height: 200px; width: 500px"></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer" style="">
-                                                <button type="submit" class="btn btn-primary">提交</button>
-                                                <button class="btn btn-default" data-dismiss="modal">关闭</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /.modal-content -->
-                        </div>
-                        <!-- /.modal -->
-                    </div>
-                    <table class="table table-striped table-bordered table-hover dataTable no-footer" id="my_approval"
-                           style="word-break: keep-all">
+                    <table class="table table-striped table-bordered table-hover dataTable no-footer"
+                    id="waitsubmit_table" style="word-break: keep-all">
                         <thead></thead>
                         <tbody></tbody>
                     </table>
+                    <div style="text-align: right">
+                        <a href="javascript:;"><button class="btn btn-sm btn-danger" id="cancel_submit"><i class="fa fa-times"></i> 取消</button></a>
+                        <a href="javascript:;"><button class="btn btn-sm btn-info" id="submit"><i class="fa fa-check"></i> 提交</button></a>
+                    </div>
                 </div>
+
                 <div class="table-container no-padding tab-pane" id="waitpass" style="padding:14px">
                     <div class="table-actions-wrapper">
+                    <label>产品名称</label>
                         <input type="text" class="form-control input-inline input-middle input-sm form-filter"
-                               name="contract_number__icontains" placeholder="合同编号" style="width: 200px">
-                        <input type="text" class="form-control input-inline input-middle input-sm form-filter"
-                               name="customer__name__icontains" placeholder="客户名称" style="width: 200px">
+                               name="product_name__icontains" placeholder="产品名称" style="width: 200px">
+                        <label>公司</label>
                         <select class="form-control input-inline input-small input-sm form-filter select"
-                                name="salesman__pk" data-placeholder='销售'>
+                                name="pCompany" data-placeholder='公司'>
                             <option value=''></option>
-                            {% for s in salesmen %}
-                                <option value="{{ s.pk }}">{{ s.cname }}</option>
+                            {% for s in company_choice %}
+                                <option value="{{ s.0 }}">{{ s.1 }}</option>
+                            {% endfor %}
+                        </select>
+                        <label>申请类型</label>
+                        <select class="form-control input-inline input-small input-sm form-filter select"
+                                name="apply_type" data-placeholder='申请类型'>
+                            <option value=''></option>
+                            {% for s in apply_choice %}
+                                <option value="{{ s.0 }}">{{ s.1 }}</option>
                             {% endfor %}
                         </select>
                         <button class="btn btn-sm yellow filter-submit"><i class="fa fa-search"></i> 查询</button>
                         <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> 取消查询</button>
-
                     </div>
-                    <div class="modal fade" id="approval_note_dialog" role="dialog" aria-labelledby="myModalLabel"
-                         aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header" style="margin-top: 100px">
-                                    <h4 class="modal-title" id="myModalLabel">添加审批意见</h4>
-
-                                    <div class="box box-primary">
-                                        <form id="approval_note_form">
-                                            {% csrf_token %}
-                                            <div class="box-body">
-                                                <div class="col-sm-6">
-                                                    <textarea id="approval_note" name="approval_note"
-                                                              style="height: 200px; width: 500px"></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer" style="">
-                                                <button type="submit" class="btn btn-primary">提交</button>
-                                                <button class="btn btn-default" data-dismiss="modal">关闭</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /.modal-content -->
-                        </div>
-                        <!-- /.modal -->
-                    </div>
-                    <table class="table table-striped table-bordered table-hover dataTable no-footer" id="my_approval"
-                           style="word-break: keep-all">
+                    <table class="table table-striped table-bordered table-hover dataTable no-footer"
+                        id="waitpass_table" style="word-break: keep-all">
                         <thead></thead>
                         <tbody></tbody>
                     </table>
                 </div>
+
                 <div class="table-container no-padding tab-pane" id="passed" style="padding:14px">
                     <div class="table-actions-wrapper">
+                    <label>产品名称</label>
                         <input type="text" class="form-control input-inline input-middle input-sm form-filter"
-                               name="contract_number__icontains" placeholder="合同编号" style="width: 200px">
-                        <input type="text" class="form-control input-inline input-middle input-sm form-filter"
-                               name="customer__name__icontains" placeholder="客户名称" style="width: 200px">
+                               name="product_name__icontains" placeholder="产品名称" style="width: 200px">
+                        <label>公司</label>
                         <select class="form-control input-inline input-small input-sm form-filter select"
-                                name="salesman__pk" data-placeholder='销售'>
+                                name="pCompany" data-placeholder='公司'>
                             <option value=''></option>
-                            {% for s in salesmen %}
-                                <option value="{{ s.pk }}">{{ s.cname }}</option>
+                            {% for s in company_choice %}
+                                <option value="{{ s.0 }}">{{ s.1 }}</option>
+                            {% endfor %}
+                        </select>
+                        <label>申请类型</label>
+                        <select class="form-control input-inline input-small input-sm form-filter select"
+                                name="apply_type" data-placeholder='申请类型'>
+                            <option value=''></option>
+                            {% for s in apply_choice %}
+                                <option value="{{ s.0 }}">{{ s.1 }}</option>
                             {% endfor %}
                         </select>
                         <button class="btn btn-sm yellow filter-submit"><i class="fa fa-search"></i> 查询</button>
                         <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> 取消查询</button>
-
                     </div>
-                    <div class="modal fade" id="approval_note_dialog" role="dialog" aria-labelledby="myModalLabel"
-                         aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header" style="margin-top: 100px">
-                                    <h4 class="modal-title" id="myModalLabel">添加审批意见</h4>
-
-                                    <div class="box box-primary">
-                                        <form id="approval_note_form">
-                                            {% csrf_token %}
-                                            <div class="box-body">
-                                                <div class="col-sm-6">
-                                                    <textarea id="approval_note" name="approval_note"
-                                                              style="height: 200px; width: 500px"></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer" style="">
-                                                <button type="submit" class="btn btn-primary">提交</button>
-                                                <button class="btn btn-default" data-dismiss="modal">关闭</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /.modal-content -->
-                        </div>
-                        <!-- /.modal -->
-                    </div>
-                    <table class="table table-striped table-bordered table-hover dataTable no-footer" id="my_approval"
-                           style="word-break: keep-all">
+                    <table class="table table-striped table-bordered table-hover dataTable no-footer"
+                        id="passed_table" style="word-break: keep-all">
                         <thead></thead>
                         <tbody></tbody>
                     </table>
@@ -280,7 +239,6 @@
     <!-- Morris.js charts -->
     <script src="/static/js/raphael/raphael-min.js"></script>
     <script src="/static/plugins/morris/morris.min.js"></script>
-
     <script src="/static/plugins/jquery.blockui.min.js"></script>
     <script src="/static/plugins/datatables/jquery.dataTables.js"></script>
     <script src="/static/plugins/datatables/dataTables.bootstrap.min.js"></script>
@@ -288,7 +246,14 @@
     <script src="/static/js/table-ext.js"></script>
     <script src="/static/js/datatable.js"></script>
     <script src="/static/js/jPages.js"></script>
+    <script src="/static/js/product/waitsubmit.js"></script>
+    <script src="/static/js/product/waitpass.js"></script>
+    <script src="/static/js/product/passed.js"></script>
+
     <script>
+        WaitSubmitTable.init();
+        WaitPassTable.init();
+        PassedTable.init();
         //批量上传文件
         $("#manyuploadForm").ajaxForm({
             type: "post",
@@ -307,6 +272,8 @@
                 $("" + element + " input[name='" + key + "']").parent().next().html(val)
             })
         }
+
+
 
     </script>
 {% endblock %}
