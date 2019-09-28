@@ -1,0 +1,29 @@
+{% extends 'base1.html' %}
+
+{% block header_js %}
+    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/jpage.css">
+    <!-- Morris chart -->
+    <link rel="stylesheet" href="/static/plugins/morris/morris.css">
+{% endblock %}
+
+
+{% block content %}
+
+
+{% endblock %}
+
+{% block footer_js %}
+    <!-- Morris.js charts -->
+    <script src="/static/js/raphael/raphael-min.js"></script>
+    <script src="/static/plugins/morris/morris.min.js"></script>
+
+    <script src="/static/plugins/jquery.blockui.min.js"></script>
+    <script src="/static/plugins/datatables/jquery.dataTables.js"></script>
+    <script src="/static/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="/static/js/metronic.js"></script>
+    <script src="/static/js/table-ext.js"></script>
+    <script src="/static/js/datatable.js"></script>
+    <script src="/static/js/jPages.js"></script>
+{% endblock %}

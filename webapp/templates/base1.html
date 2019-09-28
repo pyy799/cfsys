@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="/static/css/ionicons/css/ionicons.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="/static/dist/css/AdminLTE.css">
-{#    <link rel="stylesheet" href="/static/dist/css/AdminLTE.min.css">#}
+    {#    <link rel="stylesheet" href="/static/dist/css/AdminLTE.min.css">#}
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="/static/dist/css/skins/_all-skins.min.css">
@@ -36,52 +36,60 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-{% block header_js %}
-{% endblock %}
+    {% block header_js %}
+    {% endblock %}
 
 </head>
 <body class="hold-transition skin-blue layout-top-nav">
 <div class="wrapper">
-<!-- 上边菜单栏 -->
+    <!-- 上边菜单栏 -->
     <header class="main-header">
         <nav class="navbar navbar-static-top" role="navigation">
             <div class="container-fluid">
                 <div class="navbar-header" style="margin-left:50px; margin-right:50px ">
-                    <a href="/" class="navbar-brand" ><b>产品管理系统</b></a>
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                    <a href="/" class="navbar-brand"><b>产品管理系统</b></a>
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#navbar-collapse">
                         <i class="fa fa-bars"></i>
                     </button>
                 </div>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="navbar-collapse">
-      <ul class="nav navbar-nav">
-        <li><a href="/">首页</a></li>
-        <li><a href="{% url 'page_search_product' %}">产品信息查询</a></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">产品信息管理<span class="caret"></span></a>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="{% url 'page_new_product' %}">新建及更新产品</a></li>
-            <li><a href="{% url 'page_pass_product' %}">产品审核</a></li>
-            <li><a href="{% url 'page_table' %}">产品属性化分类表</a></li>
-          </ul>
-        </li>
-        <li><a href="{% url 'page_attribute' %}">产品属性管理</a></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">用户及权限管理<span class="caret"></span></a>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="{% url 'page_user_management' %}">用户管理</a></li>
-            <li><a href="{% url 'page_role_management' %}">角色权限管理</a></li>
-          </ul>
-        </li>
-      </ul>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/">首页</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">信息查询及能力展示<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="{% url 'page_search_product' %}">产品信息查询</a></li>
+                                <li><a href="{% url 'page_show_product' %}">产品能力展示</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">产品信息管理<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="{% url 'page_new_product' %}">新建及更新产品</a></li>
+                                <li><a href="{% url 'page_pass_product' %}">产品审核</a></li>
+                                <li><a href="{% url 'page_table' %}">产品属性化分类表</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="{% url 'page_attribute' %}">产品属性管理</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">用户及权限管理<span
+                                    class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="{% url 'page_user_management' %}">用户管理</a></li>
+                                <li><a href="{% url 'page_role_management' %}">角色权限管理</a></li>
+                            </ul>
+                        </li>
+                    </ul>
 
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">{{ request.user }}</a></li>
-      </ul>
-    </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-  </nav>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#">{{ request.user }}</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
     </header>
 
 
@@ -102,7 +110,7 @@
     </div>
     <!-- /.content-wrapper -->
     <footer class="main-footer">
-        <div class="pull-right hidden-xs"><b>Version</b> 1.0 </div>
+        <div class="pull-right hidden-xs"><b>Version</b> 1.0</div>
         <strong>Copyright &copy; 2019-2020 北京航天长峰股份有限公司.</strong> All rights reserved.
     </footer>
 </div>
@@ -166,6 +174,7 @@
             $(this).removeClass("active")
         })
     }
+
     var nav = "#nav-{%block navname %}{% endblock %}";
     var son_nav = nav + "-" + "{% block navSon %}{% endblock %}";
     var deep_nav = son_nav + "-" + "{% block navDeep %}{% endblock%}";
@@ -174,14 +183,14 @@
     $(son_nav).addClass("active");
     $(deep_nav).addClass("active");
 
-    if ($.cookie('sidebar')){
+    if ($.cookie('sidebar')) {
         $('body').addClass('sidebar-collapse');
     }
-    $('.sidebar-toggle').on('click', function(){
-        if ($('body').hasClass('sidebar-collapse')){
-            $.removeCookie('sidebar', { path: '/' });
-        }else{
-            $.cookie('sidebar', 'sidebar-collapse', { path: '/' });
+    $('.sidebar-toggle').on('click', function () {
+        if ($('body').hasClass('sidebar-collapse')) {
+            $.removeCookie('sidebar', {path: '/'});
+        } else {
+            $.cookie('sidebar', 'sidebar-collapse', {path: '/'});
         }
     })
 </script>
