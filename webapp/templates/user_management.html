@@ -10,7 +10,109 @@
 
 
 {% block content %}
-    <!-- 这是我写的-->
+<div class="modal fade" id="add" tabindex="-1"
+     role="dialog" aria-labelledby="addLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+                <h5 class="modal-title" id="addLabel" style="font-weight:bold">新增用户</h5>
+            </div>
+            <form style=";float:none" class="form-horizontal" method="post" action="{% url 'add_user' %}">
+                {% csrf_token %}
+                <div class="modal-form" style="margin-top: 0">
+                    <div class="col-sm-6" style=";height:45px;text-align:center">
+                        <div style="margin-top: 8px">
+                            <label for="add_name" class="control-label">用户</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="add_name" name="add_name"
+                                    placeholder="请输入用户名" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="height:45px;text-align:center">
+                        <div style="margin-top: 8px">
+                            <label for="add_gender" class="control-label">性别</label>
+                                <div class="col-sm-10">
+                                    <select type="text" id="add_gender" name="add_gender" class="form-control">
+                                        <option value="1" selected>男</option>
+                                        <option value="0">女</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    <div class="col-sm-6" style="height:45px;text-align:center">
+                        <div style="margin-top: 8px">
+                            <label for="add_company" class="control-label">公司</label>
+                                <div class="col-sm-10">
+                                    <select type="text" id="add_company" name="add_company" class="form-control">
+                                        <option value="1" selected>股份</option>
+                                        <option value="2">精一</option>
+                                        <option value="3">科威</option>
+                                        <option value="4">医疗</option>
+                                        <option value="5">柏克</option>
+                                        <option value="6">科技</option>
+                                        <option value="7">浙子</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    <div class="col-sm-6" style="height:45px;text-align:center">
+                        <div style="margin-top: 8px">
+                            <label for="add_department" class="control-label">部门</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="add_department" name="add_department" class="form-control" value="" placeholder="部门名称">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="height:45px;text-align: center">
+                        <div style="margin-top: 8px">
+                            <label for="add_position" class="control-label">职位</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="add_position" name="add_position" class="form-control" value="" placeholder="职位">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="height:45px;text-align: center">
+            <div style="margin-top: 8px">
+                 <label for="role" class="control-label">角色</label>
+                 <div class="col-sm-10">
+                    <select type="text" id="add_role" name="add_role" class="form-control">
+                        {% for group in groups %}
+                        <option value="{{ group.id }}">{{ group.name }}</option>
+                        {% endfor %}
+                    </select>
+                 </div>
+             </div>
+            </div>
+                <div class="col-sm-6" style=";height:45px;text-align:center">
+                    <div style="margin-top: 8px">
+                        <label for="add_phone" class="control-label">电话</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="add_phone" name="add_phone"
+                                placeholder="请输入电话" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6" style=";height:45px;text-align:center">
+                    <div style="margin-top: 8px">
+                        <label for="add_email" class="control-label">邮箱</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="add_email" name="add_email"
+                                placeholder="请输入邮箱" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <div class="col-sm-12" style="height: 20px;margin-top:8px" id="err_message"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">确认</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
 <div class="modal fade" id="modify" tabindex="-1"
      role="dialog" aria-labelledby="modifyLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -19,8 +121,8 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
                 <h5 class="modal-title" id="modifyLabel" style="font-weight:bold">修改用户信息</h5>
             </div>
-            <form style=";float:none" class="form-horizontal">
-                <div class="modal-form" style="-top: 0">
+            <form style=";float:none" class="form-horizontal" method="post">
+                <div class="modal-form" style="margin-top: 0">
                     <div class="col-sm-6" style=";height:45px;text-align:center">
                         <div style="margin-top: 8px">
                             <label for="modify_name" class="control-label">用户</label>
@@ -130,11 +232,11 @@
                 <h5 class="modal-title" id="deleteLabel" style="font-weight: bold">删除用户信息</h5>
             </div>
             <div class="modal-body" style="padding-top: 0">
-                这将删除该用户在数据库中的所有信息，确认删除吗？
+                这将删除用户&nbsp;<span id="s_delete"></span>&nbsp;在数据库中的所有信息，确认删除吗？
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-danger">确认</button>
+                <button type="button" class="btn btn-danger"><a href="" style="color:white" id="a_delete">确认</a></button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
@@ -217,7 +319,9 @@
             <h1 style="font-weight: bold;text-align: left;padding-left: 10px;margin-top: 10px">查询结果</h1>
         </div>
         <div class="col-sm-6">
-            <input type="button" class="btn  btn-success" value="新增用户" style=";margin-top:5px;font-size: 25px;margin-left: 260px">
+            <input type="button" class="btn  btn-success" value="新增用户"
+                   style=";margin-top:5px;font-size: 25px;margin-left: 260px"
+                    data-toggle="modal" data-target="#add">
         </div>
     </div>
     <div style="height:500px;margin-top:15px;">
@@ -245,28 +349,33 @@
                 <tbody>
                 {% for user in users %}
                 <tr style="text-align: center">
-                  <td>{{ user.userName }}</td>
-                  <td>{{ user.gender }}</td>
-                  <td>{{ user.uCompany }}</td>
+                  <td>{{ user.username }}</td>
+                    {% if user.gender %}
+                        <td>男</td>
+                    {% else %}
+                        <td>女</td>
+                    {% endif %}
+                  <td>{{ user.Company }}</td>
                   <td>{{ user.department }}</td>
                   <td>{{ user.position }}</td>
-                  <td>{{ user.userRole }}</td>
+                  <td>{{ user.group }}</td>
                   <td>{{ user.phone }}</td>
-                  <td>{{ user.uEmail }}</td>
-                  <td>{{ user.createDate }}</td>
-                    {% if user.isValid %}
+                  <td>{{ user.email }}</td>
+                  <td>{{ user.date_joined }}</td>
+                    {% if user.is_active %}
                         <td>正在使用</td>
                     {% else %}
                         <td>已停用</td>
                     {% endif %}
                   <td>
                       <button type="button"class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify">修改</button>
-                      {% if isValid %}
-                          <button type="button"class="btn  btn-info btn-sm" >正在使用</button>
+                      {% if user.is_active %}
+                          <button type="button"class="btn btn-info btn-sm" >停用</button>
                       {% else %}
-                          <button type="button"class="btn  btn-info btn-sm" >已停用</button>
+                          <button type="button"class="btn  btn-info btn-sm" >启用</button>
                       {% endif %}
-                      <button type="button"class="btn  btn-danger btn-sm" data-toggle="modal" data-target="#delete">删除</button>
+                      <button type="button" class="btn  btn-danger btn-sm" data-toggle="modal"
+                              data-target="#delete" onclick="goDelete('{% url "delete_user"  user.id %}', '{{ user.username }}')">删除</button>
                   </td>
                 </tr>
                 {% endfor %}
@@ -319,6 +428,14 @@
           </div>
     </div>
 </div>
+<script>
+    function goDelete(text,name)
+    {
+        $('#a_delete').attr('href',text)
+        $('#s_delete').html(name)
+        console.log(text)
+    }
+</script>
 {% endblock %}
 
 {% block footer_js %}

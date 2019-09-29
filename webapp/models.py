@@ -15,19 +15,36 @@ COMPANY_CHOICE = (
 )
 
 
-# 用户
+class UserProfileManager(models.Manager):
+    def create_user(self, username, password, gender,
+                    uCompany,department, position,role, phone,
+                    email, is_active=True):
+        user = self.model()
+        user.username = username
+        user.set_password(password)
+        user.gender = gender
+        user.uCompany = uCompany
+        user.department = department
+        user.position = position
+        user.phone = phone
+        user.email = email
+        user.is_active = is_active
+        group = Group.objects.get(pk=role)
+        user.save()
+        user.groups.add(group)
+
+
 class UserProfile(User):
-    userName = models.CharField("用户名", max_length=32, blank=True, null=True, default="")
-    gender = models.BooleanField("性别", default=True, blank=False, null=False)
-    userPassword = models.CharField("密码", max_length=32, blank=True, null=True, default="123456")
-    uCompany = models.IntegerField("公司", blank=True, null=True, choices=COMPANY_CHOICE)
+    objects2 = UserProfileManager()
+    gender = models.IntegerField("性别", blank=False, null=False)
+    uCompany = models.IntegerField("公司", choices=COMPANY_CHOICE, blank=True, null=True)
     department = models.CharField("部门", max_length=32, blank=True, null=True)
     position = models.CharField("职位", max_length=32, blank=True, null=True)
-    # 角色采用Group直接替代了
     phone = models.CharField("电话", max_length=32, blank=True, null=True)
-    # 邮箱已经在AbstractUser中定义了
-    createDate = models.DateField('创建时间', null=True, blank=True)
-    isValid = models.BooleanField("是否有效", default=True, blank=False, null=False)
+
+    def get_company(self, com):
+        """获取用户公司名称 """
+        return dict(COMPANY_CHOICE).get(com)
 
     class Meta:
         permissions = [
@@ -152,8 +169,6 @@ class Product(models.Model):
         data.append(("is_vaild", "是" if self.is_vaild else "否"))
 
         return dict(data)
-
-
 
     class Meta:
         permissions = [

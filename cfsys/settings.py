@@ -80,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cfdatabase',
         'USER': 'root',
-        'PASSWORD': '18911912812pyy',
+        'PASSWORD': '10213213',
         'HOST': '127.0.0.1',
         'PORT': 3306,
     }
@@ -110,3 +110,4 @@ FILES_PATH = "/Volumes/Transcend/cfsys/files/"
 
 PRODUCT_EXCEL_PATH = os.path.join(FILES_PATH, "excel/")
 PRODUCT_ZIP_PATH = os.path.join(FILES_PATH, "zip/")
+LOGIN_URL = "/login/"

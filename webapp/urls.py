@@ -9,7 +9,9 @@ from webapp import views
 
 APPROOT = os.path.join(settings.BASE_DIR, "webapp")
 urlpatterns = [
-url(r'^$', RedirectView.as_view(url='/index/', permanent=True), name="default"),
+    url(r'^login/$', views.login_func, name='login'),
+    url(r'^logout/$', views.logout_func, name='logout'),
+    url(r'^$', RedirectView.as_view(url='/index/', permanent=True), name="default"),
     url(r'^index/$', views.index, {"template_name": "index.html"}, name="index"),
     url(r'^product_management/', include('webapp.product_management.urls')),
     url(r'^product_search/', include('webapp.product_search.urls')),
