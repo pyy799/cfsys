@@ -131,15 +131,15 @@ var WaitSubmitTable = function () {
 
         //多选提交按钮
         $("#submit").on('click', function () {
-            var ott = $("#waitsubmit_table").DataTable().rows(".selected");
-            if (ott[0].length < 1) {
+            var checkedBox = $("input[type='checkbox']:checked");
+            if (checkedBox.length < 1) {
                 alert("请至少选择一项！");
                 return
             } else {
                 var con = confirm("确定提交吗?");
                 if (con) {
                     // 选中全部通过
-                    for (var i in ott[0]) {
+                    for (var i=0; i < checkedBox.length; i++) {
                         var data = $("#waitsubmit_table").DataTable().row(i).data();
                         $.get("/product_management/wait_submit/submit/" + data["id"] + "/", function (data) {
                         })
@@ -151,15 +151,15 @@ var WaitSubmitTable = function () {
         });
         //多选不通过按钮
         $("#cancel_submit").on('click', function () {
-            var ott = $("#waitsubmit_table").DataTable().rows(".selected");
-            if (ott[0].length < 1) {
+            var checkedBox = $("input[type='checkbox']:checked");
+            if (checkedBox.length < 1) {
                 alert("请至少选择一项");
                 return
             } else {
                 // 选中全部不通过
                 var con = confirm("确定取消吗?");
                 if (con) {
-                    for (var i in ott[0]) {
+                    for (var i=0; i < checkedBox.length; i++) {
                         var data = $("#waitsubmit_table").DataTable().row(i).data();
                         $.get("/product_management/wait_submit/cancel/" + data["id"] + "/", function (data) {
                         })

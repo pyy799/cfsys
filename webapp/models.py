@@ -156,7 +156,7 @@ class Product(models.Model):
             elif field.name in ["maturity", "independence", "business", "technology"]:
                 return getattr(getattr(self, field.name), "meaning", '')
             elif field.name == "uploader":
-                return getattr(getattr(self, field.name), "userName", '')
+                return getattr(getattr(self, field.name), "username", '')
             return getattr(s, field.name) or ''
 
         data = []

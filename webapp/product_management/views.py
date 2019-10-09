@@ -1,8 +1,10 @@
 import os
 import re
 import shutil
-import datetime
+import time
 import xlrd
+from django.contrib.auth.decorators import login_required
+from webapp.shortcuts.decorator import permission_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
@@ -16,61 +18,82 @@ from webapp.utils.query import get_query, create_data
 def index(request, template_name):
     return render(request, template_name)
 
+
 # 单纯跳转页面
 def jump(request, template_name):
-
     return render(request, template_name)
 
 
-# 新建及更新页面
+@login_required
+@permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def page_new_product(request, template_name):
+    # 新建及更新页面
     page_dict = {}
+    user = request.user.userprofile
+    file_names = []
+    if os.path.exists(PRODUCT_TEMP_ZIP_PATH):
+        files = os.listdir(PRODUCT_TEMP_ZIP_PATH)
+        for i in files:
+            if re.search(user.username, i) and i.split('.')[0]:
+                file_names.append([i.split('_')[0], i.split('.')[0]])
     template_file = "template.xlsx"
     download_path_excel = os.path.join(FILES_PATH, template_file)
     company_choice = COMPANY_CHOICE
     apply_choice = APPLY_CHOICE
+
     page_dict.update({"download_path_excel": download_path_excel, "excel_name": template_file,
-                      "company_choice": company_choice, "apply_choice": apply_choice})
+                      "company_choice": company_choice, "apply_choice": apply_choice, "file_names":file_names})
 
     return render(request, template_name, page_dict)
 
+
 @csrf_exempt
-# 新建及更新页面“待提交”页签数据
+@login_required
+@permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def wait_submit(request):
+    # 新建及更新页面“待提交”页签数据
     fil = {"status": ProductStatus.WAIT_SUBMIT, "is_vaild": True}
+    # 只能看到自己的
+    user = request.user.userprofile
+    fil.update({"uploader": user})
     product_list, count, error = get_query(request, Product, **fil)
     pack_list = [i.pack_data() for i in product_list]
     res = create_data(request.POST.get("draw", 1), pack_list, count)
     return HttpResponse(res)
 
 
-# 批量上传
+@login_required
+@permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def upload_many(request):
+    # 批量新建
+    user = request.user.userprofile
+    now = int(time.time())
     if request.method != "POST":
         return ajax_error("上传失败")
-
     zip = request.FILES.get("zip", None)  # 获取上传的文件，如果没有文件，则默认为None
-    # path = os.path.join(PRODUCT_ZIP_PATH, temp_user_company)  # 临时存储路径为zip/companyname
-    path = os.path.join(PRODUCT_ZIP_PATH)  # 临时存储路径为zip/companyname
+    save_name = os.path.splitext(zip.name)[0] + '_' + user.username + '_' + str(now)
+    save_zip = os.path.splitext(zip.name)[1]
+    zip_file_name = save_name+'.'+save_zip
+    path = PRODUCT_TEMP_ZIP_PATH
     if not os.path.exists(path):
         os.makedirs(path)
-    destination = open(os.path.join(path, zip.name), "wb+")  # 把文件写入
+    destination = open(os.path.join(path, zip_file_name), "wb+")  # 把文件写入
     for chunk in zip.chunks():  # 分块写入文件
         destination.write(chunk)
     destination.close()
 
     excel = request.FILES.get("excel", None)  # 获取上传的文件，如果没有文件，则默认为None
-    # temp_user_company = request.user.userprofile.uCompany
-    # path = os.path.join(PRODUCT_EXCEL_PATH, temp_user_company)  # 存储路径为excel/companyname
-    path = os.path.join(PRODUCT_EXCEL_PATH)  # 存储路径为excel/companyname
+    save_excel = os.path.splitext(excel.name)[1]
+    excel_file_name = save_name+'.'+save_excel
+    path = os.path.join(PRODUCT_TEMP_EXCEL_PATH)
     if not os.path.exists(path):
         os.makedirs(path)
-    destination = open(os.path.join(path, excel.name), "wb+")  # 把文件写入
+    destination = open(os.path.join(path, excel_file_name), "wb+")  # 把文件写入
     for chunk in excel.chunks():  # 分块写入文件
         destination.write(chunk)
     destination.close()
 
-    file = os.path.join(path, excel.name)
+    file = os.path.join(path, excel_file_name)
     wb = xlrd.open_workbook(file)
     sheet = wb.sheet_by_name("产品信息页")
     nrows = sheet.nrows
@@ -104,7 +127,7 @@ def upload_many(request):
         remark = row[17].strip()
         upload_time = datetime.date.today()
         real_name = zip.name
-        save_name = zip.name.split('.')[1]
+
         attribute_num = maturity+independence+business+technology
         status = ProductStatus.WAIT_SUBMIT
         apply_type = ApplyStatus.NEW
@@ -128,14 +151,14 @@ def upload_many(request):
         product.pCompany = pCompany
         product.contact_people = contact_people
         product.remark = remark
-        # product.uploader
+        product.uploader = user
         product.upload_time = upload_time
         product.real_name = real_name
-        product.save_name = str(product.product_num)+'_'+str(version)+'.'+save_name
-        # product.maturity
-        # product.independence
-        # product.business
-        # product.technology
+        product.save_name = zip_file_name
+        product.maturity = Attribute.objects.get(first_class=maturity)
+        product.independence = Attribute.objects.get(first_class=independence)
+        product.business = Attribute.objects.get(second_class=business)
+        product.technology = Attribute.objects.get(second_class=technology)
         product.attribute_num = attribute_num
         product.status = status
         product.apply_type = apply_type
@@ -150,8 +173,10 @@ def upload_many(request):
     return ajax_success()
 
 
-# 新建/修改产品页面
+@login_required
+@permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def edit_product(request, pid, template_name):
+    # 新建/修改产品页面
     pid = int(pid)
     if pid != 0 :
         try:
@@ -160,25 +185,42 @@ def edit_product(request, pid, template_name):
             # log.log_error("审批通过：找不到合同！\n%s" % e)
             return ajax_error("审批失败!")
 
-
     page_dict = {"pid": pid}
     return render(request, template_name, page_dict)
 
 
-# 取消提交操作
+@login_required
+@permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def cancel_submit_product(request, pid):
+    # 取消提交操作
     try:
         product = Product.objects.get(id=pid)
     except Exception as e:
         # log.log_error("审批通过：找不到合同！\n%s" % e)
         return ajax_error("取消失败!")
-    print(product.product_name)
+    # 删除上传的文件
+    file = product.save_name
+    product_list = Product.objects.filter(save_name=file)
+    if not product_list:
+        file_path = os.path.join(PRODUCT_TEMP_ZIP_PATH, file)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+        files = os.listdir(PRODUCT_TEMP_EXCEL_PATH)
+        for f in files:
+            if os.path.splitext(file)[0] in f:
+                file = f
+                break
+        file_path = os.path.join(PRODUCT_TEMP_EXCEL_PATH, file)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
     product.delete()
     return ajax_success()
 
 
-# 提交操作
+@login_required
+@permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def submit_product(request, pid):
+    # 提交操作
     try:
         product = Product.objects.get(id=pid)
     except Exception as e:
@@ -187,23 +229,72 @@ def submit_product(request, pid):
     print(product.product_name)
     product.status=ProductStatus.WAIT_PASS
     product.save()
+    # 把文件从temp路径转移到正式路径
+    file = product.save_name
+    file_path = os.path.join(PRODUCT_TEMP_ZIP_PATH, file)
+    dest_path = os.path.join(PRODUCT_ZIP_PATH, file)
+    if os.path.isfile(file_path):
+        shutil.move(file_path, dest_path)
+    files = os.listdir(PRODUCT_TEMP_EXCEL_PATH)
+    for f in files:
+        if os.path.splitext(file)[0] in f:
+            file = f
+            break
+    file_path = os.path.join(PRODUCT_TEMP_EXCEL_PATH, file)
+    dest_path = os.path.join(PRODUCT_EXCEL_PATH, file)
+    if os.path.isfile(file_path):
+        shutil.move(file_path, dest_path)
+
     return ajax_success()
 
 
 @csrf_exempt
-# 新建及更新页面“待审核”页签数据
+@login_required
+@permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def wait_pass(request):
+    # 新建及更新页面“待审核”页签数据
     fil = {"status": ProductStatus.WAIT_PASS, "is_vaild": True}
+    # 只能看到自己的
+    user = request.user.userprofile
+    fil.update({"uploader": user})
     product_list, count, error = get_query(request, Product, **fil)
     pack_list = [i.pack_data() for i in product_list]
     res = create_data(request.POST.get("draw", 1), pack_list, count)
     return HttpResponse(res)
 
 
+@login_required
+@permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
+def delete_file(request, file_name):
+    # 新建及更新页面“待审核”页面删除已上传文件
+    files = os.listdir(PRODUCT_TEMP_ZIP_PATH)
+    for file in files:
+        if re.search(file_name, file):
+            full_name = file
+            os.remove(os.path.join(PRODUCT_TEMP_ZIP_PATH, full_name))
+            break
+    files = os.listdir(PRODUCT_TEMP_EXCEL_PATH)
+    for file in files:
+        if re.search(file_name, file):
+            full_name = file
+            os.remove(os.path.join(PRODUCT_TEMP_EXCEL_PATH, full_name))
+            break
+    product_list = Product.objects.filter(save_name__icontains=file_name)
+    for product in product_list:
+        product.save_name = None
+        product.real_name = None
+        product.save()
+    return HttpResponseRedirect("/product_management/page_new_product/")
+
 @csrf_exempt
-# 新建及更新页面“已审核”页签数据
+@login_required
+@permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def passed(request):
+    # 新建及更新页面“已审核”页签数据
     fil = {"status__gte": ProductStatus.PASS, "is_vaild": True}
+    # 只能看到自己的
+    user = request.user.userprofile
+    fil.update({"uploader": user})
     product_list, count, error = get_query(request, Product, **fil)
     pack_list = [i.pack_data() for i in product_list]
     res = create_data(request.POST.get("draw", 1), pack_list, count)

@@ -10,7 +10,7 @@ def index(request, template_name):
 
 
 @login_required
-@permission_required('webapp.user_right_management_user')
+@permission_required(['webapp.user_right_management_user',''])
 def jump(request, template_name):
     users = UserProfile.objects.all()
     groups = Group.objects.all()
