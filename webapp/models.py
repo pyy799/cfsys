@@ -9,7 +9,7 @@ COMPANY_CHOICE = (
     (Company.JING_YI, "精一"),
     (Company.KE_WEI, "科威"),
     (Company.YI_LIAO, "医疗"),
-    (Company.BO_KE, " 柏克"),
+    (Company.BO_KE, "柏克"),
     (Company.KE_JI, "科技"),
     (Company.ZHE_ZI, "浙子")
 )
@@ -54,9 +54,6 @@ class UserProfile(User):
         default_permissions = []
         verbose_name = "用户"
         verbose_name_plural = verbose_name
-
-    def __str__(self):
-        return self.userName
 
 
 ACT_CHOICE = (
