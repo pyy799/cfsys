@@ -11,7 +11,7 @@ def index(request, template_name):
 
 
 @login_required
-@permission_required(['webapp.user_right_management_user',''])
+@permission_required('webapp.user_right_management_user')
 def jump(request, template_name):
     users = UserProfile.objects.all()
     groups = Group.objects.all().order_by("id")
@@ -73,6 +73,7 @@ def modify_user(request):
     user.phone = request.POST.get("phone")
     user.email = request.POST.get("email")
     user.save()
+
     gr = Group.objects.get(user=user)
     user.groups.remove(gr)
     group = Group.objects.get(id=request.POST.get("role"))
