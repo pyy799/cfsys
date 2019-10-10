@@ -121,8 +121,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
                 <h5 class="modal-title" id="modifyLabel" style="font-weight:bold">修改用户信息</h5>
             </div>
-            <form style=";float:none" class="form-horizontal" enctype="application/x-www-form-urlencoded">
-                {% csrf_token %}
+            <form style=";float:none" class="form-horizontal" method="post">
                 <div class="modal-form" style="margin-top: 0">
                     <div class="col-sm-6" style=";height:45px;text-align:center">
                         <div style="margin-top: 8px">
@@ -138,8 +137,8 @@
                             <label for="modify_gender" class="control-label">性别</label>
                                 <div class="col-sm-10">
                                     <select type="text" id="modify_gender" name="modify_gender" class="form-control">
-                                        <option value="1">男</option>
                                         <option value="0">女</option>
+                                        <option value="1" selected>男</option>
                                     </select>
                                 </div>
                             </div>
@@ -149,13 +148,14 @@
                             <label for="modify_company" class="control-label">公司</label>
                                 <div class="col-sm-10">
                                     <select type="text" id="modify_company" name="modify_company" class="form-control">
-                                        <option value="1">股份</option>
-                                        <option value="2">精一</option>
-                                        <option value="3">科威</option>
-                                        <option value="4">医疗</option>
-                                        <option value="5">柏克</option>
-                                        <option value="6">科技</option>
-                                        <option value="7">浙子</option>
+                                        <option value="0">股份</option>
+                                        <option value="1">精一</option>
+                                        <option value="2">科威</option>
+                                        <option value="3">医疗</option>
+                                        <option value="4">柏克</option>
+                                        <option value="5">科技</option>
+                                        <option value="6">浙子</option>
+                                        <option value="7" selected>所有</option>
                                     </select>
                                 </div>
                             </div>
@@ -181,9 +181,14 @@
                  <label for="role" class="control-label">角色</label>
                  <div class="col-sm-10">
                     <select type="text" id="modify_role" name="modify_role" class="form-control">
-                        {% for group in groups %}
-                        <option value="{{ group.id }}">{{ group.name }}</option>
-                        {% endfor %}
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7" selected>所有</option>
                     </select>
                  </div>
              </div>
@@ -208,12 +213,11 @@
                     </div>
 
                 </div>
-                <div class="col-sm-12" style="height: 20px;margin-top:8px">
-                    <input type="hidden" id="modify_id"/>
-                </div>
+                <div class="col-sm-12" style="height: 20px;margin-top:8px"></div>
                 <div class="modal-footer">
+
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" id="modify_it">确认</button>
+                    <button type="submit" class="btn btn-primary">确认</button>
                 </div>
             </form>
         </div><!-- /.modal-content -->
@@ -257,14 +261,14 @@
                  <label for="company" class="control-label">公司</label>
                  <div class="col-sm-10">
                     <select type="text" id="company" name="company" class="form-control">
-                        <option value="0" selected>所有</option>
-                        <option value="1">股份</option>
-                        <option value="2">精一</option>
-                        <option value="3">科威</option>
-                        <option value="4">医疗</option>
-                        <option value="5">柏克</option>
-                        <option value="6">科技</option>
-                        <option value="7">浙子</option>
+                        <option value="0">股份</option>
+                        <option value="1">精一</option>
+                        <option value="2">科威</option>
+                        <option value="3">医疗</option>
+                        <option value="4">柏克</option>
+                        <option value="5">科技</option>
+                        <option value="6">浙子</option>
+                        <option value="7" selected>所有</option>
                     </select>
                  </div>
              </div>
@@ -290,17 +294,21 @@
                  <label for="role" class="control-label">角色</label>
                  <div class="col-sm-10">
                     <select type="text" id="role" name="role" class="form-control">
-                        <option value="0" selected>所有</option>
-                        {% for group in groups %}
-                        <option value="{{ group.id }}">{{ group.name }}</option>
-                        {% endfor %}
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7" selected>所有</option>
                     </select>
                  </div>
              </div>
          </div>
          <div class="col-sm-4" style="height:60px">
             <div style="margin-top: 15px" class="col-sm-10">
-                <input type="button" id="search" name="search" value="查询"
+                <input type="submit" id="search" name="search" value="查询"
                        class="btn btn-large btn-primary btn-block">
              </div>
          </div>
@@ -324,7 +332,7 @@
             <div class="box-body">
               <table id="userInfo" class="table table-bordered table-hover" >
                 <thead>
-                <tr>
+                <tr >
                   <th style="text-align: center">用户名</th>
                   <th style="text-align: center">性别</th>
                   <th style="text-align: center">所属公司</th>
@@ -338,37 +346,36 @@
                   <th style="text-align: center">操作</th>
                 </tr>
                 </thead>
-                <tbody id="user_info_table">
+                <tbody>
                 {% for user in users %}
                 <tr style="text-align: center">
-                  <td id="username_{{ user.id }}">{{ user.username }}</td>
+                  <td>{{ user.username }}</td>
                     {% if user.gender %}
-                        <td id="gender_{{ user.id }}">男</td>
+                        <td>男</td>
                     {% else %}
-                        <td id="gender_{{ user.id }}">女</td>
+                        <td>女</td>
                     {% endif %}
-                  <td id="company_{{ user.id }}">{{ user.Company }}</td>
-                  <td id="department_{{ user.id }}">{{ user.department }}</td>
-                  <td id="position_{{ user.id }}">{{ user.position }}</td>
-                  <td id="group_{{ user.id }}">{{ user.group }}</td>
-                  <td id="phone_{{ user.id }}">{{ user.phone }}</td>
-                  <td id="email_{{ user.id }}">{{ user.email }}</td>
+                  <td>{{ user.Company }}</td>
+                  <td>{{ user.department }}</td>
+                  <td>{{ user.position }}</td>
+                  <td>{{ user.group }}</td>
+                  <td>{{ user.phone }}</td>
+                  <td>{{ user.email }}</td>
                   <td>{{ user.date_joined }}</td>
                     {% if user.is_active %}
-                        <td id="active_{{ user.id }}">正在使用</td>
+                        <td>正在使用</td>
                     {% else %}
-                        <td id="active_{{ user.id }}">已停用</td>
+                        <td>已停用</td>
                     {% endif %}
                   <td>
-                      <button type="button"class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"
-                              onclick="goModify('{{ user.id }}')">修改</button>
+                      <button type="button"class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify">修改</button>
                       {% if user.is_active %}
-                          <button type="button"class="btn btn-info btn-sm" onclick="changeUse('{{ user.id }}')" id="change_{{ user.id }}">停用</button>
+                          <button type="button"class="btn btn-info btn-sm" >停用</button>
                       {% else %}
-                          <button type="button"class="btn  btn-info btn-sm" onclick="changeUse('{{ user.id }}')" id="change_{{ user.id }}">启用</button>
+                          <button type="button"class="btn  btn-info btn-sm" >启用</button>
                       {% endif %}
                       <button type="button" class="btn  btn-danger btn-sm" data-toggle="modal"
-                              data-target="#delete" onclick="goDelete('{% url "delete_user"  user.id %}','{{ user.id }}')">删除</button>
+                              data-target="#delete" onclick="goDelete('{% url "delete_user"  user.id %}', '{{ user.username }}')">删除</button>
                   </td>
                 </tr>
                 {% endfor %}
@@ -421,159 +428,13 @@
           </div>
     </div>
 </div>
-<script src="/static/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script>
-    function goDelete(text,id){
-        console.log(text)
+    function goDelete(text,name)
+    {
         $('#a_delete').attr('href',text)
-        $('#s_delete').html($('#username_'+id).html())
+        $('#s_delete').html(name)
+        console.log(text)
     }
-    function changeUse(id){
-        $.ajax({
-            url:'active',
-            type:'get',
-            data:{
-                "active_id":id
-            },
-            success:function(res) {
-                if(res.active===false){
-                    $('#active_'+id).html("已停用")
-                    $('#change_'+id).html("启用")
-                }
-                else if(res.active===true){
-                    $('#active_'+id).html("正在使用")
-                    $('#change_'+id).html("停用")
-                }
-
-            },
-            error:function(res){}
-        })
-    }
-    function goModify(id){
-
-        $('#modify_id').val(id)
-        $('#modify_name').val($('#username_'+id).html())
-        $('#modify_department').val($('#department_'+id).html())
-        $('#modify_position').val($('#position_'+id).html())
-        $('#modify_phone').val($('#phone_'+id).html())
-        $('#modify_email').val($('#email_'+id).html())
-        var opt_gender = document.getElementById("modify_gender")
-        for(var i=0;i<opt_gender.options.length;i++)
-        {
-            if($('#gender_'+id).html()===opt_gender.options[i].innerHTML)
-                opt_gender.options[i].selected = "selected"
-        }
-        var opt_com = document.getElementById("modify_company")
-        for(var i=0;i<opt_com.options.length;i++)
-        {
-            if($('#company_'+id).html()===opt_com.options[i].innerHTML)
-                opt_com.options[i].selected = "selected"
-        }
-        var opt_role = document.getElementById("modify_role")
-        for(var i=0;i<opt_role.options.length;i++)
-        {
-            if($('#group_'+id).html()===opt_role.options[i].innerHTML)
-                opt_role.options[i].selected="selected"
-        }
-    }
-    $('#modify_it').click(function(){
-          var data = {
-              'id': $("#modify_id").val(),
-              'username': $('#modify_name').val(),
-              'gender': $("#modify_gender").val(),
-              'uCompany': $("#modify_company").val(),
-              'department': $('#modify_department').val(),
-              'position': $('#modify_position').val(),
-              'role': $('#modify_role').val(),
-              'phone': $('#modify_phone').val(),
-              'email': $('#modify_email').val(),
-              'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
-          }
-        $.ajax({
-            url:'modify/',
-            type:'POST',
-            data:data,
-            async:true,
-            success:function(res){
-                console.log(res)
-                $('#modify').modal('hide')
-                var id = data.id
-                $('#username_'+id).html(res.username)
-                if(res.gender===1)
-                    $('#gender_'+id).html('男')
-                else
-                    $('#gender_'+id).html('女')
-                $('#company_'+id).html(res.Company)
-                $('#department_'+id).html(res.department)
-                $('#position_'+id).html(res.position)
-                $('#group_'+id).html(res.group)
-                $('#phone_'+id).html(res.phone)
-                $('#email_'+id).html(res.email)
-            },
-            error:function(){
-                console.log("出现错误!!")
-            }
-        });
-        return false;
-      })
-    $('#search').click(function(){
-        var data = {
-            'username':$('#name').val(),
-            'uCompany':$('#company').val(),
-            'department':$('#department').val(),
-            'position':$('#position').val(),
-            'group':$('#role').val(),
-            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
-        }
-        $.ajax({
-            url:'search/',
-            data:data,
-            type:'post',
-            async:true,
-            success:function(res){
-                console.log(res.users)
-                $('#user_info_table').html("")
-               res.users.forEach(function(value){
-                   var deleteUrl ="/user/page_user_management/delete/"+value.id+"/"
-                   console.log(deleteUrl)
-                   var usernameString = '<td id="username_' + value.id + '">'+value.username+'</td>'
-                   var genderString
-                   if(value.gender ===1)
-                       genderString = '<td id="gender_'+ value.id + '">' +'男</td>'
-                   else
-                       genderString = '<td id="gender_'+ value.id + '">' +'女</td>'
-                   var companyString ='<td id="company_' + value.id + '">'+value.Company+'</td>'
-                   var departString = '<td id="department_' + value.id + '">'+value.department+'</td>'
-                   var positionString = '<td id="position_' + value.id + '">'+value.position+'</td>'
-                   var groupString = '<td id="group_' + value.id + '">'+value.group+'</td>'
-                   var phoneString = '<td id="phone_' + value.id + '">'+value.phone+'</td>'
-                   var emailString = '<td id="email_' + value.id + '">'+value.email+'</td>'
-                   var dateString = '<td>'+value.date_joined+'</td>'
-                   var activeString
-                   var useString
-                   if(value.is_active===true){
-                       activeString = '<td id="active_'+value.id+'">'+'正在使用</td>'
-                       useString = '<button type="button"class="btn btn-info btn-sm" onclick="changeUse('
-                       +value.id+')" id="change_'+value.id+'">停用</button>'
-                   }
-                   else{
-                       activeString = '<td id="active_'+value.id+'">'+'已停用</td>'
-                       useString = '<button type="button"class="btn btn-info btn-sm" onclick="changeUse('
-                       +value.id+')" id="change_'+value.id+'">启用</button>'
-                   }
-                   var modifyString = '<button type="button"class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"'
-                        +'onclick="goModify('+value.id + ')">修改</button>'
-                   var deleteString = '<button type="button" class="btn  btn-danger btn-sm" data-toggle="modal" data-target="#delete"'
-                        +'onclick="goDelete('+"'"+deleteUrl+"'"+ ","+value.id +')">删除</button>'
-                   $('#user_info_table').append('<tr style="text-align: center">' + usernameString + genderString +
-                       companyString + departString + positionString + groupString + phoneString + emailString +dateString+activeString
-                       + '<td>'+ modifyString + useString + deleteString + '</td></tr>')
-
-                })
-            },
-            error:function(){}
-        })
-    })
 </script>
 {% endblock %}
 
@@ -581,6 +442,7 @@
     <!-- Morris.js charts -->
     <script src="/static/js/raphael/raphael-min.js"></script>
     <script src="/static/plugins/morris/morris.min.js"></script>
+
     <script src="/static/plugins/jquery.blockui.min.js"></script>
     <script src="/static/plugins/datatables/jquery.dataTables.js"></script>
     <script src="/static/plugins/datatables/dataTables.bootstrap.min.js"></script>
