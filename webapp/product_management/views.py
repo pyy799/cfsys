@@ -178,14 +178,15 @@ def upload_many(request):
 def edit_product(request, pid, template_name):
     # 新建/修改产品页面
     pid = int(pid)
-    if pid != 0 :
+    product_value = None
+    if pid != 0:
         try:
             product = Product.objects.get(id=pid)
+            product_value = product.pack_data()
         except Exception as e:
             # log.log_error("审批通过：找不到合同！\n%s" % e)
             return ajax_error("审批失败!")
-
-    page_dict = {"pid": pid}
+    page_dict = {"pid": pid, "product": product_value}
     return render(request, template_name, page_dict)
 
 
@@ -285,6 +286,7 @@ def delete_file(request, file_name):
         product.real_name = None
         product.save()
     return HttpResponseRedirect("/product_management/page_new_product/")
+
 
 @csrf_exempt
 @login_required
