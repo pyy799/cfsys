@@ -9,7 +9,7 @@ COMPANY_CHOICE = (
     (Company.JING_YI, "精一"),
     (Company.KE_WEI, "科威"),
     (Company.YI_LIAO, "医疗"),
-    (Company.BO_KE, " 柏克"),
+    (Company.BO_KE, "柏克"),
     (Company.KE_JI, "科技"),
     (Company.ZHE_ZI, "浙子")
 )
