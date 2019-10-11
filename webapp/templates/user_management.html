@@ -23,7 +23,6 @@
                 <div class="modal-form" style="margin-top: 0">
                     <div class="col-sm-6" style=";height:45px;text-align:center">
                         <div style="margin-top: 8px">
-                        <div class="col-sm-10">
                             <label for="add_name" class="control-label">用户</label>
                             <div class="col-sm-10">
                                 <input type="text" id="add_name" name="add_name"
@@ -425,7 +424,6 @@
 <script src="/static/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script>
     function goDelete(text,id){
-        console.log(text)
         $('#a_delete').attr('href',text)
         $('#s_delete').html($('#username_'+id).html())
     }
@@ -535,8 +533,7 @@
                 console.log(res.users)
                 $('#user_info_table').html("")
                res.users.forEach(function(value){
-                   var deleteUrl ="/user/page_user_management/delete/"+value.id+"/"
-                   console.log(deleteUrl)
+                   var deleteUrl = '/user/page_user_management/delete/'+value.id+'/'
                    var usernameString = '<td id="username_' + value.id + '">'+value.username+'</td>'
                    var genderString
                    if(value.gender ===1)
@@ -564,8 +561,9 @@
                    }
                    var modifyString = '<button type="button"class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"'
                         +'onclick="goModify('+value.id + ')">修改</button>'
-                   var deleteString = '<button type="button" class="btn  btn-danger btn-sm" data-toggle="modal" data-target="#delete"'
-                        +'onclick="goDelete('+"'"+deleteUrl+"'"+ ","+value.id +')">删除</button>'
+                   var deleteString = '<button type="button" class="btn  btn-danger btn-sm" data-toggle="modal"'+'data-target="#delete" onclick="goDelete('
+                       +"'"+deleteUrl+"'"+','+value.id
+                            +')">删除</button>'
                    $('#user_info_table').append('<tr style="text-align: center">' + usernameString + genderString +
                        companyString + departString + positionString + groupString + phoneString + emailString +dateString+activeString
                        + '<td>'+ modifyString + useString + deleteString + '</td></tr>')
