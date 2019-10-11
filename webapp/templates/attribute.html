@@ -11,7 +11,7 @@
 
 
 {% block content %}
-    <div class="box box-solid" id="tablebox" style="padding-left: 100px">
+    <div class="box box-solid" id="tablebox" style="padding-left: 20px">
         <div class="box-header with-border">
             <h3>属性管理</h3>
         </div>
@@ -26,6 +26,7 @@
             </ul>
             <div style="clear:both"></div>
             <div class="tab-content">
+
                 <div class="table-container no-padding tab-pane active" id="M" style="padding:14px">
                     <div class="table-actions-wrapper">
 
@@ -298,7 +299,6 @@
                     </div>
                 </div>
 
-
                 <div class="modal fade" id="attribute-edit" role="dialog" aria-labelledby="addLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -306,46 +306,50 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
                                 <h4 class="modal-title" id="addLabel" style="font-weight:bold">修改属性（带有<span style="color:red">*</span>标识的为必填项）</h4>
                             </div>
+                            <div class="modal-body">
+                                <div class="box box-primary">
+                                    <br>
                             <form style=";float:none" class="form-horizontal" method="post" action="">
                                 {% csrf_token %}
-                                <div class="modal-form" style="margin-top: 0">
-                                    <div class="col-sm-6" style=";height:45px;width:620px;text-align:center">
-                                        <div style="margin-top: 8px">
-                                            <div class="col-sm-10">
-                                                <input type="text" id="attr_edit" name="attr_edit" placeholder="请输入属性" class="form-control">
-                                            </div>
-                                            <label for="attr_edit" class="control-label"><span style="color:red">*</span>属性</label>
+                                <div class="form-group" style="margin-top: 0">
+
+                                    <div class="col-sm-6" style=";height:45px;width:600px">
+                                        <div class="col-sm-2" style="text-align: left">
+                                            <label for="attr_edit" class="control-label">属性<span style="color:red">*</span></label>
+                                        </div>
+                                        <div class="col-sm-10" style="text-align: right">
+                                            <input type="text" id="attr_edit" name="attr_edit" placeholder="请输入属性" class="form-control">
                                         </div>
                                     </div>
 
-                                    <div class="col-sm-6" style="height:45px;width:620px;text-align: center">
-                                        <div style="margin-top: 8px">
-                                            <div class="col-sm-10">
+                                    <div class="col-sm-6" style="height:45px;width:600px">
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="meaning_edit" class="control-label">含义<span style="color:red">*</span></label>
+                                            </div>
+                                            <div class="col-sm-10" style="text-align: right">
                                                 <input type="text"  id="meaning_edit" name="meaning_edit" class="form-control" value="" placeholder="请输入含义">
                                             </div>
-                                            <label for="meaning_edit" class="control-label"><span style="color:red">*</span>含义</label>
-                                        </div>
                                     </div>
 
 
-                                    <div class="col-sm-6" style="height:45px;width:620px;text-align: center">
-                                        <div style="margin-top: 8px">
-
-                                            <div class="col-sm-10">
+                                    <div class="col-sm-6" style="height:45px;width:600px;text-align: center">
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="information_edit" class="control-label">备注</label>
+                                            </div>
+                                            <div class="col-sm-10" style="text-align: right">
                                                 <textarea   id="information_edit" name="information_edit" class="form-control" value="" placeholder="请输入备注"></textarea>
                                             </div>
-                                            <label for="information_edit" class="control-label">备注</label>
-                                        </div>
                                     </div>
 
                                 </div>
 
-                                <div class="col-sm-12" style="height: 20px;margin-top:8px"></div>
-                                <div class="modal-footer">
+                                <div class="modal-footer" style="text-align: center">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                                     <button type="submit" class="btn btn-primary">确认</button>
                                 </div>
                             </form>
+                                </div>
+                            </div>
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal -->
                 </div>
@@ -357,122 +361,67 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
                                 <h4 class="modal-title" id="addLabel" style="font-weight:bold">修改分类（带有<span style="color:red">*</span>标识的为必填项）</h4>
                             </div>
+                            <div class="modal-body">
+                                <div class="box box-primary">
+                                    <br>
                             <form style=";float:none" class="form-horizontal" method="post" action="">
                                 {% csrf_token %}
-                                <div class="modal-form" style="margin-top: 0">
-                                    <div class="col-sm-6" style=";height:45px;width:620px;text-align:center">
-                                        <div style="margin-top: 8px">
-                                            <label for="attr_edit" class="control-label"><span style="color:red">*</span>属性</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" id="attr_edit" name="attr_edit" placeholder="请输入属性" class="form-control">
+                                <div class="form-group" style="margin-top: 0">
+                                    <div class="col-sm-10" style=";height:45px;width:600px">
+
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="attribute_edit" class="control-label">属性<span style="color:red">*</span></label>
                                             </div>
+                                            <div class="col-sm-10" style="text-align: right">
+                                                <input type="text" id="attribute_edit" name="attribute_edit" placeholder="请输入属性" class="form-control" required/>
+                                            </div>
+
+                                    </div>
+                                     <div class="col-sm-10" style=";height:45px;width:600px">
+
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="first_class_edit" class="control-label">大类<span style="color:red">*</span></label>
+                                            </div>
+                                            <div class="col-sm-10" style="text-align: right">
+                                                <input type="text" id="first_class_edit" name="first_class_edit" placeholder="请输入大类" class="form-control" required/>
+
                                         </div>
                                     </div>
-                                     <div class="col-sm-6" style=";height:45px;width:620px;text-align:center">
-                                        <div style="margin-top: 8px">
-                                            <label for="first_edit" class="control-label"><span style="color:red">*</span>大类</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" id="first_edit" name="first_edit" placeholder="请输入大类" class="form-control">
+                                     <div class="col-sm-10" style=";height:45px;width:600px">
+
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="second_class_edit" class="control-label">小类</label>
                                             </div>
-                                        </div>
-                                    </div>
-                                     <div class="col-sm-6" style=";height:45px;width:620px;text-align:center">
-                                        <div style="margin-top: 8px">
-                                            <label for="second_edit" class="control-label">小类</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" id="first_edit" name="first_edit" placeholder="请输入小类" class="form-control">
+                                            <div class="col-sm-10" style="text-align: right">
+                                                <input type="text" id="second_class_edit" name="second_class_edit" placeholder="请输入小类" class="form-control">
                                             </div>
-                                        </div>
+
                                     </div>
 
-                                    <div class="col-sm-6" style="height:45px;width:620px;text-align: center">
-                                        <div style="margin-top: 8px">
-                                            <label for="meaning_edit" class="control-label"><span style="color:red">*</span>含义</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" id="meaning_edit" name="meaning_edit" class="form-control" value="" placeholder="请输入含义">
+                                    <div class="col-sm-10" style="height:45px;width:600px">
+
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="meaning_edit" class="control-label">含义<span style="color:red">*</span></label>
                                             </div>
-                                        </div>
+                                            <div class="col-sm-10" style="text-align: right">
+                                                <input type="text" id="meaning_edit" name="meaning_edit" class="form-control" value="" placeholder="请输入含义" required/>
+                                            </div>
+
                                     </div>
 
-                                    <div class="col-sm-6" style="height:45px;width:620px;text-align: center">
-                                        <div style="margin-top: 8px">
-                                            <div class="col-sm-10">
+                                    <div class="col-sm-10" style="height:45px;width:600px">
+                                            <div class="col-sm-2" style="text-align: left">
+                                            <label for="information_edit" class="control-label">备注</label>
+                                            </div>
+                                            <div class="col-sm-10" style="text-align: right">
                                                 <textarea   id="information_edit" name="information_edit" class="form-control" value="" placeholder="请输入备注"></textarea>
                                             </div>
-                                            <label for="information_edit" class="control-label">备注</label>
-                                        </div>
                                     </div>
 
                                 </div>
 
-                                <div class="col-sm-12" style="height: 20px;margin-top:8px" id="err_message"></div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                                    <button type="submit" class="btn btn-primary">确认</button>
-                                </div>
-                            </form>
-                        </div><!-- /.modal-content -->
-                    </div><!-- /.modal -->
-                </div>
 
-                <div class="modal fade" id="class-add" role="dialog" aria-labelledby="addLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
-                                <h4 class="modal-title" id="addLabel" style="font-weight:bold">增加分类（带有<span style="color:red">*</span>标识的为必填项）</h4>
-                            </div>
-                            <div class="modal-body">
-                            <form style=";float:none" class="form-horizontal" method="post" action="">
-                                {% csrf_token %}
-                                <div class="modal-form" style="margin-top: 0">
-                                    <div class="col-sm-6" style=";height:45px;width:620px;text-align:center">
-                                        <div style="margin-top: 8px">
-                                            <label for="attribute_add" class="control-label"><span style="color:red">*</span>属性</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" id="attribute_add" name="attribute_add" placeholder="请输入属性" class="form-control" required/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                     <div class="col-sm-6" style=";height:45px;width:620px;text-align:center">
-                                        <div style="margin-top: 8px">
-                                            <label for="first_class_add" class="control-label"><span style="color:red">*</span>大类</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" id="first_class_add" name="first_class_add" placeholder="请输入大类" class="form-control" required/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                     <div class="col-sm-6" style=";height:45px;width:620px;text-align:center">
-                                        <div style="margin-top: 8px">
-                                            <label for="second_class_add" class="control-label">小类</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" id="second_class_add" name="second_class_add" placeholder="请输入小类" class="form-control">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6" style="height:45px;width:620px;text-align: center">
-                                        <div style="margin-top: 8px">
-                                            <label for="meaning_add" class="control-label"><span style="color:red">*</span>含义</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" id="meaning_add" name="meaning_add" class="form-control" value="" placeholder="请输入含义" required/>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6" style="height:45px;width:620px;text-align: center">
-                                        <div style="margin-top: 8px">
-                                            <div class="col-sm-10">
-                                                <textarea   id="information_add" name="information_add" class="form-control" value="" placeholder="请输入备注"></textarea>
-                                            </div>
-                                            <label for="information_add" class="control-label">备注</label>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="col-sm-12" style="height: 20px;margin-top:8px" id="err_message"></div>
-                                <div class="modal-footer">
+                                <div class="modal-footer" style="text-align: center">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                                     <button type="submit" class="btn btn-primary">确认</button>
                                 </div>
@@ -494,6 +443,102 @@
 {#                                    </div>#}
 {#                                {% endif %}#}
                             </form>
+                                </div>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal -->
+                </div>
+
+                <div class="modal fade" id="class-add" role="dialog" aria-labelledby="addLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+                                <h4 class="modal-title" id="addLabel" style="font-weight:bold">增加分类（带有<span style="color:red">*</span>标识的为必填项）</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="box box-primary">
+                                    <br>
+                            <form style=";float:none" class="form-horizontal" method="post" action="">
+                                {% csrf_token %}
+                                <div class="form-group" style="margin-top: 0">
+                                    <div class="col-sm-10" style=";height:45px;width:600px">
+
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="attribute_add" class="control-label">属性<span style="color:red">*</span></label>
+                                            </div>
+                                            <div class="col-sm-10" style="text-align: right">
+                                                <input type="text" id="attribute_add" name="attribute_add" placeholder="请输入属性" class="form-control" required/>
+                                            </div>
+
+                                    </div>
+                                     <div class="col-sm-10" style=";height:45px;width:600px">
+
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="first_class_add" class="control-label">大类<span style="color:red">*</span></label>
+                                            </div>
+                                            <div class="col-sm-10" style="text-align: right">
+                                                <input type="text" id="first_class_add" name="first_class_add" placeholder="请输入大类" class="form-control" required/>
+
+                                        </div>
+                                    </div>
+                                     <div class="col-sm-10" style=";height:45px;width:600px">
+
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="second_class_add" class="control-label">小类</label>
+                                            </div>
+                                            <div class="col-sm-10" style="text-align: right">
+                                                <input type="text" id="second_class_add" name="second_class_add" placeholder="请输入小类" class="form-control">
+                                            </div>
+
+                                    </div>
+
+                                    <div class="col-sm-10" style="height:45px;width:600px">
+
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="meaning_add" class="control-label">含义<span style="color:red">*</span></label>
+                                            </div>
+                                            <div class="col-sm-10" style="text-align: right">
+                                                <input type="text" id="meaning_add" name="meaning_add" class="form-control" value="" placeholder="请输入含义" required/>
+                                            </div>
+
+                                    </div>
+
+                                    <div class="col-sm-10" style="height:45px;width:600px">
+                                            <div class="col-sm-2" style="text-align: left">
+                                            <label for="information_add" class="control-label">备注</label>
+                                            </div>
+                                            <div class="col-sm-10" style="text-align: right">
+                                                <textarea   id="information_add" name="information_add" class="form-control" value="" placeholder="请输入备注"></textarea>
+                                            </div>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="modal-footer" style="text-align: center">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                    <button type="submit" class="btn btn-primary">确认</button>
+                                </div>
+{#                                {% if result.statu == 'success' %}#}
+{#                                    <div class="modal fade" role="dialog" aria-labelledby="addLabel" aria-hidden="true">#}
+{#                                    <div class="modal-dialog">#}
+{#                                        <div class="modal-content">#}
+{#                                            <p style="color: #00a65a">增加成功</p>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                    </div>#}
+{#                                {% elif result.statu == 'error' %}#}
+{#                                    <div class="modal fade" role="dialog" aria-labelledby="addLabel" aria-hidden="true">#}
+{#                                    <div class="modal-dialog">#}
+{#                                        <div class="modal-content">#}
+{#                                            <p style="color: #00a65a">请添加正确信息</p>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                    </div>#}
+{#                                {% endif %}#}
+                            </form>
+                                </div>
                             </div>
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal -->

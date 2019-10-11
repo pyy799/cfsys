@@ -19,6 +19,12 @@ from django.shortcuts import render
 from webapp.models import *
 from webapp.upattribute import import_attribute
 
+from django.contrib.auth.decorators import login_required
+from webapp.shortcuts.decorator import permission_required
+
+# 增加大小类、属性列表显示
+@login_required
+@permission_required('webapp.product_attribute_management')
 def index(request,template_name):
     # attibute_list = Attribute
     # t = Attribute
@@ -55,8 +61,16 @@ def index(request,template_name):
 
 
 
-def jump(request, template_name):
+def jump(request,template_name):
     return render(request, template_name)
+
+# 修改大小类
+def edit_attr(request):
+    return render(request)
+
+#删除属性
+def del_class(request):
+    return render(request)
 
 # @csrf_exempt
 # def attribute_infor(request):
