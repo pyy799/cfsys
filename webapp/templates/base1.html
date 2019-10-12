@@ -38,7 +38,13 @@
 
     {% block header_js %}
     {% endblock %}
-
+    <style>
+        .like{
+            color: #fff;
+            padding: 15px 15px;
+            display: block;
+        }
+    </style>
 </head>
 <body class="hold-transition skin-blue layout-top-nav">
 <div class="wrapper">
@@ -46,50 +52,61 @@
     <header class="main-header">
         <nav class="navbar navbar-static-top" role="navigation">
             <div class="container-fluid">
-
-                <div class="navbar-header" style="margin-left:30px; margin-right:20px ">
+                <div class="navbar-header" style="margin-left:50px; margin-right:50px ">
+                    <div class="navbar-header" style="margin-right:20px ">
                     <a href="/"> <img src="/static/dist/img/home/cf.png" style="width: 45px;height: 45px"></a>
-                </div>
-
-                  <div class="navbar-header" style="margin-left:0px; margin-right:50px ">
+                    </div>
                     <a href="/" class="navbar-brand"><b>产品管理系统</b></a>
-                  </div>
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#navbar-collapse">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li><a href="/">首页</a></li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">信息查询及能力展示<span
-                                    class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">信息查询及能力展示<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="{% url 'page_search_product' %}">产品信息查询</a></li>
                                 <li><a href="{% url 'page_show_product' %}">产品能力展示</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">产品信息管理<span
-                                    class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">产品信息管理<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="{% url 'page_new_product' %}">新建及更新产品</a></li>
                                 <li><a href="{% url 'page_pass_product' %}">产品审核</a></li>
                                 <li><a href="{% url 'page_table' %}">产品属性化分类表</a></li>
                             </ul>
                         </li>
-                        <li><a href="{% url 'page_attribute' %}">产品属性管理</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">用户及权限管理<span
-                                    class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="{% url 'page_user_management' %}">用户管理</a></li>
-                                <li><a href="{% url 'page_role_management' %}">角色权限管理</a></li>
-                            </ul>
-                        </li>
-                    </ul>
+                    <li><a href="{% url 'page_attribute' %}">产品属性管理</a></li>
+                    {% if perms.webapp.user_right_management_user or perms.webapp.user_right_management_role %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">用户及权限管理<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            {% if perms.webapp.user_right_management_user %}
+                            <li><a href="{% url 'page_user_management' %}">用户管理</a></li>
+                            {% endif %}
+                            {% if perms.webapp.user_right_management_role %}
+                            <li><a href="{% url 'page_role_management' %}">角色权限管理</a></li>
+                            {% endif %}
+                         </ul>
+                    </li>
+                {% endif %}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+          {% if not request.user.is_authenticated %}
+              <li><span class="like">欢迎,游客朋友!</span></li>
+              <li><a href="{% url 'login' %}">您尚未登陆,请登陆</a></li>
+          {% else %}
+              <li><span class="like">欢迎,{{ request.user }}&nbsp;!</span></li>
+              <li><a href="{% url 'logout' %}">退出登陆</a></li>
+          {% endif %}
+      </ul>
 
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#">{{ request.user }}</a></li>
-                    </ul>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>

@@ -69,7 +69,8 @@ def edit_attr(request):
     return render(request)
 
 #删除属性
-def del_class(request):
+def del_class(request,delete_id):
+    # Attribute.objects.filter(id=delete_id).delete()
     return render(request)
 
 # @csrf_exempt

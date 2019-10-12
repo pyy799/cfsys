@@ -51,7 +51,7 @@
                                             </tr>
                                         {% endif %}
                                     {% endfor %}
-                                    <button class="btn btn-sm pull-right green" style="height: 30px" data-toggle="modal" data-target="#attribute-edit"><i class="fa fa-edit"></i> 修改属性</button>
+                                    <button class="btn btn-sm pull-right green" style="height: 30px" data-toggle="modal" data-target="#attribute-edit"><i class="fa fa-edit"></i> 修改</button>
                                     </tbody>
                                 </table>
 
@@ -285,8 +285,8 @@
                                                 <td>{{ attr.meaning }}</td>
                                                 <td>{{ attr.information }}</td>
                                                 <td>
-                                                    <button type="button"class="btn  btn-success btn-sm green" data-toggle="modal" data-target="#class-edit">修改</button>
-                                                    <button type="button" class="btn  btn-danger btn-sm red" data-toggle="modal" data-target="#class-delete" >删除</button>
+                                                    <button type="button"class="btn  btn-success btn-sm green" data-toggle="modal" data-target="#second-class-edit">修改</button>
+                                                    <button type="button" class="btn  btn-danger btn-sm red" data-toggle="modal" data-target="#class-delete">删除</button>
                                                 </td>
                                             </tr>
                                         {% endif %}
@@ -304,7 +304,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
-                                <h4 class="modal-title" id="addLabel" style="font-weight:bold">修改属性（带有<span style="color:red">*</span>标识的为必填项）</h4>
+                                <h4 class="modal-title" id="addLabel" style="font-weight:bold">修改备注（带有<span style="color:red">*</span>标识的为必填项）</h4>
                             </div>
                             <div class="modal-body">
                                 <div class="box box-primary">
@@ -312,26 +312,6 @@
                             <form style=";float:none" class="form-horizontal" method="post" action="">
                                 {% csrf_token %}
                                 <div class="form-group" style="margin-top: 0">
-
-                                    <div class="col-sm-6" style=";height:45px;width:600px">
-                                        <div class="col-sm-2" style="text-align: left">
-                                            <label for="attr_edit" class="control-label">属性<span style="color:red">*</span></label>
-                                        </div>
-                                        <div class="col-sm-10" style="text-align: right">
-                                            <input type="text" id="attr_edit" name="attr_edit" placeholder="请输入属性" class="form-control">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6" style="height:45px;width:600px">
-                                            <div class="col-sm-2" style="text-align: left">
-                                                <label for="meaning_edit" class="control-label">含义<span style="color:red">*</span></label>
-                                            </div>
-                                            <div class="col-sm-10" style="text-align: right">
-                                                <input type="text"  id="meaning_edit" name="meaning_edit" class="form-control" value="" placeholder="请输入含义">
-                                            </div>
-                                    </div>
-
-
                                     <div class="col-sm-6" style="height:45px;width:600px;text-align: center">
                                             <div class="col-sm-2" style="text-align: left">
                                                 <label for="information_edit" class="control-label">备注</label>
@@ -340,7 +320,6 @@
                                                 <textarea   id="information_edit" name="information_edit" class="form-control" value="" placeholder="请输入备注"></textarea>
                                             </div>
                                     </div>
-
                                 </div>
 
                                 <div class="modal-footer" style="text-align: center">
@@ -372,8 +351,13 @@
                                             <div class="col-sm-2" style="text-align: left">
                                                 <label for="attribute_edit" class="control-label">属性<span style="color:red">*</span></label>
                                             </div>
-                                            <div class="col-sm-10" style="text-align: right">
-                                                <input type="text" id="attribute_edit" name="attribute_edit" placeholder="请输入属性" class="form-control" required/>
+                                             <div class="col-sm-10">
+                                                <select type="text" id="add_gender" name="add_gender" class="form-control">
+                                                    <option value="1">M</option>
+                                                    <option value="2">I</option>
+                                                    <option value="3">B</option>
+                                                    <option value="4">T</option>
+                                                </select>
                                             </div>
 
                                     </div>
@@ -462,13 +446,17 @@
                             <form style=";float:none" class="form-horizontal" method="post" action="">
                                 {% csrf_token %}
                                 <div class="form-group" style="margin-top: 0">
-                                    <div class="col-sm-10" style=";height:45px;width:600px">
-
+                                    <div class="col-sm-10" style="height:45px;width:600px">
                                             <div class="col-sm-2" style="text-align: left">
                                                 <label for="attribute_add" class="control-label">属性<span style="color:red">*</span></label>
                                             </div>
-                                            <div class="col-sm-10" style="text-align: right">
-                                                <input type="text" id="attribute_add" name="attribute_add" placeholder="请输入属性" class="form-control" required/>
+                                            <div class="col-sm-10">
+                                                <select type="text" id="add_gender" name="add_gender" class="form-control">
+                                                    <option value="1">M</option>
+                                                    <option value="2">I</option>
+                                                    <option value="3">B</option>
+                                                    <option value="4">T</option>
+                                                </select>
                                             </div>
 
                                     </div>
@@ -549,15 +537,11 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" style="color:green" data-dismiss="modal" aria-hidden="false"></button>
-                                <h4 class="modal-title" id="addLabel" style="font-weight:bold">删除警告</h4>
+                                <h4 class="modal-title" id="addLabel" style="font-weight:bold;color: red">删除警告</h4>
                             </div>
                             <form style=";float:none" class="form-horizontal" method="post" action="">
                                 {% csrf_token %}
-                                <div class="modal-form" style="margin-top: 0">
-
-
-
-                                </div>
+                                <div class="modal-form" style="text-align: center;height:45px">此属性关联产品共有<span id="s_delete"></span>条，请先修改产品信息！</div>
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-primary">确认</button>
                                 </div>
@@ -565,7 +549,8 @@
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal -->
                 </div>
-{#                结束#}
+
+                {#                结束#}
             </div>
         </div>
         </div>
@@ -583,5 +568,12 @@
     <script src="/static/js/table-ext.js"></script>
     <script src="/static/js/datatable.js"></script>
     <script src="/static/js/jPages.js"></script>
+
+    <script>
+    function classDelete(text,id){
+        $('#a_delete').attr('href',text)
+        $('#s_delete').html($('#attribute_id_'+id).html())
+    }
+    </script>
 
 {% endblock %}
