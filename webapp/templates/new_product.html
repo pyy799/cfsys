@@ -162,8 +162,8 @@
                         <tbody></tbody>
                     </table>
                     <div>
-                    待提交文件：
-                    {% if file_names != "[]" %}
+
+                    {% if file_names %}待提交文件：
                         {% for s in file_names %}
                             <a href="/product_management/wait_submit/delete_file/{{ s.1 }}/"
                              class="btn btn-default" type="button"> {{ s.0 }}<i class="fa fa-times"></i></a>

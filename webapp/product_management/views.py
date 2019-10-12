@@ -34,8 +34,8 @@ def page_new_product(request, template_name):
     if os.path.exists(PRODUCT_TEMP_ZIP_PATH):
         files = os.listdir(PRODUCT_TEMP_ZIP_PATH)
         for i in files:
-            if re.search(user.username, i) and i.split('.')[0]:
-                file_names.append([i.split('_')[0], i.split('.')[0]])
+            if re.search(user.username, i) and os.path.splitext(i)[0]:
+                file_names.append([i.split('_')[0], os.path.splitext(i)[0].split('_')[-2]+"_"+os.path.splitext(i)[0].split('_')[-1]])
     template_file = "template.xlsx"
     download_path_excel = os.path.join(FILES_PATH, template_file)
     company_choice = COMPANY_CHOICE
@@ -72,8 +72,9 @@ def upload_many(request):
         return ajax_error("上传失败")
     zip = request.FILES.get("zip", None)  # 获取上传的文件，如果没有文件，则默认为None
     save_name = os.path.splitext(zip.name)[0] + '_' + user.username + '_' + str(now)
+    print(save_name)
     save_zip = os.path.splitext(zip.name)[1]
-    zip_file_name = save_name+'.'+save_zip
+    zip_file_name = save_name+save_zip
     path = PRODUCT_TEMP_ZIP_PATH
     if not os.path.exists(path):
         os.makedirs(path)
@@ -84,7 +85,7 @@ def upload_many(request):
 
     excel = request.FILES.get("excel", None)  # 获取上传的文件，如果没有文件，则默认为None
     save_excel = os.path.splitext(excel.name)[1]
-    excel_file_name = save_name+'.'+save_excel
+    excel_file_name = save_name+save_excel
     path = os.path.join(PRODUCT_TEMP_EXCEL_PATH)
     if not os.path.exists(path):
         os.makedirs(path)
@@ -179,15 +180,129 @@ def edit_product(request, pid, template_name):
     # 新建/修改产品页面
     pid = int(pid)
     product_value = None
+    file_name = []
     if pid != 0:
         try:
             product = Product.objects.get(id=pid)
             product_value = product.pack_data()
+            # save_name = os.path.splitext(product.save_name)[0]
+            # save_name = save_name.split('_')[-2] + "_" + save_name.split('_')[-1]
+            real_name = product.real_name
+            file_name = real_name
         except Exception as e:
             # log.log_error("审批通过：找不到合同！\n%s" % e)
             return ajax_error("审批失败!")
-    page_dict = {"pid": pid, "product": product_value}
+    page_dict = {"pid": pid, "product": product_value, "file_name": file_name}
     return render(request, template_name, page_dict)
+
+
+@login_required
+@permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
+def edit_upload_file(request, pid):
+    # 编辑产品页面上传文件
+    user = request.user.userprofile
+    now = int(time.time())
+    pid = int(pid)
+    if pid != 0:
+        product = Product.objects.get(id=pid)
+        if request.method != "POST":
+            return ajax_error("上传失败")
+        zip = request.FILES.get("zip", None)  # 获取上传的文件，如果没有文件，则默认为None
+        save_name = os.path.splitext(zip.name)[0] + '_' + user.username + '_' + str(now)
+        print(save_name)
+        save_zip = os.path.splitext(zip.name)[1]
+        zip_file_name = save_name+save_zip
+        path = PRODUCT_TEMP_ZIP_PATH
+        if not os.path.exists(path):
+            os.makedirs(path)
+        destination = open(os.path.join(path, zip_file_name), "wb+")  # 把文件写入
+        for chunk in zip.chunks():  # 分块写入文件
+            destination.write(chunk)
+        destination.close()
+        product.save_name = zip_file_name
+        product.real_name = zip.name
+        product.save()
+    return ajax_success()
+
+
+@login_required
+@permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
+def edit_delete_file(request, pid):
+    # 编辑产品页面删除已上传文件
+    pid = int(pid)
+    if pid != 0:
+        try:
+            product = Product.objects.get(id=pid)
+            full_name = product.save_name
+            status = product.status
+            if status <= ProductStatus.WAIT_SUBMIT:
+                os.remove(os.path.join(PRODUCT_TEMP_ZIP_PATH, full_name))
+                a = os.listdir(PRODUCT_TEMP_EXCEL_PATH)
+                b = os.path.split(full_name)[0]
+                for j in range(len(a)):
+                    if a[j].find(b) != -1:
+                        name = a[j]
+                        break
+                os.remove(os.path.join(PRODUCT_TEMP_EXCEL_PATH, name))
+            else:
+                os.remove(os.path.join(PRODUCT_ZIP_PATH, full_name))
+                a = os.listdir(PRODUCT_EXCEL_PATH)
+                b = os.path.split(full_name)[0]
+                for j in range(len(a)):
+                    if a[j].find(b) != -1:
+                        name = a[j]
+                        break
+                os.remove(os.path.join(PRODUCT_EXCEL_PATH, name))
+
+            product.save_name = None
+            product.real_name = None
+            product.save()
+        except Exception as e:
+            # log.log_error("审批通过：找不到合同！\n%s" % e)
+            return ajax_error("审批失败!")
+    return HttpResponseRedirect("/product_management/edit_product/"+str(pid)+"/")
+
+
+@login_required
+@permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
+def edit_submit(request, pid):
+    # 编辑产品页面提交
+    current_user = request.user.userprofile
+    pid = int(pid)
+    # if pid != 0:
+    #     product = Product.objects.get(id=pid)
+    #     product_name = request.POST.get("product_name")
+    #
+    #     product.product_name = product_name
+    #     product.old_product_name = old_product_name
+    #     product.introduction = introduction
+    #     product.is_overlap = is_overlap
+    #     product.target_field = target_field
+    #     product.apply_situation = apply_situation
+    #     product.example = example
+    #     product.one_year_money = one_year_money
+    #     product.one_year_num = one_year_num
+    #     product.three_year_money = three_year_money
+    #     product.three_year_num = three_year_num
+    #     product.pCompany = pCompany
+    #     product.contact_people = contact_people
+    #     product.remark = remark
+    #     product.uploader = user
+    #     product.upload_time = upload_time
+    #     product.real_name = real_name
+    #     product.save_name = zip_file_name
+    #     product.maturity = Attribute.objects.get(first_class=maturity)
+    #     product.independence = Attribute.objects.get(first_class=independence)
+    #     product.business = Attribute.objects.get(second_class=business)
+    #     product.technology = Attribute.objects.get(second_class=technology)
+    #     product.attribute_num = attribute_num
+    #     product.status = status
+    #     product.apply_type = apply_type
+    #     product.version = version
+    #     product.is_vaild = is_vaild
+    #
+    #     product.save()
+    return HttpResponseRedirect("/product_management/page_new_product/")
 
 
 @login_required
@@ -235,6 +350,9 @@ def submit_product(request, pid):
     file_path = os.path.join(PRODUCT_TEMP_ZIP_PATH, file)
     dest_path = os.path.join(PRODUCT_ZIP_PATH, file)
     if os.path.isfile(file_path):
+        if not os.path.exists(PRODUCT_ZIP_PATH):
+            os.makedirs(PRODUCT_ZIP_PATH)
+        # ///////////////////////////如果有相关产品还没提交，就复制，否则移动
         shutil.move(file_path, dest_path)
     files = os.listdir(PRODUCT_TEMP_EXCEL_PATH)
     for f in files:
@@ -244,6 +362,10 @@ def submit_product(request, pid):
     file_path = os.path.join(PRODUCT_TEMP_EXCEL_PATH, file)
     dest_path = os.path.join(PRODUCT_EXCEL_PATH, file)
     if os.path.isfile(file_path):
+        if not os.path.exists(PRODUCT_EXCEL_PATH):
+            os.makedirs(PRODUCT_EXCEL_PATH)
+        # ///////////////////////////如果有相关产品还没提交，就复制，否则移动
+
         shutil.move(file_path, dest_path)
 
     return ajax_success()

@@ -8,6 +8,9 @@ urlpatterns = [
     url(r'^upload_many/$', views.upload_many, name="upload_many"),
     # 编辑详情
     url(r'^edit_product/(?P<pid>\d+)/$', views.edit_product, {"template_name": "edit_product.html"}, name="edit_product"),
+    url(r'^edit_product/delete_file/(?P<pid>\d+)/$', views.edit_delete_file, name="edit_delete_file"),
+    url(r'^edit_product/upload/(?P<pid>\d+)/$', views.edit_upload_file, name="edit_upload_product"),
+    url(r'^edit_product/submit/(?P<pid>\d+)/$', views.edit_submit, name="edit_submit"),
     # 新建及更新-待提交
     url(r'^wait_submit/data/$', views.wait_submit, name="wait_submit"),
     url(r'^wait_submit/cancel/(?P<pid>\d+)/$', views.cancel_submit_product, name="cancel_submit_product"),
