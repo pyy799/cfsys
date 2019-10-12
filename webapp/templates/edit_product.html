@@ -26,7 +26,7 @@
                         </div>
                         <div class="modal-body">
                             <div class="box box-primary">
-                                <form id="manyuploadForm" class="form-horizontal" enctype="multipart/form-data" method="post">
+                                <form id="edituploadForm" class="form-horizontal" enctype="multipart/form-data" method="post">
                                 {% csrf_token %}
                                 <div class="box-body">
                                     <div class="form-group">
@@ -52,13 +52,13 @@
                 </div>
                 <!-- /.modal -->
             </div>
-
-            <button class="btn btn-default" type="button" data-toggle="modal" data-target="#zip">
+            {% if file_name %}
+                <a href="/product_management/edit_product/delete_file/{{ product.id }}/"
+                     class="btn btn-default" type="button"> {{ file_name }}<i class="fa fa-times"></i></a>
+            {% else %}
+                <button class="btn btn-default" type="button" data-toggle="modal" data-target="#zip">
                 <i class="fa fa-plus"></i> 上传审核文件
             </button>
-            {% if temp_file %}
-                <a href="/contract/contract_info/edit/contract_delet_file/{{ cid }}/" class="btn btn-sm blue"
-                   type="button"> {{ temp_file }}<i class="fa fa-times"></i></a>
             {% endif %}
         </div>
         <div class="box-body" style="width: 100%">
@@ -147,9 +147,9 @@
                         <label class="col-sm-2 control-label">技术形态</label>
 
                         <div class="col-sm-3">
-                            <select class="form-control" name="service_type" required>
-                                <option value="{{ product.service_type }}"
-                                        selected>{{ product.service_type_name }}</option>
+                            <select class="form-control" name="technology" required>
+                                <option value="{{ product.technology }}"
+                                        selected>{{ product.technology_name }}</option>
                                 {% for s in t_choice %}
                                     <option value="{{ s.0 }}">{{ s.1 }}</option>
                                 {% endfor %}
@@ -159,70 +159,62 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">过去一年销售额</label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" name="prestore" value="{{ product.prestore }}">
+                            <input type="text" class="form-control" name="one_year_money" value="{{ product.one_year_money }}">
                         </div>
 
                         <label class="col-sm-2 control-label">过去一年销售数量</label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" name="prestore" value="{{ product.prestore }}">
+                            <input type="text" class="form-control" name="one_year_num" value="{{ product.one_year_num }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">过去三年销售额</label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" name="prestore" value="{{ product.prestore }}">
+                            <input type="text" class="form-control" name="three_year_money" value="{{ product.three_year_money }}">
                         </div>
 
                         <label class="col-sm-2 control-label">过去三年销售数量</label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" name="prestore" value="{{ product.prestore }}">
+                            <input type="text" class="form-control" name="three_year_num" value="{{ product.three_year_num }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">联系人</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="prestore" maxlength="30"
-                            value="{{ product.prestore }}">
+                            <input type="text" class="form-control" name="contact_people" maxlength="30"
+                            value="{{ product.contact_people }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">产品描述</label>
                         <div class="col-sm-8">
-                            <textarea rows="10" class="form-control" name="prestore" maxlength="500">
-                            {{ product.prestore }}</textarea>
+                            <textarea rows="10" class="form-control" name="introduction" maxlength="500">{{ product.introduction }}</textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">目标行业</label>
                         <div class="col-sm-8">
-                            <textarea rows="10" class="form-control" name="prestore" maxlength="500">
-                            {{ product.prestore }}</textarea>
+                            <textarea rows="10" class="form-control" name="target_field" maxlength="500">{{ product.target_field }}</textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">应用场景</label>
                         <div class="col-sm-8">
-                            <textarea rows="10" class="form-control" name="prestore" maxlength="500">
-                            {{ product.prestore }}</textarea>
+                            <textarea rows="10" class="form-control" name="apply_situation" maxlength="500">{{ product.apply_situation }}</textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">市场案例</label>
                         <div class="col-sm-8">
-                            <textarea rows="10" class="form-control" name="prestore" maxlength="500">
-                            {{ product.prestore }}</textarea>
+                            <textarea rows="10" class="form-control" name="example" maxlength="500">{{ product.example }}</textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">备注</label>
                         <div class="col-sm-8">
-                            <textarea rows="10" class="form-control" name="prestore" maxlength="500">
-                            {{ product.prestore }}</textarea>
+                            <textarea rows="10" class="form-control" name="remark" maxlength="500">{{ product.remark }}</textarea>
                         </div>
                     </div>
-
-
-
 
                 </div>
                 <!-- /.box-body -->
@@ -258,4 +250,19 @@
     <script src="/static/js/table-ext.js"></script>
     <script src="/static/js/datatable.js"></script>
     <script src="/static/js/jPages.js"></script>
+    <script>
+    //上传文件
+        var pid = parseInt($("#pid").val());
+        $("#edituploadForm").ajaxForm({
+            type: "post",
+            url: "/product_management/edit_product/upload/"+pid+"/",    //提交到的url
+            success: function (data) {
+                if (data.success) {
+                    location.href = "/product_management/edit_product/"+pid+"/";
+                } else {
+                    $.growlService("上传文件有误", {type: "danger"})
+                }
+            }
+        });
+    </script>
 {% endblock %}

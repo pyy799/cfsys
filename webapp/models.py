@@ -151,7 +151,7 @@ class Product(models.Model):
             if isinstance(getattr(self, field.name), datetime.date):
                 return getattr(self, field.name).strftime("%Y-%m-%d")
             elif field.name in ["maturity", "independence", "business", "technology"]:
-                return getattr(getattr(self, field.name), "meaning", '')
+                return getattr(getattr(self, field.name), "id", '')
             elif field.name == "uploader":
                 return getattr(getattr(self, field.name), "username", '')
             return getattr(s, field.name) or ''
@@ -164,10 +164,10 @@ class Product(models.Model):
         data.append(("status_name", self.status_name(self.status)))
         data.append(("apply_type_name", self.apply_name(self.apply_type)))
         data.append(("is_vaild", "是" if self.is_vaild else "否"))
-        # data.append(("maturity_name", getattr(getattr(self, "maturity"), "meaning", '')))
-        # data.append(("independence_name", getattr(getattr(self, "independence"), "meaning", '')))
-        # data.append(("business_name", getattr(getattr(self, "business"), "meaning", '')))
-        # data.append(("technology_name", getattr(getattr(self, "technology"), "meaning", '')))
+        data.append(("maturity_name", getattr(getattr(self, "maturity"), "meaning", '')))
+        data.append(("independence_name", getattr(getattr(self, "independence"), "meaning", '')))
+        data.append(("business_name", getattr(getattr(self, "business"), "meaning", '')))
+        data.append(("technology_name", getattr(getattr(self, "technology"), "meaning", '')))
 
         return dict(data)
 
