@@ -35,7 +35,7 @@
             </thead>
             <tbody id="role_info_table">
             {% for group in group_list %}
-                <tr>
+                <tr id="{{ group.id }}">
                     <td style="text-align: center">{{ group.name }}</td>
                     <td style="text-align: center">
                         {% if "product_information_inquiry" in group.perm_list %}
@@ -73,7 +73,8 @@
                         {% endif %}
                     </td>
                     <td>
-                    <button type="button" class="btn btn-success btn-sm"  data-toggle="modal" data-target="#modify">修改</button>
+                    <button type="button" class="btn btn-success btn-sm"
+                            data-toggle="modal" data-target="#modify" onclick="goModify('{{ group.id }}')">修改</button>
                     <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete">删除</button>
                     </td>
                 </tr>
@@ -136,8 +137,9 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
                 <h5 class="modal-title" id="modifyLabel" style="font-weight:bold">修改角色信息</h5>
             </div>
-            <form style=";float:none" class="form-horizontal" method="post" action="{% url 'add_user' %}">
+            <form style=";float:none" class="form-horizontal">
                 {% csrf_token %}
+                <input type="hidden" id="modify_id">
                 <div class="modal-form" style="margin-top: 0">
                     <div class="col-sm-12" style="margin-top: 5px">
                         <label for="modify_name" class="control-label" style="width:62px;text-align: right">角色名称</label>
@@ -168,7 +170,7 @@
                 <div class="col-sm-12"  style="height:30px;margin-top: 5px"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="submit" class="btn btn-primary">确认</button>
+                    <button type="button" class="btn btn-primary" onclick="modify()">确认</button>
                 </div>
             </form>
         </div><!-- /.modal-content -->
@@ -207,6 +209,7 @@
             "perm7":$('#add_perm7').is(":checked"),
             'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
         }
+        $('#add').modal('hide')
         console.log(data)
         $.ajax({
             url:'add_role/',
@@ -214,7 +217,6 @@
             data:data,
             success:function(res){
                 console.log(res)
-                $('#add').modal('hide')
                 var symbolString ='<td style="text-align: center"><div class="glyphicon glyphicon-ok" style="margin: 0 auto"></div></td>'
                 var noString ='<td style="text-align: center"></td>'
                 var groupnameS = '<td style="text-align: center">' + res.name + '</td>'
@@ -227,13 +229,76 @@
                 perm6S = res.perm_list.indexOf("user_right_management_user")>-1?symbolString:noString
                 perm7S = res.perm_list.indexOf("user_right_management_role")>-1?symbolString:noString
                 var operationS ='<td>' +
-                    '<button type="button" class="btn btn-success btn-sm"  data-toggle="modal" data-target="#modify">修改</button>' +
+                    '<button type="button" class="btn btn-success btn-sm"  ' +
+                    'data-toggle="modal" data-target="#modify" onclick="goModify('+res.id+')">修改</button>' +
                     '<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete" style="margin-left:9px">删除</button>' +
                     '</td>'
-                var htmlS = '<tr>'+groupnameS+perm1S+perm2S+perm3S+perm4S+perm5S+perm6S+perm7S+operationS+'</tr>'
+                var htmlS = '<tr id="'+res.id+'">'+groupnameS+perm1S+perm2S+perm3S+perm4S+perm5S+perm6S+perm7S+operationS+'</tr>'
                 $('#role_info_table').append(htmlS)
             },
             error:function(res){}
+        })
+    }
+    function goModify(id){
+        $('#modify_id').val(id)
+        for(var i=0;i<document.getElementById(id).children.length-1;i++){
+            var dom = document.getElementById(id).children.item(i)
+            if(i===0){
+                $('#modify_name').val(dom.innerHTML)
+            }
+            else{
+                console.log(dom.children.length)
+                if(dom.children.length!==0){
+
+                    $('#modify_perm'+i).prop("checked",true)
+                }else{
+                    $('#modify_perm'+i).prop("checked",false)
+                }
+            }
+        }
+    }
+    function modify(){
+
+        var data = {
+            "group_id":$('#modify_id').val(),
+            "group_name":$('#modify_name').val(),
+            "perm1":$('#modify_perm1').is(":checked"),
+            "perm2":$('#modify_perm2').is(":checked"),
+            "perm3":$('#modify_perm3').is(":checked"),
+            "perm4":$('#modify_perm4').is(":checked"),
+            "perm5":$('#modify_perm5').is(":checked"),
+            "perm6":$('#modify_perm6').is(":checked"),
+            "perm7":$('#modify_perm7').is(":checked"),
+            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
+        }
+        $('#modify').modal('hide')
+        $.ajax({
+            url:'modify/',
+            type:'POST',
+            data:data,
+            success:function(res){
+                console.log(res)
+                var symString = '<div class="glyphicon glyphicon-ok" style="margin: 0 auto">'
+                var perm_arry = new Array()
+                perm_arry.push("product_information_inquiry")
+                perm_arry.push("product_information_manage_new")
+                perm_arry.push("product_information_manage_update")
+                perm_arry.push("product_information_manege_check")
+                perm_arry.push("product_attribute_management")
+                perm_arry.push("user_right_management_user")
+                perm_arry.push("user_right_management_role")
+                console.log(perm_arry)
+                for(var i=0;i<7;i++){
+                    var dom = document.getElementById(res.id).children.item(i+1)
+                    if(res.perm_list.indexOf(perm_arry[i])>-1){
+                        dom.innerHTML = symString
+                    }
+                    else{
+                       dom.innerHTML = ''
+                    }
+                }
+            },
+            error:function(){}
         })
     }
 </script>

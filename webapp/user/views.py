@@ -189,4 +189,42 @@ def add_role(request):
     group = Group.objects.get(name=group_name)
     group_dic = {"id": group.id, "name": group.name, "perm_list": perm_list}
     return JsonResponse(group_dic)
-    pass
+
+
+def modify_role(request):
+    group_id = request.POST.get("group_id")
+    group = Group.objects.get(id=group_id)
+    group.name = request.POST.get("group_name")
+    group.permissions.clear()
+    group.save()
+    perm_list = []
+    if request.POST.get("perm1") == "true":
+        permission = Permission.objects.get(codename="product_information_inquiry")
+        perm_list.append("product_information_inquiry")
+        group.permissions.add(permission)
+    if request.POST.get("perm2") == "true":
+        permission = Permission.objects.get(codename="product_information_manage_new")
+        perm_list.append("product_information_manage_new")
+        group.permissions.add(permission)
+    if request.POST.get("perm3") == "true":
+        permission = Permission.objects.get(codename="product_information_manage_update")
+        perm_list.append("product_information_manage_update")
+        group.permissions.add(permission)
+    if request.POST.get("perm4") == "true":
+        permission = Permission.objects.get(codename="product_information_manege_check")
+        perm_list.append("product_information_manege_check")
+        group.permissions.add(permission)
+    if request.POST.get("perm5") == "true":
+        permission = Permission.objects.get(codename="product_attribute_management")
+        perm_list.append("product_attribute_management")
+        group.permissions.add(permission)
+    if request.POST.get("perm6") == "true":
+        permission = Permission.objects.get(codename="user_right_management_user")
+        perm_list.append("user_right_management_user")
+        group.permissions.add(permission)
+    if request.POST.get("perm7") == "true":
+        permission = Permission.objects.get(codename="user_right_management_role")
+        perm_list.append("user_right_management_role")
+        group.permissions.add(permission)
+    group_dic = {"id": group_id, "name": group.name, "perm_list": perm_list}
+    return JsonResponse(group_dic)
