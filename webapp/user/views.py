@@ -3,16 +3,12 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.csrf import csrf_exempt
 from webapp.models import UserProfile, Group
-
-
-def index(request, template_name):
-
-    return render(request, template_name)
+from django.contrib.auth.models import Permission
 
 
 @login_required
 @permission_required('webapp.user_right_management_user')
-def jump(request, template_name):
+def jump_user(request, template_name):
     users = UserProfile.objects.all()
     groups = Group.objects.all().order_by("id")
     for user in users:
@@ -73,6 +69,7 @@ def modify_user(request):
     user.phone = request.POST.get("phone")
     user.email = request.POST.get("email")
     user.save()
+
     gr = Group.objects.get(user=user)
     user.groups.remove(gr)
     group = Group.objects.get(id=request.POST.get("role"))
@@ -137,3 +134,59 @@ def search_user(request):
         data_list.append(user_dict)
 
     return JsonResponse({"status": 0, "users": data_list})
+
+
+@login_required
+@permission_required('webapp.user_right_management_role')
+def jump_role(request, template_name):
+    group_set = Group.objects.all().order_by("id")
+    group_list = []
+    for group in group_set:
+        perm_list = []
+        permissions = group.permissions.all()
+        for permission in permissions:
+            perm_list.append(permission.codename)
+        group_dic = {"id": group.id, "name": group.name, "perm_list":perm_list}
+        group_list.append(group_dic)
+    # return JsonResponse({"group_list":group_list})
+    return render(request, template_name, {"group_list": group_list})
+
+
+def add_role(request):
+    group_name = request.POST.get("group_name")
+    group = Group()
+    group.name = group_name
+    group.save()
+    perm_list = []
+    if request.POST.get("perm1") == "true":
+        permission = Permission.objects.get(codename="product_information_inquiry")
+        perm_list.append("product_information_inquiry")
+        group.permissions.add(permission)
+    if request.POST.get("perm2") == "true":
+        permission = Permission.objects.get(codename="product_information_manage_new")
+        perm_list.append("product_information_manage_new")
+        group.permissions.add(permission)
+    if request.POST.get("perm3") == "true":
+        permission = Permission.objects.get(codename="product_information_manage_update")
+        perm_list.append("product_information_manage_update")
+        group.permissions.add(permission)
+    if request.POST.get("perm4") == "true":
+        permission = Permission.objects.get(codename="product_information_manege_check")
+        perm_list.append("product_information_manege_check")
+        group.permissions.add(permission)
+    if request.POST.get("perm5") == "true":
+        permission = Permission.objects.get(codename="product_attribute_management")
+        perm_list.append("product_attribute_management")
+        group.permissions.add(permission)
+    if request.POST.get("perm6") == "true":
+        permission = Permission.objects.get(codename="user_right_management_user")
+        perm_list.append("user_right_management_user")
+        group.permissions.add(permission)
+    if request.POST.get("perm7") == "true":
+        permission = Permission.objects.get(codename="user_right_management_role")
+        perm_list.append("user_right_management_role")
+        group.permissions.add(permission)
+    group = Group.objects.get(name=group_name)
+    group_dic = {"id": group.id, "name": group.name, "perm_list": perm_list}
+    return JsonResponse(group_dic)
+    pass

@@ -10,7 +10,233 @@
 
 
 {% block content %}
-
+<div class="box box-solid" style="padding-left: 100px;">
+    <div>
+        <h3 class="box-header with-border" style="margin-top: 0;padding-top: 30px">
+            角色权限管理
+            <input type="button" class="btn btn-large btn-primary" data-toggle="modal" data-target="#add"
+                   value="新增角色" style="margin-left: 750px;font-size:18px">
+        </h3>
+    </div>
+    <div class="box-body">
+        <table id="group_permission_table" class="table table-hover">
+            <thead>
+                <tr>
+                    <th style="text-align: center">角色|权限</th>
+                    <th style="text-align: center">产品信息查询</th>
+                    <th style="text-align: center">产品信息管理—新建</th>
+                    <th style="text-align: center">产品信息管理—更新</th>
+                    <th style="text-align: center">产品信息管理—审核</th>
+                    <th style="text-align: center">产品属性管理</th>
+                    <th style="text-align: center">用户权限管理—用户</th>
+                    <th style="text-align: center">用户权限管理—角色</th>
+                    <th style="text-align: center">操作</th>
+                </tr>
+            </thead>
+            <tbody id="role_info_table">
+            {% for group in group_list %}
+                <tr>
+                    <td style="text-align: center">{{ group.name }}</td>
+                    <td style="text-align: center">
+                        {% if "product_information_inquiry" in group.perm_list %}
+                            <div class="glyphicon glyphicon-ok" style="margin: 0 auto"></div>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: center">
+                        {% if "product_information_manage_new" in group.perm_list %}
+                            <div class="glyphicon glyphicon-ok" style="margin: 0 auto"></div>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: center">
+                        {% if "product_information_manage_update" in group.perm_list %}
+                            <div class="glyphicon glyphicon-ok" style="margin: 0 auto"></div>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: center">
+                        {% if "product_information_manege_check" in group.perm_list %}
+                            <div class="glyphicon glyphicon-ok" style="margin: 0 auto"></div>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: center">
+                        {% if "product_attribute_management" in group.perm_list %}
+                            <div class="glyphicon glyphicon-ok" style="margin: 0 auto"></div>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: center">
+                        {% if "user_right_management_user" in group.perm_list %}
+                            <div class="glyphicon glyphicon-ok" style="margin: 0 auto"></div>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: center">
+                        {% if "user_right_management_role" in group.perm_list %}
+                            <div class="glyphicon glyphicon-ok" style="margin: 0 auto"></div>
+                        {% endif %}
+                    </td>
+                    <td>
+                    <button type="button" class="btn btn-success btn-sm"  data-toggle="modal" data-target="#modify">修改</button>
+                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete">删除</button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal fade" id="add" tabindex="-1"
+     role="dialog" aria-labelledby="addLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+                <h5 class="modal-title" id="addLabel" style="font-weight:bold">新增角色</h5>
+            </div>
+            <form style=";float:none" class="form-horizontal">
+                {% csrf_token %}
+                <div class="modal-form" style="margin-top: 0">
+                    <div class="col-sm-12" style="margin-top: 5px">
+                        <label for="add_name" class="control-label" style="width:62px;text-align: right">角色名称</label>
+                        <input type="text" id="add_name" name="add_name"
+                               placeholder="请输入角色名称" class="form-control input-inline" style="width: 200px">
+                    </div>
+                    <div class="col-sm-12" style="margin-top: 5px">
+                        <label for="add_perm1" class="control-label" style="width:90px;text-align: right">产品信息查询</label>
+                        <input type="checkbox" id="add_perm1" name="add_perm1" class="checkbox input-inline">
+                        <label for="add_perm2" class="control-label" style="width:130px;text-align: right;margin-left: 20px">产品信息管理—新建</label>
+                        <input type="checkbox" id="add_perm2" name="add_perm2" class="checkbox input-inline">
+                        <label for="add_perm3" class="control-label" style="width:130px;text-align: right;margin-left: 20px">产品信息管理—更新</label>
+                        <input type="checkbox" id="add_perm3" name="add_perm3" class="checkbox input-inline">
+                    </div>
+                    <div class="col-sm-12" style="margin-top: 5px">
+                        <label for="add_perm4" class="control-label" style="width:132px;text-align: right">产品信息管理—审核</label>
+                        <input type="checkbox" id="add_perm4" name="add_perm4" class="checkbox input-inline">
+                        <label for="add_perm5" class="control-label" style="width:90px;text-align: right;margin-left: 20px">产品属性管理</label>
+                        <input type="checkbox" id="add_perm5" name="add_perm5" class="checkbox input-inline">
+                        <label for="add_perm6" class="control-label" style="width:130px;text-align: right;margin-left: 20px">用户权限管理—用户</label>
+                        <input type="checkbox" id="add_perm6" name="add_perm6" class="checkbox input-inline">
+                    </div>
+                    <div class="col-sm-12" style="margin-top: 5px">
+                        <label for="add_perm7" class="control-label" style="width:132px;text-align: right;">用户权限管理—角色</label>
+                        <input type="checkbox" id="add_perm7" name="add_perm7" class="checkbox input-inline">
+                    </div>
+                </div>
+                <div class="col-sm-12" id="err_message" style="height:30px;margin-top: 5px"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="add()">确认</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+<div class="modal fade" id="modify" tabindex="-1"
+     role="dialog" aria-labelledby="modifyLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+                <h5 class="modal-title" id="modifyLabel" style="font-weight:bold">修改角色信息</h5>
+            </div>
+            <form style=";float:none" class="form-horizontal" method="post" action="{% url 'add_user' %}">
+                {% csrf_token %}
+                <div class="modal-form" style="margin-top: 0">
+                    <div class="col-sm-12" style="margin-top: 5px">
+                        <label for="modify_name" class="control-label" style="width:62px;text-align: right">角色名称</label>
+                        <input type="text" id="modify_name" name="modify_name"
+                               placeholder="请输入角色名称" class="form-control input-inline" style="width: 200px">
+                    </div>
+                    <div class="col-sm-12" style="margin-top: 5px">
+                        <label for="modify_perm1" class="control-label" style="width:90px;text-align: right">产品信息查询</label>
+                        <input type="checkbox" id="modify_perm1" name="modify_perm1" class="checkbox input-inline">
+                        <label for="modify_perm2" class="control-label" style="width:130px;text-align: right;margin-left: 20px">产品信息管理—新建</label>
+                        <input type="checkbox" id="modify_perm2" name="modify_perm2" class="checkbox input-inline">
+                        <label for="modify_perm3" class="control-label" style="width:130px;text-align: right;margin-left: 20px">产品信息管理—更新</label>
+                        <input type="checkbox" id="modify_perm3" name="modify_perm3" class="checkbox input-inline">
+                    </div>
+                    <div class="col-sm-12" style="margin-top: 5px">
+                        <label for="modify_perm4" class="control-label" style="width:132px;text-align: right">产品信息管理—审核</label>
+                        <input type="checkbox" id="modify_perm4" name="modify_perm4" class="checkbox input-inline">
+                        <label for="modify_perm5" class="control-label" style="width:90px;text-align: right;margin-left: 20px">产品属性管理</label>
+                        <input type="checkbox" id="modify_perm5" name="modify_perm5" class="checkbox input-inline">
+                        <label for="modify_perm6" class="control-label" style="width:130px;text-align: right;margin-left: 20px">用户权限管理—用户</label>
+                        <input type="checkbox" id="modify_perm6" name="modify_perm6" class="checkbox input-inline">
+                    </div>
+                    <div class="col-sm-12" style="margin-top: 5px">
+                        <label for="modify_perm7" class="control-label" style="width:132px;text-align: right;">用户权限管理—角色</label>
+                        <input type="checkbox" id="modify_perm7" name="modify_perm7" class="checkbox input-inline">
+                    </div>
+                </div>
+                <div class="col-sm-12"  style="height:30px;margin-top: 5px"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">确认</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+<div class="modal fade" id="delete" tabindex="-1"
+     role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h5 class="modal-title" id="deleteLabel" style="font-weight: bold">删除该角色</h5>
+            </div>
+            <div class="modal-body" style="padding-top: 0">
+                这将删除角色&nbsp;<span id="s_delete"></span>&nbsp;,属于该角色的用户将被定义为无权限角色，
+                确定删除吗？请及时对无权限角色的用户做出改动。
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger"><a href="" style="color:white" id="a_delete">确认</a></button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+<script src="/static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<script>
+    function add(){
+        var data={
+            "group_name":$('#add_name').val(),
+            "perm1":$('#add_perm1').is(":checked"),
+            "perm2":$('#add_perm2').is(":checked"),
+            "perm3":$('#add_perm3').is(":checked"),
+            "perm4":$('#add_perm4').is(":checked"),
+            "perm5":$('#add_perm5').is(":checked"),
+            "perm6":$('#add_perm6').is(":checked"),
+            "perm7":$('#add_perm7').is(":checked"),
+            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
+        }
+        console.log(data)
+        $.ajax({
+            url:'add_role/',
+            type:"POST",
+            data:data,
+            success:function(res){
+                console.log(res)
+                $('#add').modal('hide')
+                var symbolString ='<td style="text-align: center"><div class="glyphicon glyphicon-ok" style="margin: 0 auto"></div></td>'
+                var noString ='<td style="text-align: center"></td>'
+                var groupnameS = '<td style="text-align: center">' + res.name + '</td>'
+                var perm1S,perm2S,perm3S,perm4S,perm5S,perm6S,perm7S
+                perm1S = res.perm_list.indexOf("product_information_inquiry")>-1?symbolString:noString
+                perm2S = res.perm_list.indexOf("product_information_manage_new")>-1?symbolString:noString
+                perm3S = res.perm_list.indexOf("product_information_manage_update")>-1?symbolString:noString
+                perm4S = res.perm_list.indexOf("product_information_manege_check")>-1?symbolString:noString
+                perm5S = res.perm_list.indexOf("product_attribute_management")>-1?symbolString:noString
+                perm6S = res.perm_list.indexOf("user_right_management_user")>-1?symbolString:noString
+                perm7S = res.perm_list.indexOf("user_right_management_role")>-1?symbolString:noString
+                var operationS ='<td>' +
+                    '<button type="button" class="btn btn-success btn-sm"  data-toggle="modal" data-target="#modify">修改</button>' +
+                    '<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete" style="margin-left:9px">删除</button>' +
+                    '</td>'
+                var htmlS = '<tr>'+groupnameS+perm1S+perm2S+perm3S+perm4S+perm5S+perm6S+perm7S+operationS+'</tr>'
+                $('#role_info_table').append(htmlS)
+            },
+            error:function(res){}
+        })
+    }
+</script>
 {% endblock %}
 
 {% block footer_js %}
