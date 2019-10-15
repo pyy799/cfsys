@@ -7,6 +7,8 @@ import xlrd
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from webapp.shortcuts.decorator import permission_required
 from webapp.const import Company
 from webapp.models import *
 from webapp.shortcuts.ajax import ajax_success, ajax_error
