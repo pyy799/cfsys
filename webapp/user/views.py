@@ -152,6 +152,8 @@ def jump_role(request, template_name):
     return render(request, template_name, {"group_list": group_list})
 
 
+@login_required
+@permission_required('webapp.user_right_management_role')
 def add_role(request):
     group_name = request.POST.get("group_name")
     group = Group()
@@ -190,7 +192,8 @@ def add_role(request):
     group_dic = {"id": group.id, "name": group.name, "perm_list": perm_list}
     return JsonResponse(group_dic)
 
-
+@login_required
+@permission_required('webapp.user_right_management_role')
 def modify_role(request):
     group_id = request.POST.get("group_id")
     group = Group.objects.get(id=group_id)
@@ -228,3 +231,19 @@ def modify_role(request):
         group.permissions.add(permission)
     group_dic = {"id": group_id, "name": group.name, "perm_list": perm_list}
     return JsonResponse(group_dic)
+
+
+def delete_role(request):
+    delete_id = request.GET.get("id")
+    print(delete_id)
+    group = Group.objects.get(id=delete_id)
+    group.permissions.clear()
+    user_set = UserProfile.objects.filter(groups__id=delete_id)
+    group_temp = Group.objects.get(name="无权限角色")
+    print(user_set.count())
+    if user_set.count() != 0:
+        for user in user_set:
+            user.groups.remove(group)
+            user.groups.add(group_temp)
+    group.delete()
+    return JsonResponse({"status": 0})

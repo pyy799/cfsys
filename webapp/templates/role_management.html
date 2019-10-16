@@ -73,9 +73,17 @@
                         {% endif %}
                     </td>
                     <td>
-                    <button type="button" class="btn btn-success btn-sm"
+                        {% ifequal group.name "无权限角色" %}
+                            <button type="button" class="btn btn-success btn-sm" disabled
                             data-toggle="modal" data-target="#modify" onclick="goModify('{{ group.id }}')">修改</button>
-                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete">删除</button>
+                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                                    data-target="#delete" disabled onclick="goDelete('{{ group.id }}')">删除</button>
+                        {% else %}
+                            <button type="button" class="btn btn-success btn-sm"
+                            data-toggle="modal" data-target="#modify" onclick="goModify('{{ group.id }}')">修改</button>
+                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                                    data-target="#delete" onclick="goDelete('{{ group.id }}')">删除</button>
+                        {% endifequal %}
                     </td>
                 </tr>
             {% endfor %}
@@ -185,12 +193,13 @@
                 <h5 class="modal-title" id="deleteLabel" style="font-weight: bold">删除该角色</h5>
             </div>
             <div class="modal-body" style="padding-top: 0">
-                这将删除角色&nbsp;<span id="s_delete"></span>&nbsp;,属于该角色的用户将被定义为无权限角色，
-                确定删除吗？请及时对无权限角色的用户做出改动。
+                这将删除角色&nbsp;<span id="s_delete"></span>&nbsp;,属于该角色的用户将被定义为无权限角色,
+                确定删除吗?请及时对无权限角色的用户做出改动。
             </div>
+            <input type="hidden" id="delete_id">
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-danger"><a href="" style="color:white" id="a_delete">确认</a></button>
+                <button type="button" class="btn btn-danger" onclick="Delete_it()">确认</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
@@ -231,7 +240,8 @@
                 var operationS ='<td>' +
                     '<button type="button" class="btn btn-success btn-sm"  ' +
                     'data-toggle="modal" data-target="#modify" onclick="goModify('+res.id+')">修改</button>' +
-                    '<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete" style="margin-left:9px">删除</button>' +
+                    '<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" ' +
+                    'data-target="#delete" style="margin-left:9px" onclick="goDelete('+res.id+')">删除</button>' +
                     '</td>'
                 var htmlS = '<tr id="'+res.id+'">'+groupnameS+perm1S+perm2S+perm3S+perm4S+perm5S+perm6S+perm7S+operationS+'</tr>'
                 $('#role_info_table').append(htmlS)
@@ -296,6 +306,28 @@
                     else{
                        dom.innerHTML = ''
                     }
+                }
+            },
+            error:function(){}
+        })
+    }
+    function goDelete(id){
+       var name = document.getElementById(id).children.item(0).innerHTML
+        $('#delete_id').val(id)
+        $('#s_delete').html(name)
+    }
+    function Delete_it(){
+        var id = $('#delete_id').val()
+        $('#delete').modal('hide')
+        $.ajax({
+            url:'delete',
+            type:'get',
+            data:{"id":id},
+            success:function(res){
+                console.log(res)
+                if(res.status===0){
+                    var child = document.getElementById(id)
+                    child.parentNode.removeChild(child)
                 }
             },
             error:function(){}
