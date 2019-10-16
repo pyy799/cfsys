@@ -17,76 +17,76 @@
 
         <div class="table-container no-padding tab-pane active" style="padding:14px">
             <div class="table-actions-wrapper">
-            <div class="" style="margin-bottom: 20px">
-                <label>产品名称</label>
-                <input type="text" class="form-control input-inline input-middle input-sm form-filter"
-                       name="product_name" placeholder="产品名称" style="width: 145px">
+                <div class="" style="margin-bottom: 20px">
+                    <label>产品名称</label>
+                    <input type="text" class="form-control input-inline input-middle input-sm form-filter"
+                           name="product_name__icontains" placeholder="产品名称" style="width: 145px">
 
-                <label style="letter-spacing: 1em">公司</label>
-                <select class="form-control select input-inline input-small input-sm getFilter"
-                        data-key="pCompany" data-placeholder='选择公司'>
-                    <option value="" selected disabled>选择公司</option>
-                    <option value="">全部</option>
-                    {% for pc in pCompany %}
-                        <option value="{{ pc.0 }}">{{ pc.1 }}</option>
-                    {% endfor %}
-                </select>
+                    <label style="letter-spacing: 1em">公司</label>
+                    <select class="form-control  input-inline input-small input-sm form-filter select"
+                            name="pCompany__icontains" data-placeholder='选择公司'>
+                        <option value=''></option>
+                        {% for pc in pCompany %}
+                            <option value="{{ pc.0 }}">{{ pc.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <label>目标行业</label>
+                    <input type="text" class="form-control input-inline input-middle input-sm form-filter"
+                           name="target_field__icontains" placeholder="目标行业" style="width: 145px">
 
-                <label>目标行业</label>
-                <input type="text" class="form-control input-inline input-middle input-sm form-filter"
-                       name="target_field" placeholder="目标行业" style="width: 145px">
+                    <label>应用场景</label>
+                    <input type="text" class="form-control input-inline input-middle input-sm form-filter"
+                           name="apply_situation__icontains" placeholder="应用场景" style="width: 145px">
 
-                <label>应用场景</label>
-                <input type="text" class="form-control input-inline input-middle input-sm form-filter"
-                       name="apply_situation" placeholder="应用场景" style="width: 145px">
+                    <label>发布日期</label>
+                    <input type="datetime-local" class="form-control input-inline input-middle input-sm date getFilter"
+                           style="width: 145px" data-key="start" placeholder="起始时间（必填）">
+                    <input type="text" class="form-control input-inline input-middle input-sm date getFilter"
+                           style="width: 145px" data-key="end" placeholder="结束时间（必填）">
+                </div>
+                <div class="">
 
-                <label>发布日期</label>
-                <input type="text" class="form-control input-inline input-middle input-sm date getFilter"
-                       style="width: 145px" data-key="start" placeholder="起始时间（必填）">
-                <input type="text" class="form-control input-inline input-middle input-sm date getFilter"
-                       style="width: 145px" data-key="end" placeholder="结束时间（必填）">
-</div>
-            <div class="">
+                    <label style="letter-spacing: 0.35em">成熟度 </label>
+                    <select class="form-control input-inline input-small input-sm form-filter select "
+                            name="maturity__first_class" data-placeholder='成熟度' style="width: 145px">
+                        <option value=''></option>
+                        {% for s in maturity %}
+                            <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                        {% endfor %}
+                    </select>
 
-                <label style="letter-spacing: 0.35em">成熟度 </label>
-                <select class="form-control input-inline input-small input-sm form-filter select "
-                        name="maturity" data-placeholder='成熟度' style="width: 145px">
-                    {% for s in maturity %}
-                        <option value="{{ s.0 }}">{{ s.1 }}</option>
-                    {% endfor %}
-                </select>
+                    <label style="letter-spacing: 0.35em">自主度</label>
+                    <select class="form-control input-inline input-small input-sm form-filter select"
+                            name="independence__first_class" data-placeholder='自主度' style="width: 145px">
+                        <option value=''></option>
+                        {% for s in independence %}
+                            <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                        {% endfor %}
+                    </select>
 
-                <label style="letter-spacing: 0.35em">自主度</label>
-                <select class="form-control input-inline input-small input-sm form-filter select"
-                        name="independence" data-placeholder='自主度' style="width: 145px">
-                    <option value=''></option>
-                    {% for s in independence %}
-                        <option value="{{ s.0 }}">{{ s.1 }}</option>
-                    {% endfor %}
-                </select>
+                    <label>业务领域</label>
+                    <select class="form-control input-inline input-small input-sm form-filter select"
+                            name="business__first_class" data-placeholder='业务领域' style="width: 145px">
+                        <option value=''></option>
+                        {% for s in business %}
+                            <option value="{{ s.first_class }}">{{ s.meaning}}</option>
+                        {% endfor %}
+                    </select>
 
-                <label>业务领域</label>
-                <select class="form-control input-inline input-small input-sm form-filter select"
-                        name="business" data-placeholder='业务领域' style="width: 145px">
-                    <option value=''></option>
-                    {% for s in business %}
-                        <option value="{{ s.0 }}">{{ s.1 }}</option>
-                    {% endfor %}
-                </select>
-
-                <label>技术形态</label>
-                <select class="form-control input-inline input-small input-sm form-filter select"
-                        name="technology" data-placeholder='技术形态' style="width: 145px">
-                    <option value=''></option>
-                    {% for s in technology %}
-                        <option value="{{ s.0 }}">{{ s.1 }}</option>
-                    {% endfor %}
-                </select>
-                <button class="btn btn-sm yellow filter-submit" style="margin-left: 200px"><i class="fa fa-search"></i>
-                    查询
-                </button>
-                <button class="btn btn-sm red filter-cancel text-right"><i class="fa fa-times"></i> 取消查询</button>
-            </div>
+                    <label>技术形态</label>
+                    <select class="form-control input-inline input-small input-sm form-filter select"
+                            name="technology__first_class" data-placeholder='技术形态' style="width: 145px">
+                        <option value=''></option>
+                        {% for s in technology %}
+                            <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="btn btn-sm yellow filter-submit" style="margin-left: 200px"><i
+                            class="fa fa-search"></i>
+                        查询
+                    </button>
+                    <button class="btn btn-sm red filter-cancel text-right"><i class="fa fa-times"></i> 取消查询</button>
+                </div>
             </div>
 
             <table class="table table-striped table-bordered table-hover dataTable no-footer"
