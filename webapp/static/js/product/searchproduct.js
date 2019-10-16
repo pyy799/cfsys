@@ -32,8 +32,6 @@ var SearchTable = function () {
                     {"mData": "id", "sTitle": "ID", "bVisible": false},
                     {"mData": "product_name", "sTitle": "产品名称"},
                     {"mData": "pCompany_name", "sTitle": "公司名称"},
-                    // {"mData": "one_year_money", "sTitle": "过去一年销售额"},
-                    // {"mData": "three_year_money", "sTitle": "过去三年销售额"},
                     {"mData": "maturity_name", "sTitle": "成熟度"},
                     {"mData": "independence_name", "sTitle": "自主度"},
                     {"mData": "business_name", "sTitle": "业务领域"},
