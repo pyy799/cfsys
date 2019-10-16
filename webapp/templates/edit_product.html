@@ -53,7 +53,7 @@
                 <!-- /.modal -->
             </div>
             {% if file_name %}
-                <a href="/product_management/edit_product/delete_file/{{ product.id }}/"
+                <a href="/product_management/edit_product/delete_file/{{ pid }}/"
                      class="btn btn-default" type="button"> {{ file_name }}<i class="fa fa-times"></i></a>
             {% else %}
                 <button class="btn btn-default" type="button" data-toggle="modal" data-target="#zip">
@@ -63,7 +63,7 @@
         </div>
         <div class="box-body" style="width: 100%">
         <form id="contractForm" class="form-horizontal" style="width: 100%" method="post"
-              action="/contract/add/{{ cid }}/">
+              action="/product_management/edit_product/submit/{{ pid }}/">
             <div class="box box-default" style=" ">
                 <div class="box-header with-border">
                     <h3 class="box-title">基本信息</h3>（带有<span style="color:red">*</span>标识的为必填项）
@@ -111,22 +111,22 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">成熟度</label>
                         <div class="col-sm-3">
-                            <select class="form-control sign_type" name="sign_type">
+                            <select class="form-control sign_type" name="maturity">
                                 <option class="defaultval" selected
                                         value="{{ product.maturity }}">{{ product.maturity_name }}</option>
                                 {% for s in m_choice %}
-                                    <option value="{{ s.0 }}">{{ s.1 }}</option>
+                                    <option value="{{ s.id }}">{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% endfor %}
                             </select>
                         </div>
 
                         <label class="col-sm-2 control-label">自主度</label>
                         <div class="col-sm-3">
-                            <select class="form-control select" name="related">
+                            <select class="form-control select" name="independence">
                                 <option selected
                                         value="{{ product.independence }}">{{ product.independence_name }}</option>
                                 {% for s in i_choice %}
-                                    <option value="{{ s.0 }}">{{ s.1 }}</option>
+                                    <option value="{{ s.id }}">{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -135,11 +135,11 @@
                         <label class="col-sm-2 control-label">业务领域</label>
 
                         <div class="col-sm-3">
-                            <select class="form-control" name="service_type" required>
+                            <select class="form-control" name="business">
                                 <option value="{{ product.business }}"
                                         selected>{{ product.business_name }}</option>
                                 {% for s in b_choice %}
-                                    <option value="{{ s.0 }}">{{ s.1 }}</option>
+                                    <option value="{{ s.id }}">{{ s.first_class }}-{{ s.second_class }}-{{ s.meaning }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -147,11 +147,11 @@
                         <label class="col-sm-2 control-label">技术形态</label>
 
                         <div class="col-sm-3">
-                            <select class="form-control" name="technology" required>
+                            <select class="form-control" name="technology">
                                 <option value="{{ product.technology }}"
                                         selected>{{ product.technology_name }}</option>
                                 {% for s in t_choice %}
-                                    <option value="{{ s.0 }}">{{ s.1 }}</option>
+                                    <option value="{{ s.id }}">{{ s.first_class }}-{{ s.second_class }}-{{ s.meaning }}</option>
                                 {% endfor %}
                             </select>
                         </div>
