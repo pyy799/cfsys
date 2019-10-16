@@ -5,12 +5,17 @@ urlpatterns = [
     # 信息管理
     # 新建及更新-新建
     url(r'^page_new_product/$', views.page_new_product, {"template_name": "new_product.html"}, name="page_new_product"),
-    url(r'^upload_many/$', views.upload_many, name="upload_many"),
+    url(r'^new_many/$', views.new_many, name="new_many"),
+    # 更新
+    url(r'^update/data/$', views.update_data, name="update_data"),
+    url(r'^update/invalid/(?P<pid>\d+)/$', views.update_invalid, name="update_invalid"),
+    url(r'^update/delete/(?P<pid>\d+)/$', views.update_delete, name="update_delete"),
     # 编辑详情
     url(r'^edit_product/(?P<pid>\d+)/$', views.edit_product, {"template_name": "edit_product.html"}, name="edit_product"),
     url(r'^edit_product/delete_file/(?P<pid>\d+)/$', views.edit_delete_file, name="edit_delete_file"),
     url(r'^edit_product/upload/(?P<pid>\d+)/$', views.edit_upload_file, name="edit_upload_product"),
     url(r'^edit_product/submit/(?P<pid>\d+)/$', views.edit_submit, name="edit_submit"),
+
     # 新建及更新-待提交
     url(r'^wait_submit/data/$', views.wait_submit, name="wait_submit"),
     url(r'^wait_submit/cancel/(?P<pid>\d+)/$', views.cancel_submit_product, name="cancel_submit_product"),
