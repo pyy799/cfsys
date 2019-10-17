@@ -30,7 +30,14 @@ var SearchTable = function () {
                 //"sAjaxSource": "{{rootUrl}}", //给服务器发请求的url
                 "aoColumns": [ //这个属性下的设置会应用到所有列，按顺序没有是空,bVisible是否可见
                     {"mData": "id", "sTitle": "ID", "bVisible": false},
-                    {"mData": "product_name", "sTitle": "产品名称"},
+                    {
+                        "mData": "product_name", "sTitle": "产品名称",
+                        "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                            var element = $(nTd).empty();
+                            var detail = $('<a href="/product_search/page_product_detail/' + oData["id"] + '">' + oData["product_name"] + '</a>');
+                            element.append(detail);
+                        }
+                    },
                     {"mData": "pCompany_name", "sTitle": "公司名称"},
                     {"mData": "maturity_name", "sTitle": "成熟度"},
                     {"mData": "independence_name", "sTitle": "自主度"},

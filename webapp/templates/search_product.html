@@ -10,7 +10,7 @@
 
 
 {% block content %}
-    <div class="box box-solid" id="tablebox" style="padding-left: 20px;padding-right: 20px">
+    <div class="box box-solid" id="tablebox" style="padding-left: 30px;padding-right: 30px">
         <div class="box-header with-border">
             <h3>产品信息查询</h3>
         </div>
@@ -69,7 +69,7 @@
                             name="business__first_class" data-placeholder='业务领域' style="width: 145px">
                         <option value=''></option>
                         {% for s in business %}
-                            <option value="{{ s.first_class }}">{{ s.meaning}}</option>
+                            <option value="{{ s.first_class }}">{{ s.meaning }}</option>
                         {% endfor %}
                     </select>
 

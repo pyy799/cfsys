@@ -4,7 +4,7 @@ import shutil
 import calendar
 import datetime
 import xlrd
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, Http404
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -100,3 +100,25 @@ def show(request, template_name):
                       "business_product": business_product,
                       "technology_product": technology_product})
     return render(request, template_name, page_dict)
+
+@csrf_exempt
+# 产品详情页
+def detail(request, template_name, bid):
+    try:
+        product = Product.objects.get(id=bid)
+    except:
+        raise Http404("产品不存在！")
+    info = product.pack_data()
+    return render(request, template_name, {"info":info})
+
+
+
+    # # info = billing.pack_data()
+    # info["month"] = "%s年%s月" % tuple(info["month"].split("-"))
+    #
+    # items = [{"month": billing.month, "money": i["money"], "comments": i["comments"],
+    #           "service_type": Service.service_type_name(Service(), i["service_type"]),
+    #           "charge_type": Service.charge_type_name(Service(), i["charge_type"])
+    #           } for i in json.loads(billing.content)]
+    #
+    # return render(request, template_name, {"info": info, "items": items})
