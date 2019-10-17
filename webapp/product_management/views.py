@@ -1,3 +1,4 @@
+
 import os
 import re
 import shutil
@@ -139,36 +140,36 @@ def new_many(request):
 
     file = os.path.join(path, excel_file_name)
     wb = xlrd.open_workbook(file)
-    sheet = wb.sheet_by_name("产品信息页")
+    sheet = wb.sheet_by_index(0)
     nrows = sheet.nrows
 
     for i in range(1, nrows):
         row = sheet.row_values(i)
-        product_name = row[0].strip()
-        old_product_name = row[1].strip()
+        product_name = str(row[0]).strip()
+        old_product_name = str(row[1]).strip()
         if old_product_name == 'N.A.':
             old_product_name = None
-        introduction = row[2].strip()
-        overlap = row[3].strip()
+        introduction = str(row[2]).strip()
+        overlap = str(row[3]).strip()
         if overlap=="是":
             is_overlap = True
         else:
             is_overlap = False
-        target_field = row[4].strip()
-        apply_situation = row[5].strip()
-        example = row[6].strip()
+        target_field = str(row[4]).strip()
+        apply_situation = str(row[5]).strip()
+        example = str(row[6]).strip()
         one_year_money = float(row[7])
         one_year_num = int(re.findall(r"\d+", row[8].strip())[0])
         three_year_money = float(row[9])
         three_year_num = int(re.findall(r"\d+", row[10].strip())[0])
-        pCompany = row[11].strip()
+        pCompany = str(row[11]).strip()
         pCompany = int(get_key(dict(COMPANY_CHOICE),pCompany)[0])
-        maturity = row[12].strip()
-        independence = row[13].strip()
-        business = row[14].strip()
-        technology = row[15].strip()
-        contact_people = row[16].strip()
-        remark = row[17].strip()
+        maturity = str(row[12]).strip()
+        independence = str(row[13]).strip()
+        business = str(row[14]).strip()
+        technology = str(row[15]).strip()
+        contact_people = str(row[16]).strip()
+        remark = str(row[17]).strip()
         upload_time = datetime.date.today()
         real_name = zip.name
 
