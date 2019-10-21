@@ -26,25 +26,25 @@
                         <label><b>公司</b></label>
                     </div>
                     <div class="col-lg-1">
-                        <label><input class="checkbox_company" type='checkbox' name="1"/>股份</label>
+                        <label><input class="checkbox_company" type='checkbox' value="1">股份</label>
                     </div>
                     <div class="col-lg-1">
-                        <label><input class="checkbox_company" type='checkbox' value="2"/>精一</label>
+                        <label><input class="checkbox_company" type='checkbox' data-column="2"/>精一</label>
                     </div>
                     <div class="col-lg-1">
-                        <label><input class="checkbox_company" type='checkbox' value="3"/>科威</label>
+                        <label><input class="checkbox_company" type='checkbox' data-column="3"/>科威</label>
                     </div>
                     <div class="col-lg-1">
-                        <label><input class="checkbox_company" type='checkbox' value="4"/>医疗</label>
+                        <label><input class="checkbox_company" type='checkbox' data-column="4"/>医疗</label>
                     </div>
                     <div class="col-lg-1">
-                        <label><input class="checkbox_company" type='checkbox' value="5"/>柏克</label>
+                        <label><input class="checkbox_company" type='checkbox' data-column="5"/>柏克</label>
                     </div>
                     <div class="col-lg-1">
-                        <label><input class="checkbox_company" type='checkbox' value="6"/>科技</label>
+                        <label><input class="checkbox_company" type='checkbox' data-column="6"/>科技</label>
                     </div>
                     <div class="col-lg-1">
-                        <label><input class="checkbox_company" type='checkbox' value="7"/>浙子</label>
+                        <label><input class="checkbox_company" type='checkbox' data-column="7"/>浙子</label>
                     </div>
                     <button class="btn btn-sm green checkall" id="checkall"><i class="fa fa-check"></i> 全选/反选
                     </button>
@@ -58,36 +58,37 @@
                     <div class="col-lg-11">
                         <label style="letter-spacing: 0.35em">成熟度 </label>
                         <select class="form-control input-inline input-small input-sm form-filter select "
-                                name="maturity" data-placeholder='成熟度' style="width: 145px">
+                                name="maturity__first_class" data-placeholder='成熟度' style="width: 145px">
+                            <option value=''></option>
                             {% for s in maturity %}
-                                <option value="{{ s.0 }}">{{ s.1 }}</option>
+                                <option value="{{ s.first_class }}">{{ s.meaning }}</option>
                             {% endfor %}
                         </select>
 
                         <label style="letter-spacing: 0.35em">自主度</label>
                         <select class="form-control input-inline input-small input-sm form-filter select"
-                                name="independence" data-placeholder='自主度' style="width: 145px">
+                                name="independence__first_class" data-placeholder='自主度' style="width: 145px">
                             <option value=''></option>
                             {% for s in independence %}
-                                <option value="{{ s.0 }}">{{ s.1 }}</option>
+                                <option value="{{ s.first_class }}">{{ s.meaning }}</option>
                             {% endfor %}
                         </select>
 
                         <label>业务领域</label>
                         <select class="form-control input-inline input-small input-sm form-filter select"
-                                name="business" data-placeholder='业务领域' style="width: 145px">
+                                name="business__first_class" data-placeholder='业务领域' style="width: 145px">
                             <option value=''></option>
                             {% for s in business %}
-                                <option value="{{ s.0 }}">{{ s.1 }}</option>
+                                <option value="{{ s.first_class }}">{{ s.meaning }}</option>
                             {% endfor %}
                         </select>
 
                         <label>技术形态</label>
                         <select class="form-control input-inline input-small input-sm form-filter select"
-                                name="technology" data-placeholder='技术形态' style="width: 145px">
+                                name="technology__first_class" data-placeholder='技术形态' style="width: 145px">
                             <option value=''></option>
                             {% for s in technology %}
-                                <option value="{{ s.0 }}">{{ s.1 }}</option>
+                                <option value="{{ s.first_class }}">{{ s.meaning }}</option>
                             {% endfor %}
                         </select>
                         <button class="btn btn-sm yellow filter-submit" style="margin-left:100px"><i
@@ -103,7 +104,7 @@
             <!-- Main row -->
             <div class="row">
                 <!-- Left col -->
-                <section class="col-lg-7 connectedSortable ui-sortable">
+                <section class="col-lg-7 col-md-12 col-sm-12">
                     <div class="box box-success">
                         <div class="box-header">
                             <h3 class="box-title">成熟度-自主度</h3>
@@ -116,7 +117,9 @@
                             </div>
                         </div>
                         <div class="box-footer text-black">
-                            <div id="containerl1" style="width: 700px;height:420px;"></div>
+                            {#                            <div id="containerl1" style="width: 700px;height:420px;" height="700" width="420"></div>#}
+                            <div id="containerl1" style="width: 100%;height:420px;"></div>
+
                             <script type="text/javascript">
                                 var dom = document.getElementById("containerl1");
                                 var myChart = echarts.init(dom);
@@ -124,33 +127,36 @@
                                 option = null;
                                 app.title = '成熟度-自主度';
 
-                                var days = ['自住型I1', '合作型I2', '外协型I3'];
-                                var hours = ['成熟型M1', '演进型M2', '初创型M3'];
+                                var legendData1 = {{ independence_list|safe }};
+                                var legendData2 = {{ maturity_list|safe }};
 
-                                var data = [[0, 0, 1], [0, 1, 4], [0, 2, 0], [1, 0, 0], [1, 1, 3], [1, 2, 1], [2, 0, 7], [2, 1, 5], [2, 2, 14]]
-                                data = data.map(function (item) {
-                                    return [item[1], item[0], item[2] || '-'];
-                                });
+                                var data = {{ maturity_independence }}
+                                    data = data.map(function (item) {
+                                        return [item[1], item[0], item[2] || '-'];
+                                    });
 
                                 option = {
                                     tooltip: {
+                                        trigger: 'item',
+                                        formatter: '<p>{a}</p>{b}:{c}',
                                         position: 'top'
                                     },
                                     animation: false,
                                     grid: {
                                         height: '55%',
-                                        y: '10%'
+                                        y: '10%',
+                                        x: '15%'
                                     },
                                     xAxis: {
                                         type: 'category',
-                                        data: hours,
+                                        data: legendData2,
                                         splitArea: {
                                             show: true
                                         }
                                     },
                                     yAxis: {
                                         type: 'category',
-                                        data: days,
+                                        data: legendData1,
                                         splitArea: {
                                             show: true
                                         }
@@ -167,7 +173,7 @@
                                         }
                                     },
                                     series: [{
-                                        name: 'Punch Card',
+                                        name: '产品数量',
                                         type: 'heatmap',
                                         data: data,
                                         label: {
@@ -183,7 +189,7 @@
                                         }
                                     }]
                                 };
-                                ;
+
                                 if (option && typeof option === "object") {
                                     myChart.setOption(option, true);
                                 }
@@ -206,7 +212,7 @@
                         </div>
                         <!-- /.box-header -->
                         <div class="box-footer text-black">
-                            <div id="containerl2" style="width: 700px;height:420px;"></div>
+                            <div id="containerl2" style="width: 100%;height:420px;"></div>
                             <script type="text/javascript">
                                 var dom = document.getElementById("containerl2");
                                 var myChart = echarts.init(dom);
@@ -214,14 +220,13 @@
                                 option = null;
                                 app.title = '业务领域-技术形态';
 
-                                var hours = ['安保科技B1', '医疗B2', '红外光电B3', '电源/电池B4', '其他B9'];
-                                var days = ['软件类T1', '硬件类T2', '服务类T3', '融合类T4'];
+                                var legendData1 = {{ business_list|safe }};
+                                var legendData2 = {{ technology_list|safe }};
 
-                                var data = [[0, 0, 1], [0, 1, 4], [0, 2, 0], [0, 3, 0], [0, 4, 4], [1, 0, 0], [1, 1, 3], [1, 2, 1], [1, 3, 3], [1, 4, 11]
-                                    , [2, 0, 7], [2, 1, 5], [2, 2, 14], [2, 3, 9], [2, 4, 2], [3, 0, 0], [3, 1, 1], [3, 2, 7], [3, 3, 2], [3, 4, 8]]
-                                data = data.map(function (item) {
-                                    return [item[1], item[0], item[2] || '-'];
-                                });
+                                var data = {{ business_technology }}
+                                    data = data.map(function (item) {
+                                        return [item[1], item[0], item[2] || '-'];
+                                    });
 
                                 option = {
                                     tooltip: {
@@ -230,18 +235,19 @@
                                     animation: false,
                                     grid: {
                                         height: '70%',
+                                        x: '15%',
                                         y: '3%'
                                     },
                                     xAxis: {
                                         type: 'category',
-                                        data: hours,
+                                        data: legendData1,
                                         splitArea: {
                                             show: true
                                         }
                                     },
                                     yAxis: {
                                         type: 'category',
-                                        data: days,
+                                        data: legendData2,
                                         splitArea: {
                                             show: true
                                         }
@@ -286,7 +292,7 @@
                 </section>
                 <!-- /.Left col -->
                 <!-- right col (We are only adding the ID to make the widgets sortable)-->
-                <section class="col-lg-5 connectedSortable ui-sortable">
+                <section class="col-lg-5 col-md-12 col-sm-12">
                     <!-- 业务领域 -->
                     <div class="box box-success">
                         <div class="box-header ui-sortable-handle" style="cursor: move;">
@@ -300,13 +306,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <div id="container1" style="width: 600px;height:189px;margin-left: -100px"></div>
+                            <div id="container1" style="width: 100%;height:189px"></div>
                             <script type="text/javascript">
                                 var dom = document.getElementById("container1");
                                 var myChart = echarts.init(dom);
                                 var app = {};
                                 option = null;
-                                var data = getData();
+                                product_list = {"name": '电源业务大类', "p_l": ['sss', 'rr', 'ggg', 'rrr', 'rrrrr']};
 
                                 option = {
                                     title: {
@@ -317,6 +323,21 @@
                                     tooltip: {
                                         trigger: 'item',
                                         formatter: "{a} <br/>{b} : {c}个 ({d}%)"
+                                        {#formatter: function (params) {#}
+                                        {#    var $pna = params.name;#}
+                                        {#    var res = '';#}
+                                        {#    for (var i = 0; i < $product_list.length; i++) {#}
+                                        {#        if ($product_list[i].name == $pna) {#}
+                                        {#            res = '<span>$product_list[i].p_l</span>'#}
+                                        {#            break;#}
+                                        {#        }#}
+                                        {#    }#}
+                                        {#    setTimeout(function () {#}
+                                        {#        // 仅为了模拟异步回调#}
+                                        {#        callback(ticket, res);//回调函数，这里可以做异步请求加载的一些代码#}
+                                        {#    }, 1000)#}
+                                        {#    return 'loading';#}
+                                        {##}
                                     },
                                     legend: {
                                         type: 'scroll',
@@ -324,46 +345,36 @@
                                         right: 10,
                                         top: 20,
                                         bottom: 20,
-                                        data: data.legendData,
-                                        selected: data.selected,
+
+                                        data: {{ business_list|safe }},
+                                        selected: true
+
                                     },
                                     series: [
                                         {
                                             name: '产品数量',
                                             type: 'pie',
                                             radius: '55%',
-                                            center: ['45%', '50%'],
-
+                                            center: ['35%', '50%'],
                                             selectedMode: 'single',
-                                            data: data.seriesData,
+                                            data: {{ business_product1|safe }},
                                             itemStyle: {
                                                 emphasis: {
                                                     shadowBlur: 10,
                                                     shadowOffsetX: 0,
                                                     shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                                },
+                                                normal: {
+                                                    label: {
+                                                        show: true,
+                                                        formatter: '{d}%'
+                                                    },
+                                                    labelLine: {show: true}
                                                 }
                                             }
                                         }
-                                    ]
-                                }
 
-                                function getData() {
-                                    var legendData = [];
-                                    var seriesData = [];
-                                    var selected = {};
-                                    {% for k,v in business_product.items %}
-                                        legendData.push('{{ k }}');
-                                        seriesData.push({
-                                            name: '{{ k }}',
-                                            value: {{ v }},
-                                        });
-                                        selected['{{ k }}'] = true;
-                                    {% endfor %}
-                                    return {
-                                        legendData: legendData,
-                                        seriesData: seriesData,
-                                        selected: selected
-                                    };
+                                    ]
                                 };
 
                                 if (option && typeof option === "object") {
@@ -386,7 +397,7 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <div id="container2" style="width: 600px;height:189px;margin-left: -100px"></div>
+                            <div id="container2" style="width: 100%;height:189px"></div>
                             <script type="text/javascript">
                                 var dom = document.getElementById("container2");
                                 var myChart = echarts.init(dom);
@@ -418,7 +429,7 @@
                                             name: '产品数量',
                                             type: 'pie',
                                             radius: '55%',
-                                            center: ['45%', '50%'],
+                                            center: ['35%', '50%'],
                                             selectedMode: 'single',
                                             data: data.seriesData,
                                             itemStyle: {
@@ -426,6 +437,13 @@
                                                     shadowBlur: 10,
                                                     shadowOffsetX: 0,
                                                     shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                                },
+                                                normal: {
+                                                    label: {
+                                                        show: true,
+                                                        formatter: '{d}%'
+                                                    },
+                                                    labelLine: {show: true}
                                                 }
                                             }
                                         }
@@ -470,7 +488,7 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <div id="container3" style="width: 600px;height:189px;margin-left: -100px"></div>
+                            <div id="container3" style="width: 100%;height:189px"></div>
                             <script type="text/javascript">
                                 var dom = document.getElementById("container3");
                                 var myChart = echarts.init(dom);
@@ -502,7 +520,7 @@
                                             name: '产品数量',
                                             type: 'pie',
                                             radius: '55%',
-                                            center: ['45%', '50%'],
+                                            center: ['35%', '50%'],
                                             selectedMode: 'single',
                                             data: data.seriesData,
                                             itemStyle: {
@@ -510,6 +528,13 @@
                                                     shadowBlur: 10,
                                                     shadowOffsetX: 0,
                                                     shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                                },
+                                                normal: {
+                                                    label: {
+                                                        show: true,
+                                                        formatter: '{d}%'
+                                                    },
+                                                    labelLine: {show: true}
                                                 }
                                             }
                                         }
@@ -556,7 +581,7 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <div id="container4" style="width: 600px;height:189px;margin-left: -100px"></div>
+                            <div id="container4" style="width: 100%;height:189px"></div>
                             <script type="text/javascript">
                                 var dom = document.getElementById("container4");
                                 var myChart = echarts.init(dom);
@@ -588,7 +613,7 @@
                                             name: '产品数量',
                                             type: 'pie',
                                             radius: '55%',
-                                            center: ['45%', '50%'],
+                                            center: ['35%', '50%'],
                                             selectedMode: 'single',
                                             data: data.seriesData,
                                             itemStyle: {
@@ -596,6 +621,13 @@
                                                     shadowBlur: 10,
                                                     shadowOffsetX: 0,
                                                     shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                                },
+                                                normal: {
+                                                    label: {
+                                                        show: true,
+                                                        formatter: '{d}%'
+                                                    },
+                                                    labelLine: {show: true}
                                                 }
                                             }
                                         }
@@ -658,4 +690,21 @@
     <script src="/static/js/table-ext.js"></script>
     <script src="/static/js/datatable.js"></script>
     <script src="/static/js/jPages.js"></script>
+    <script>
+        $('#checkall').click(function () {
+            //全选按钮
+            $(".checkall").click(function () {
+                $("#checkbox_company input[type='checkbox']").each(function () {
+                    var check = $(this).parent("span").hasClass("checked");
+                    if (!check) {
+                        $(this).prop("checked", true).uniform('refresh');
+                    } else {
+                        $(this).prop("checked", false).uniform('refresh');
+                    }
+                    {#$(this).parents("tr").toggleClass("selected")#}
+                });
+            });
+
+        })
+    </script>
 {% endblock %}

@@ -39,10 +39,10 @@
                            name="apply_situation__icontains" placeholder="应用场景" style="width: 145px">
 
                     <label>发布日期</label>
-                    <input type="datetime-local" class="form-control input-inline input-middle input-sm date getFilter"
-                           style="width: 145px" data-key="start" placeholder="起始时间（必填）">
-                    <input type="text" class="form-control input-inline input-middle input-sm date getFilter"
-                           style="width: 145px" data-key="end" placeholder="结束时间（必填）">
+                    <input type="text" class="form-control input-inline input-middle input-sm date form-filter"
+                           style="width: 145px" name="upload_time__gte" placeholder="起始时间（必填）">
+                    <input type="text" class="form-control input-inline input-middle input-sm date form-filter"
+                           style="width: 145px" name="upload_time__lte" placeholder="结束时间（必填）">
                 </div>
                 <div class="">
 
@@ -111,15 +111,11 @@
     <script src="/static/js/datatable.js"></script>
     <script src="/static/js/jPages.js"></script>
     <script src="/static/js/product/searchproduct.js"></script>
-    <script>
-        // DataTable展示数据
-        TableExample.init();
-        $(".select").select2({width: "200px"});
-        $(".date").datepicker({autoclose: true, format: "yyyy-mm-dd"});
-    </script>
 
     <script>
         SearchTable.init();
+        $(".date").datepicker({autoclose: true, format: "yyyy-mm-dd"});
+        $('.dateFilter').datepicker({autoclose: true, format: "yyyy-mm-dd"})
 
         function formError(element, obj) {
             $.each(obj, function (key, val) {
