@@ -67,7 +67,7 @@ var WaitSubmitTable = function () {
                                             $.growlService("取消提交！", {type: "success"});
                                             location.href = "/product_management/page_new_product/";
                                         } else {
-                                            $.growlService("取消失败！", {type: "danger"});
+                                            $.growlService(data.error_messag, {type: "danger"});
                                         }
                                     })
                                 }
@@ -81,7 +81,7 @@ var WaitSubmitTable = function () {
                                             $.growlService("提交成功！", {type: "success"});
                                             location.href = "/product_management/page_new_product/";
                                         } else {
-                                            $.growlService("提交失败！", {type: "danger"});
+                                            $.growlService(data.error_messag, {type: "danger"});
                                         }
                                     })
                                 }

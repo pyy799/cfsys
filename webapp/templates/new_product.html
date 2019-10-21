@@ -43,7 +43,7 @@
                     <div class="table-actions-wrapper">
 
                         <a type="button" class="btn btn-default"  target="_blank"
-                        href="{{ download_path_excel }}" download="产品信息模版">批量新建产品excel模版下载</a>
+                        href="/static/documents/template.xlsx" download="产品信息模版.xlsx">批量新建产品excel模版下载</a>
 
                         <div class="modal fade" id="many" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
@@ -280,7 +280,7 @@
                 if (data.success) {
                     location.href = "";
                 } else {
-                    $.growlService("上传文件有误", {type: "danger"})
+                    $.growlService(data.error_message, {type: "danger"})
                 }
             }
         });
