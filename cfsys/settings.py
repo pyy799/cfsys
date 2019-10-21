@@ -106,8 +106,9 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, "webapp/static")
 STATIC_URL = '/static/'
 
+PATH = "/Volumes/Transcend/cfsys/files/"
 FILES_PATH = "/Volumes/Transcend/cfsys/files/formal/"
-TEMP_FILES_PATH = "/Volumes/Transcend/cfsys/files/temp"
+TEMP_FILES_PATH = "/Volumes/Transcend/cfsys/files/temp/"
 
 
 PRODUCT_TEMP_EXCEL_PATH = os.path.join(TEMP_FILES_PATH, "excel/")

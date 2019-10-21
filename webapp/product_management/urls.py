@@ -20,7 +20,7 @@ urlpatterns = [
     url(r'^wait_submit/data/$', views.wait_submit, name="wait_submit"),
     url(r'^wait_submit/cancel/(?P<pid>\d+)/$', views.cancel_submit_product, name="cancel_submit_product"),
     url(r'^wait_submit/submit/(?P<pid>\d+)/$', views.submit_product, name="submit_product"),
-    url(r'^wait_submit/delete_file/(?P<file_name>\w+)/$', views.delete_file, name="delete_file"),
+    # url(r'^wait_submit/delete_file/(?P<file_name>\w+)/$', views.delete_file, name="delete_file"),
 
     # 新建及更新-待审核
     url(r'^wait_pass/data/$', views.wait_pass, name="wait_pass"),

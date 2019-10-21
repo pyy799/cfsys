@@ -15,223 +15,225 @@
             <h3>提交产品信息</h3>
         </div>
         <div class="box-body">
-
-        <div class="box box-primary" style="min-height:990px">
-        <div class="box-header">
-            <div class="modal fade" id="zip" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content" style="height: 400px">
-                        <div class="modal-header" style="margin-top: 100px">
-                            <h3 class="modal-title" id="myModalLabel">上传审核文件</h3>
-                        </div>
-                        <div class="modal-body">
-                            <div class="box box-primary">
-                                <form id="edituploadForm" class="form-horizontal" enctype="multipart/form-data" method="post">
-                                {% csrf_token %}
-                                <div class="box-body">
-                                    <div class="form-group">
-                                        <div class="col-sm-12">
-                                            <div class="col-sm-6">
-                                            <label class="control-label">请上传包含审批信息的压缩文件(.zip)</label>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <input type="file" class="form-control" name="zip" id="zip" accept=".zip,.rar" required/>
+            <div class="box box-primary" style="min-height:990px">
+                <div class="box-header">
+                    <div class="modal fade" id="zip" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content" style="height: 400px">
+                                <div class="modal-header" style="margin-top: 100px">
+                                    <h3 class="modal-title" id="myModalLabel">上传审核文件</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="box box-primary">
+                                        <form id="edituploadForm" class="form-horizontal" enctype="multipart/form-data" method="post">
+                                        {% csrf_token %}
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <div class="col-sm-12">
+                                                    <div class="col-sm-6">
+                                                    <label class="control-label">请上传包含审批信息的压缩文件(.zip)</label>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <input type="file" class="form-control" name="zip" id="zip" accept=".zip,.rar" required/>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div class="modal-footer" style="text-align: center">
+                                            <button type="submit" class="btn btn-primary">提交</button>
+                                            <button class="btn btn-default" data-dismiss="modal">关闭</button>
+                                        </div>
+                                        </form>
                                     </div>
                                 </div>
-                                <div class="modal-footer" style="text-align: center">
-                                    <button type="submit" class="btn btn-primary">提交</button>
-                                    <button class="btn btn-default" data-dismiss="modal">关闭</button>
-                                </div>
-                                </form>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal -->
+                    </div>
+                    {% if file_name %}
+                        <a href="/product_management/edit_product/delete_file/{{ pid }}/"
+                             class="btn btn-default" type="button"> {{ file_name }}<i class="fa fa-times"></i></a>
+                    {% else %}
+                        <button class="btn btn-default" type="button" data-toggle="modal" data-target="#zip">
+                        <i class="fa fa-plus"></i> 上传审核文件
+                    </button>
+                    {% endif %}
+                </div>
+                <div class="box-body" style="width: 100%">
+                <form id="contractForm" class="form-horizontal" style="width: 100%" method="post"
+                      action="/product_management/edit_product/submit/{{ pid }}/">
+
+                    <div class="box box-default" style=" ">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">基本信息</h3>（带有<span style="color:red">*</span>标识的为必填项）
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                        class="fa fa-minus"></i></button>
                             </div>
                         </div>
+                        {% csrf_token %}
+                        <div class="box-body" style="margin:0 auto">
+                            <div class="form-group">
+                                <input name="file_name" value="{{ file_name }}" style="display: none">
+                                <label class="col-sm-2 control-label"><span style="color:red">*</span>产品名称</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" name="product_name" maxlength="30" required
+                                           value="{{ product.product_name }}">
+                                </div>
+                                <label class="col-sm-2 control-label">旧产品名称</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" name="old_product_name" maxlength="30"
+                                           value="{{ product.old_product_name }}">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"><span style="color:red">*</span>所属公司</label>
+                                <div class="col-sm-3">
+                                    <select class="form-control" name="pCompany" required>
+                                        <option class="defaultval" selected
+                                                value="{{ product.pCompany }}">{{ product.pCompany_name }}</option>
+                                        {% for s in company_choice %}
+                                            <option value="{{ s.0 }}">{{ s.1 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <label class="col-sm-2 control-label">是否重叠</label>
+                                <div class="col-sm-3">
+                                    <select class="form-control" name="is_overlap">
+                                        <option class="defaultval" selected
+                                                value="">{{ product.is_overlap }}</option>
+                                        <option value="0">否</option>
+                                        <option value="1">是</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">成熟度</label>
+                                <div class="col-sm-3">
+                                    <select class="form-control sign_type" name="maturity">
+                                        <option class="defaultval" selected
+                                                value="{{ product.maturity }}">{{ product.maturity_name }}</option>
+                                        {% for s in m_choice %}
+                                            <option value="{{ s.id }}">{{ s.first_class }}-{{ s.meaning }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <label class="col-sm-2 control-label">自主度</label>
+                                <div class="col-sm-3">
+                                    <select class="form-control select" name="independence">
+                                        <option selected
+                                                value="{{ product.independence }}">{{ product.independence_name }}</option>
+                                        {% for s in i_choice %}
+                                            <option value="{{ s.id }}">{{ s.first_class }}-{{ s.meaning }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">业务领域</label>
+
+                                <div class="col-sm-3">
+                                    <select class="form-control" name="business">
+                                        <option value="{{ product.business }}"
+                                                selected>{{ product.business_name }}</option>
+                                        {% for s in b_choice %}
+                                            <option value="{{ s.id }}">{{ s.first_class }}-{{ s.second_class }}-{{ s.meaning }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <label class="col-sm-2 control-label">技术形态</label>
+
+                                <div class="col-sm-3">
+                                    <select class="form-control" name="technology">
+                                        <option value="{{ product.technology }}"
+                                                selected>{{ product.technology_name }}</option>
+                                        {% for s in t_choice %}
+                                            <option value="{{ s.id }}">{{ s.first_class }}-{{ s.second_class }}-{{ s.meaning }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">过去一年销售额</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" name="one_year_money" value="{{ product.one_year_money }}">
+                                </div>
+
+                                <label class="col-sm-2 control-label">过去一年销售数量</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" name="one_year_num" value="{{ product.one_year_num }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">过去三年销售额</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" name="three_year_money" value="{{ product.three_year_money }}">
+                                </div>
+
+                                <label class="col-sm-2 control-label">过去三年销售数量</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" name="three_year_num" value="{{ product.three_year_num }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">联系人</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" name="contact_people" maxlength="30"
+                                    value="{{ product.contact_people }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">产品描述</label>
+                                <div class="col-sm-8">
+                                    <textarea rows="10" class="form-control" name="introduction" maxlength="500">{{ product.introduction }}</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">目标行业</label>
+                                <div class="col-sm-8">
+                                    <textarea rows="10" class="form-control" name="target_field" maxlength="500">{{ product.target_field }}</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">应用场景</label>
+                                <div class="col-sm-8">
+                                    <textarea rows="10" class="form-control" name="apply_situation" maxlength="500">{{ product.apply_situation }}</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">市场案例</label>
+                                <div class="col-sm-8">
+                                    <textarea rows="10" class="form-control" name="example" maxlength="500">{{ product.example }}</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">备注</label>
+                                <div class="col-sm-8">
+                                    <textarea rows="10" class="form-control" name="remark" maxlength="500">{{ product.remark }}</textarea>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- /.box-body -->
                     </div>
-                    <!-- /.modal-content -->
+
+                    <div class="well contractAdd form-group">
+                        <button id="form_submit" type="submit" class="btn btn-primary addButton"
+                                style="width:170px;margin:0 auto;display: block">提交
+                        </button>
+                    </div>
+                </form>
                 </div>
-                <!-- /.modal -->
             </div>
-            {% if file_name %}
-                <a href="/product_management/edit_product/delete_file/{{ pid }}/"
-                     class="btn btn-default" type="button"> {{ file_name }}<i class="fa fa-times"></i></a>
-            {% else %}
-                <button class="btn btn-default" type="button" data-toggle="modal" data-target="#zip">
-                <i class="fa fa-plus"></i> 上传审核文件
-            </button>
-            {% endif %}
         </div>
-        <div class="box-body" style="width: 100%">
-        <form id="contractForm" class="form-horizontal" style="width: 100%" method="post"
-              action="/product_management/edit_product/submit/{{ pid }}/">
-            <div class="box box-default" style=" ">
-                <div class="box-header with-border">
-                    <h3 class="box-title">基本信息</h3>（带有<span style="color:red">*</span>标识的为必填项）
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                class="fa fa-minus"></i></button>
-                    </div>
-                </div>
-                {% csrf_token %}
-                <div class="box-body" style="margin:0 auto">
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label"><span style="color:red">*</span>产品名称</label>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control" name="product_name" maxlength="30" required
-                                   value="{{ product.product_name }}">
-                        </div>
-                        <label class="col-sm-2 control-label">旧产品名称</label>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control" name="old_product_name" maxlength="30"
-                                   value="{{ product.old_product_name }}">
-                        </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label"><span style="color:red">*</span>所属公司</label>
-                        <div class="col-sm-3">
-                            <select class="form-control" name="pCompany" required>
-                                <option class="defaultval" selected
-                                        value="{{ product.pCompany }}">{{ product.pCompany_name }}</option>
-                                {% for s in company_choice %}
-                                    <option value="{{ s.0 }}">{{ s.1 }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <label class="col-sm-2 control-label"><span style="color:red">*</span>是否重叠</label>
-                        <div class="col-sm-3">
-                            <select class="form-control" name="is_overlap">
-                                <option class="defaultval" selected
-                                        value="">{{ product.is_overlap }}</option>
-                                <option value="0">否</option>
-                                <option value="1">是</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">成熟度</label>
-                        <div class="col-sm-3">
-                            <select class="form-control sign_type" name="maturity">
-                                <option class="defaultval" selected
-                                        value="{{ product.maturity }}">{{ product.maturity_name }}</option>
-                                {% for s in m_choice %}
-                                    <option value="{{ s.id }}">{{ s.first_class }}-{{ s.meaning }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <label class="col-sm-2 control-label">自主度</label>
-                        <div class="col-sm-3">
-                            <select class="form-control select" name="independence">
-                                <option selected
-                                        value="{{ product.independence }}">{{ product.independence_name }}</option>
-                                {% for s in i_choice %}
-                                    <option value="{{ s.id }}">{{ s.first_class }}-{{ s.meaning }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">业务领域</label>
-
-                        <div class="col-sm-3">
-                            <select class="form-control" name="business">
-                                <option value="{{ product.business }}"
-                                        selected>{{ product.business_name }}</option>
-                                {% for s in b_choice %}
-                                    <option value="{{ s.id }}">{{ s.first_class }}-{{ s.second_class }}-{{ s.meaning }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <label class="col-sm-2 control-label">技术形态</label>
-
-                        <div class="col-sm-3">
-                            <select class="form-control" name="technology">
-                                <option value="{{ product.technology }}"
-                                        selected>{{ product.technology_name }}</option>
-                                {% for s in t_choice %}
-                                    <option value="{{ s.id }}">{{ s.first_class }}-{{ s.second_class }}-{{ s.meaning }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">过去一年销售额</label>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control" name="one_year_money" value="{{ product.one_year_money }}">
-                        </div>
-
-                        <label class="col-sm-2 control-label">过去一年销售数量</label>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control" name="one_year_num" value="{{ product.one_year_num }}">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">过去三年销售额</label>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control" name="three_year_money" value="{{ product.three_year_money }}">
-                        </div>
-
-                        <label class="col-sm-2 control-label">过去三年销售数量</label>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control" name="three_year_num" value="{{ product.three_year_num }}">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">联系人</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" name="contact_people" maxlength="30"
-                            value="{{ product.contact_people }}">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">产品描述</label>
-                        <div class="col-sm-8">
-                            <textarea rows="10" class="form-control" name="introduction" maxlength="500">{{ product.introduction }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">目标行业</label>
-                        <div class="col-sm-8">
-                            <textarea rows="10" class="form-control" name="target_field" maxlength="500">{{ product.target_field }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">应用场景</label>
-                        <div class="col-sm-8">
-                            <textarea rows="10" class="form-control" name="apply_situation" maxlength="500">{{ product.apply_situation }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">市场案例</label>
-                        <div class="col-sm-8">
-                            <textarea rows="10" class="form-control" name="example" maxlength="500">{{ product.example }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">备注</label>
-                        <div class="col-sm-8">
-                            <textarea rows="10" class="form-control" name="remark" maxlength="500">{{ product.remark }}</textarea>
-                        </div>
-                    </div>
-
-                </div>
-                <!-- /.box-body -->
-            </div>
-
-            <div class="well contractAdd form-group">
-                <button id="form_submit" type="submit" class="btn btn-primary addButton"
-                        style="width:170px;margin:0 auto;display: block">提交
-                </button>
-            </div>
-        </form>
-        </div>
     </div>
 
 
-
-        </div>
 
 
     <input id="pid" value="{{ pid }}" style="display: none">
@@ -260,7 +262,7 @@
                 if (data.success) {
                     location.href = "/product_management/edit_product/"+pid+"/";
                 } else {
-                    $.growlService("上传文件有误", {type: "danger"})
+                    $.growlService(data.error_message, {type: "danger"})
                 }
             }
         });
