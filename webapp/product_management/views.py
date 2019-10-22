@@ -217,6 +217,151 @@ def new_many(request):
     return ajax_success()
 
 
+# 批量更新
+@login_required
+@permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
+def update_many(request):
+    user = request.user.userprofile
+    now = int(time.time())
+    if request.method != "POST":
+        return ajax_error("上传失败")
+    zip = request.FILES.get("update_zip", None)  # 获取上传的文件，如果没有文件，则默认为None
+    save_name = os.path.splitext(zip.name)[0] + '_' + user.username + '_' + str(now)
+    save_zip = os.path.splitext(zip.name)[1]
+    zip_file_name = save_name+save_zip
+    if not os.path.exists(PRODUCT_TEMP_ZIP_PATH):
+        os.makedirs(PRODUCT_TEMP_ZIP_PATH)
+    destination = open(os.path.join(PRODUCT_TEMP_ZIP_PATH, zip_file_name), "wb+")  # 把文件写入
+    for chunk in zip.chunks():  # 分块写入文件
+        destination.write(chunk)
+    destination.close()
+
+    excel = request.FILES.get("update_excel", None)  # 获取上传的文件，如果没有文件，则默认为None
+    save_excel = os.path.splitext(excel.name)[1]
+    excel_file_name = save_name+save_excel
+    if not os.path.exists(PRODUCT_TEMP_EXCEL_PATH):
+        os.makedirs(PRODUCT_TEMP_EXCEL_PATH)
+    destination = open(os.path.join(PRODUCT_TEMP_EXCEL_PATH, excel_file_name), "wb+")  # 把文件写入
+    for chunk in excel.chunks():  # 分块写入文件
+        destination.write(chunk)
+    destination.close()
+
+    file = os.path.join(PRODUCT_TEMP_EXCEL_PATH, excel_file_name)
+    wb = xlrd.open_workbook(file)
+    sheet = wb.sheet_by_index(0)
+    nrows = sheet.nrows
+    product_list = []
+    try:
+        for i in range(1, nrows):
+            row = sheet.row_values(i)
+            product_name = str(row[0]).strip()
+            old_product_name = str(row[1]).strip()
+            if old_product_name == 'N.A.':
+                old_product_name = None
+            introduction = str(row[2]).strip()
+            overlap = str(row[3]).strip()
+            if overlap == "是":
+                is_overlap = True
+            else:
+                is_overlap = False
+            target_field = str(row[4]).strip()
+            apply_situation = str(row[5]).strip()
+            example = str(row[6]).strip()
+            one_year_money = float(row[7])
+            one_year_num = int(re.findall(r"\d+", row[8].strip())[0])
+            three_year_money = float(row[9])
+            three_year_num = int(re.findall(r"\d+", row[10].strip())[0])
+            pCompany = str(row[11]).strip()
+            pCompany = int(get_key(dict(COMPANY_CHOICE), pCompany)[0])
+            maturity = str(row[12]).strip()
+            independence = str(row[13]).strip()
+            business = str(row[14]).strip()
+            technology = str(row[15]).strip()
+            contact_people = str(row[16]).strip()
+            remark = str(row[17]).strip()
+
+            if old_product_name:
+                old_product_exist_list = Product.objects.filter(product_name=old_product_name).order_by('-version')
+            product_exist_list = Product.objects.filter(product_name=product_name).order_by('-version')
+            if product_exist_list.count()>0 or old_product_exist_list.count()>0 :  # 存在同名产品则判断为更新
+                if product_exist_list.count()>0:
+                    product_exist = product_exist_list[0]
+                else:
+                    product_exist = old_product_exist_list[0]
+                if introduction==product_exist.introduction and is_overlap==product_exist.is_overlap and\
+                    target_field==product_exist.target_field and apply_situation==product_exist.apply_situation and \
+                    example == product_exist.example and one_year_money==product_exist.one_year_money and \
+                    one_year_num == product_exist.one_year_num and three_year_money==product_exist.three_year_money and\
+                    three_year_num == product_exist.three_year_num and pCompany==product_exist.pCompany and \
+                    Attribute.objects.get(first_class=maturity) == product_exist.maturity and \
+                    Attribute.objects.get(first_class=independence) == product_exist.independence and \
+                    Attribute.objects.get(second_class=business) == product_exist.business and \
+                    Attribute.objects.get(second_class=technology) == product_exist.technology and \
+                    contact_people==product_exist.contact_people and remark == product_exist.remark:
+                    continue
+                else:
+                    apply_type = ApplyStatus.ALTER
+                    version = product_exist.version+1
+            else: # 新建
+                apply_type = ApplyStatus.NEW
+                version = 1
+
+            upload_time = datetime.date.today()
+            real_name = zip.name
+            attribute_num = maturity+independence+business+technology
+            status = ProductStatus.WAIT_SUBMIT
+            is_vaild = True
+
+            product = Product()
+            product_list.append(product)
+            product.save()
+            if apply_type == ApplyStatus.NEW:
+                product.product_num = product.id
+            else:
+                product.product_num = product_exist.product_num
+            product.product_name = product_name
+            product.old_product_name = old_product_name
+            product.introduction = introduction
+            product.is_overlap = is_overlap
+            product.target_field = target_field
+            product.apply_situation = apply_situation
+            product.example = example
+            product.one_year_money = one_year_money
+            product.one_year_num = one_year_num
+            product.three_year_money = three_year_money
+            product.three_year_num = three_year_num
+            product.pCompany = pCompany
+            product.contact_people = contact_people
+            product.remark = remark
+            product.uploader = user
+            product.upload_time = upload_time
+            product.real_name = real_name
+            product.save_name = zip_file_name
+            product.maturity = Attribute.objects.get(first_class=maturity)
+            product.independence = Attribute.objects.get(first_class=independence)
+            product.business = Attribute.objects.get(second_class=business)
+            product.technology = Attribute.objects.get(second_class=technology)
+            product.attribute_num = attribute_num
+            product.status = status
+            product.apply_type = apply_type
+            product.version = version
+            product.is_vaild = is_vaild
+            product.save()
+    except Exception as e:
+        for product in product_list:
+            product.delete()
+        os.remove(os.path.join(PRODUCT_TEMP_ZIP_PATH, zip_file_name))
+        os.remove(os.path.join(PRODUCT_TEMP_EXCEL_PATH, excel_file_name))
+        print(e)
+        return ajax_error("产品内容有误!")
+
+    # '产品名称', '旧产品名称', '产品描述', '是否重叠', '目标行业', '应用场景', '市场案例', '过去一年销售额（万元）',
+    # '过去一年销售数量（套/件/组）', '过去三年销售数量（万元）', '过去三年销售数量（套/件/组）', '公司', 'M\n（成熟度）',
+    # 'I\n（自主度）', 'B\n（业务类别）', 'T\n（技术形态）', '联系人及联系方式', '备注'
+
+    return ajax_success()
+
+
 # 新建/修改产品页面
 @login_required
 @permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
@@ -325,10 +470,10 @@ def edit_delete_file(request, pid):
     return HttpResponseRedirect("/product_management/edit_product/"+str(pid)+"/")
 
 
+# 编辑产品页面提交
 @login_required
 @permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def edit_submit(request, pid):
-    # 编辑产品页面提交
     user = request.user.userprofile
     pid = int(pid)
     product_name = request.POST.get("product_name")
@@ -429,10 +574,10 @@ def edit_submit(request, pid):
     return HttpResponseRedirect("/product_management/page_new_product/")
 
 
+# 取消提交操作
 @login_required
 @permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def cancel_submit_product(request, pid):
-    # 取消提交操作
     try:
         product = Product.objects.get(id=pid)
     except Exception as e:
@@ -461,10 +606,10 @@ def cancel_submit_product(request, pid):
     return ajax_success()
 
 
+# 提交操作
 @login_required
 @permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def submit_product(request, pid):
-    # 提交操作
     try:
         product = Product.objects.get(id=pid)
     except Exception as e:
@@ -502,11 +647,11 @@ def submit_product(request, pid):
     return ajax_success()
 
 
+# 新建及更新页面“待审核”页签数据
 @csrf_exempt
 @login_required
 @permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def wait_pass(request):
-    # 新建及更新页面“待审核”页签数据
     fil = {"status": ProductStatus.WAIT_PASS, "is_vaild": True}
     # 只能看到自己的
     user = request.user.userprofile
@@ -516,7 +661,7 @@ def wait_pass(request):
     res = create_data(request.POST.get("draw", 1), pack_list, count)
     return HttpResponse(res)
 
-#
+
 # @login_required
 # @permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 # def delete_file(request, file_name):
@@ -546,7 +691,7 @@ def wait_pass(request):
 @login_required
 @permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def passed(request):
-    fil = {"status__gte": ProductStatus.PASS, "is_vaild": True}
+    fil = {"status__gte": ProductStatus.PASS}
     # 只能看到自己的
     user = request.user.userprofile
     fil.update({"uploader": user})
