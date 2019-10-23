@@ -30,4 +30,10 @@ urlpatterns = [
 
     # 审核
     url(r'^page_pass_product/$', views.index, {"template_name": "pass_product.html"}, name="page_pass_product"),
+    # 待审核
+    url(r'^wait_check/data/$', views.wait_check, name="wait_check"),
+    url(r'^wait_check/check/(?P<pid>\d+)/$', views.check_product, name="check_product"),
+    url(r'^wait_check/cancel/$', views.cancel_check_product, name="cancel_check_product"),
+    #已审核
+    url(r'^checked/data/$', views.checked, name="checked"),
 ]

@@ -15,7 +15,8 @@ from webapp.shortcuts.ajax import ajax_success, ajax_error
 from cfsys.settings import *
 from webapp.utils.query import get_query, create_data
 
-
+@login_required
+@permission_required('webapp.product_information_manege_check')
 def index(request, template_name):
     return render(request, template_name)
 
@@ -700,6 +701,60 @@ def passed(request):
     res = create_data(request.POST.get("draw", 1), pack_list, count)
     return HttpResponse(res)
 
+
+# 待审核
+@csrf_exempt
+@login_required
+@permission_required('webapp.product_information_manege_check')
+def wait_check(request):
+    fil = {"status": ProductStatus.WAIT_PASS, "is_vaild": True}
+    product_list, count, error = get_query(request, Product, **fil)
+    pack_list = [i.pack_data() for i in product_list]
+    res = create_data(request.POST.get("draw", 1), pack_list, count)
+    return HttpResponse(res)
+
+# 通过审核操作
+@csrf_exempt
+@login_required
+@permission_required('webapp.product_information_manege_check')
+def check_product(request, pid):
+    try:
+        product = Product.objects.get(id=pid)
+    except Exception as e:
+        return ajax_error("审核失败!")
+    print(product.product_name)
+    product.status=ProductStatus.PASS
+    a=product.status
+    product.save()
+    return ajax_success()
+
+# 已审核
+@csrf_exempt
+@login_required
+@permission_required('webapp.product_information_manege_check')
+def checked(request):
+    fil = {"status__gte": ProductStatus.PASS}
+    product_list, count, error = get_query(request, Product, **fil)
+    pack_list = [i.pack_data() for i in product_list]
+    res = create_data(request.POST.get("draw", 1), pack_list, count)
+    return HttpResponse(res)
+
+# 不通过审核操作
+@csrf_exempt
+@login_required
+@permission_required('webapp.product_information_manege_check')
+def cancel_check_product(request):
+    pid = request.POST.get('id')
+    try:
+        product = Product.objects.get(id=pid)
+    except Exception as e:
+        return ajax_error("不通过失败!")
+    product.status = ProductStatus.FAIL
+    product.reason=request.POST.get('reason')
+    # a=product.reason
+    # b=product.status
+    product.save()
+    return ajax_success()
 
 def get_key(dict, value):
     return [k for k, v in dict.items() if v == value]
