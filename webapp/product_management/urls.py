@@ -36,6 +36,4 @@ urlpatterns = [
     url(r'^wait_check/cancel/$', views.cancel_check_product, name="cancel_check_product"),
     #已审核
     url(r'^checked/data/$', views.checked, name="checked"),
-    # 属性化分类表
-    url(r'^page_table/$', views.jump, {"template_name": "table.html"}, name="page_table"),
 ]

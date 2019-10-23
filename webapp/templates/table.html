@@ -6,371 +6,124 @@
     <link rel="stylesheet" href="/static/css/jpage.css">
     <!-- Morris chart -->
     <link rel="stylesheet" href="/static/plugins/morris/morris.css">
+
 {% endblock %}
 
+
 {% block content %}
-    <div class="box box-solid" id="tablebox">
-        <div class="box-header with-border" style="padding-left: 100px">
-            <h3>产品能力属性化分类表</h3>
+    <div class="box box-solid" id="tablebox" style="padding-left: 30px;padding-right: 30px">
+        <div class="box-header with-border">
+            <h3 class="text-left">产品能力属性化分类表</h3>
         </div>
         <div class="box-body">
-            <table class="contract"  style="margin: 0 auto;width: 80%" border="1" align="center">
-                <tr>
-                    <th width="40px">序号</th>
-                    <th width="40px">缩略语</th>
-                    <th width="120px">含义</th>
-                    <th width="300px">备注</th>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>M</td>
-                    <td>Maturity,成熟度</td>
-                    <td>产品成熟度是对产品固有质量和可靠性的完备程度以及可应用程度的综合度量。通过对产品成熟度的评估,产品开发者可以及时了解产品开发的进展和完成情况,从而对产品开发的风险进行有效地控制,以达到减少产品开发的风险,推动产品的研发和培育,实现产品的持续完善,促进产品市场化的目的。根据产品成熟的一般规律,确定了产品成熟度的关键影响要素,即产品设计成熟度、产品制造工艺成熟度和产品过程保障成熟度,为构建产品成熟度评价的指标体系奠定了坚实的理论基础。最后,结合产品成熟的表征要素,确定了产品成熟等级划分标准。</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>M1</td>
-                    <td>一级成熟度（成熟型）</td>
-                    <td>功能完备且具有超前性、系统组件化程度极高、缺陷极少且完全可控；性能卓越、达到同类产品的领先水平；架构先进，部署灵活，可扩展性高、可移植性强；产品中长期路线清晰可控、在产品技术预研方面处于领先地位。</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>M2</td>
-                    <td>二级成熟度（演进型）</td>
-                    <td>功能完备、基本实现功能组件化、缺陷极少且可控；性能卓越，达到同类产品先进水平；架构先进，部署灵活，可扩展性高、可移植性强；产品中期路线清晰、技术预研基础扎实。功能完备、无中断性错误、缺陷较少；性能完全符合要求；架构合理，具有一定的前瞻性；对产品未来2-3个版本的定义清晰、有一定预研基础。</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>M3</td>
-                    <td>三级成熟度（初创型）</td>
-                    <td>基础功能实现、无中断性错误；性能符合基本要求；架构基本合理；对产品未来有一定思考。</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>I</td>
-                    <td>Independence,自主程度</td>
-                    <td>自主知识产权，是指我国的权利人具有独立支配权或相对控制权的知识产权，即我国的公民、法人或非法人单位，所依法拥有的、可以独立地行使知识产权各项权能的知识产权，或虽然不拥有所有权，但在一个较长的时期内可以独立行使知识产权各项权能，并能不受他人制约地进行集成创新和引进消化吸收再创新的知识产权。自主知识产权的来源方式主要包括：自主研发或设计；受让或受赠；</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>I1</td>
-                    <td>一级自主度（自主型）</td>
-                    <td>自主成分占75%（含）以上，认为基本做到公司级自主可控。</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>I2</td>
-                    <td>二级自主度（合作型）</td>
-                    <td>自主成分占50%（含）-75%，认为主体部分自主可控。</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>I3</td>
-                    <td>三级自主度（外协型）</td>
-                    <td>自主成分占50%以下：认为主要是外协类产品，基本无自主参与部分。</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>B</td>
-                    <td>Business,业务领域</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B1</td>
-                    <td>安保业务大类</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B101</td>
-                    <td>智慧警务</td>
-                    <td>依托物联网、云计算、大数据技术等新兴技术，根据公安政府等部门的实际情况以及业务需求，协助各地公安机关开展公安信息化的建设，有效实现传统警务向信息警务智慧警务的转变，实现以应用驱动为根本导向、以基础设施建设为关键支撑、以大数据综合应用为发展龙头、以自主创新为重要途径、以信息安全为主要保障的业务目标；设计用途合理、性价比高、安全性高的智能化指挥中心、数据中心整体解决方案，建设一个智能化、信息化、数字化的指挥中心办公环境和数据中心。</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B102</td>
-                    <td>立体防控</td>
-                    <td>智能防控技术系统是为满足复杂、大型的整体安全防控和安保业务管理而设计的技术系统。指挥联动技术系统综合应用多模态探测、大规模异构视频集成、综合态势显示、动态警力仿真和综合通信调度等技术，构建智能化联动指挥体系。</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B103</td>
-                    <td>平安城市</td>
-                    <td>基于城市经济社会发展和城市安全管理需要，综合运用探测感知、物联网、指挥控制、数据融合与数据挖掘、新一代3G和综合通信等技术，以应急联动中心为龙头、以基于情报信息主导警务的情报研判与警务指挥一体化为工作平台，提高整体防控、先期预警、快速处置能力。构建城市安全防控处置技术体系，为城市的经济和社会发展提供强有力的安全保障。</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B104</td>
-                    <td>智能交通</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B105</td>
-                    <td>边海防</td>
-                    <td>包括国土边防及海防监控指挥系统，重要工矿厂所及生产部门的安全生产监管系统，军队、武警、公安等部门的数字化训练环境等建设。</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B106</td>
-                    <td>政法综治</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B107</td>
-                    <td>应急反恐</td>
-                    <td>应急反恐现场处置系统是为应急与反恐部门研发设计的一体化现场解决方案，应用重大突发事件现场。在核心现场通过数字化单兵系统、无人机监视系统、车载复合监视系统、干扰车、通讯车等将现场情况提供给应急指挥车，指挥车以及指挥方舱就组成了现场指挥中心，通过动中通、卫星将情况反映给后方指挥中心，在应急反恐突发事件现场，快速构建后方指挥中心、现场指挥中心和核心现场 三级作战体系，系统实现现场环境控制、指挥网络搭建和辅助指挥决策，提升应急与反恐现场的处置指挥效率。</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B108</td>
-                    <td>大型活动</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B109</td>
-                    <td>大数据类</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B110</td>
-                    <td>视频应用</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B111</td>
-                    <td>基础技术类</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B199</td>
-                    <td>其他</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B2</td>
-                    <td>医疗业务大类</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B201</td>
-                    <td>麻醉类产品</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B202</td>
-                    <td>手术床及周边</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B203</td>
-                    <td>超声类产品</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B204</td>
-                    <td>呼吸类产品</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B205</td>
-                    <td>洁净工程</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B299</td>
-                    <td>其他</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B3</td>
-                    <td>军用电子业务大类</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B301</td>
-                    <td>监控类</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B302</td>
-                    <td>探测成像类</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B303</td>
-                    <td>跟踪识别类</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B304</td>
-                    <td>辅助驾驶</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B399</td>
-                    <td>其他</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B4</td>
-                    <td>电源业务大类</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B401</td>
-                    <td>军工专用电源</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B402</td>
-                    <td>UPS2系列电源</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B403</td>
-                    <td>EPS3系列电源</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B404</td>
-                    <td>电池4系列</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B405</td>
-                    <td>电源类解决方案服务</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B499</td>
-                    <td>其他</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B9</td>
-                    <td>其他业务大类</td>
-                    <td>说明：如有新增业务类型，则继续按“B5”“B6”“B7”“B8”大类编号，这里将无法定义的业务类型归入“B9”——其他业务。</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>B999</td>
-                    <td>其他</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>T</td>
-                    <td>Technology,技术形态</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>T1</td>
-                    <td>软件类</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>T11</td>
-                    <td>平台类</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>T12</td>
-                    <td>应用系统类</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>T13</td>
-                    <td>嵌入式应用</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>T14</td>
-                    <td>移动应用</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>T2</td>
-                    <td>硬件类</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>T21</td>
-                    <td>通用硬件集成</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>T22</td>
-                    <td>特定硬件</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>T3</td>
-                    <td>服务类</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>T31</td>
-                    <td>综合服务</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>T4</td>
-                    <td>融合类</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>T41</td>
-                    <td>融合类</td>
-                    <td></td>
-                </tr>
+            <div class="nav-tabs-custom">
+                <!-- Tabs within a box -->
+                <div style="clear:both"></div>
 
-
-
-            </table>
-
+                <div class="table-container no-padding tab-pane active" id="" style="padding:14px">
+                    <div class="table-actions-wrapper">
+                        <table border="1" id='product_detail' class="table table-bordered table-hover"
+                               style="text-align: left">
+                            <tbody>
+                            <tr>
+                                <th style="vertical-align: middle;text-align:center; width: 80px" bgcolor="#f0ffff">
+                                    <b>属性编码</b>
+                                <th style="vertical-align: middle;text-align:center;width: 80px" bgcolor="#f0ffff">
+                                    <b>大类编码</b>
+                                <th style="vertical-align: middle;text-align:center;width: 80px" bgcolor="#f0ffff">
+                                    <b>小类编码</b>
+                                <th style="vertical-align: middle;text-align:center;width: 200px" bgcolor="#f0ffff">
+                                    <b>含义</b>
+                                <th style="vertical-align: middle;text-align:center;" bgcolor="#f0ffff">
+                                    <b>说明</b>
+                            </tr>
+                            {% for i in maturity %}
+                                {% if i.ACT == 'a' %}
+                                    <tr>
+                                        <td style="vertical-align: middle;text-align:center"><b>{{ i.attribute }}</b>
+                                        </td>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.first_class }}</td>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.second_class }}</td>
+                                        <td style="vertical-align: middle"><b>{{ i.meaning }}</b></td>
+                                        <td>{{ i.information }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.attribute }}</td>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.first_class }}</td>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.second_class }}</td>
+                                        <td style="vertical-align: middle">{{ i.meaning }}</td>
+                                        <td>{{ i.information }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            {% for i in independence %}
+                                {% if i.ACT == 'a' %}
+                                    <tr>
+                                        <td style="vertical-align: middle;text-align:center"><b>{{ i.attribute }}</b>
+                                        </td>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.first_class }}</td>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.second_class }}</td>
+                                        <td style="vertical-align: middle"><b>{{ i.meaning }}</b></td>
+                                        <td>{{ i.information }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.attribute }}</td>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.first_class }}</td>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.second_class }}</td>
+                                        <td style="vertical-align: middle">{{ i.meaning }}</td>
+                                        <td>{{ i.information }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            {% for i in business %}
+                                {% if i.ACT == 'a' %}
+                                    <tr>
+                                        <td style="vertical-align: middle;text-align:center"><b>{{ i.attribute }}</b>
+                                        </td>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.first_class }}</td>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.second_class }}</td>
+                                        <td style="vertical-align: middle"><b>{{ i.meaning }}</b></td>
+                                        <td>{{ i.information }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.attribute }}</td>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.first_class }}</td>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.second_class }}</td>
+                                        <td style="vertical-align: middle">{{ i.meaning }}</td>
+                                        <td>{{ i.information }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            {% for i in technology %}
+                                {% if i.ACT == 'a' %}
+                                    <tr>
+                                        <td style="vertical-align: middle;text-align:center"><b>{{ i.attribute }}</b>
+                                        </td>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.first_class }}</td>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.second_class }}</td>
+                                        <td style="vertical-align: middle"><b>{{ i.meaning }}</b></td>
+                                        <td>{{ i.information }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.attribute }}</td>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.first_class }}</td>
+                                        <td style="vertical-align: middle;text-align:center">{{ i.second_class }}</td>
+                                        <td style="vertical-align: middle">{{ i.meaning }}</td>
+                                        <td>{{ i.information }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {#                        M结束#}
+                </div>
+            </div>
         </div>
-
-
     </div>
 {% endblock %}
 
@@ -378,7 +131,6 @@
     <!-- Morris.js charts -->
     <script src="/static/js/raphael/raphael-min.js"></script>
     <script src="/static/plugins/morris/morris.min.js"></script>
-
     <script src="/static/plugins/jquery.blockui.min.js"></script>
     <script src="/static/plugins/datatables/jquery.dataTables.js"></script>
     <script src="/static/plugins/datatables/dataTables.bootstrap.min.js"></script>
@@ -386,4 +138,11 @@
     <script src="/static/js/table-ext.js"></script>
     <script src="/static/js/datatable.js"></script>
     <script src="/static/js/jPages.js"></script>
+    <script>
+        function classDelete(text, id) {
+            $('#a_delete').attr('href', text)
+            $('#s_delete').html($('#attribute_id_' + id).html())
+        }
+    </script>
+
 {% endblock %}
