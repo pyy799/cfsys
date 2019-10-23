@@ -482,7 +482,7 @@ def edit_submit(request, pid):
     product_name = request.POST.get("product_name")
     product_list = Product.objects.filter(product_name=product_name, is_vaild=True)
     count = len(product_list)
-    if count > 0:
+    if count > 0 and pid == 0:
         return HttpResponse("产品名称已存在!")
     old_product_name = request.POST.get("old_product_name")
     pCompany = request.POST.get("pCompany")
@@ -512,7 +512,8 @@ def edit_submit(request, pid):
         if product_old.status == ProductStatus.PASS:  # 单个更新
             product_old = Product.objects.get(id=pid)
             # product_old.is_vaild = False
-            product_old.save()
+            # product_old.save()
+
             product = Product()
             product.save()
             product.product_num = product_old.product_num
@@ -545,13 +546,13 @@ def edit_submit(request, pid):
     product.uploader = uploader
     product.upload_time = upload_time
     if maturity:
-        product.maturity = Attribute.objects.get(id=maturity)
+        product.maturity = Attribute.objects.get(first_class=maturity)
     if independence:
-        product.independence = Attribute.objects.get(id=independence)
+        product.independence = Attribute.objects.get(first_class=independence)
     if technology:
-        product.technology = Attribute.objects.get(id=technology)
+        product.technology = Attribute.objects.get(second_class=technology)
     if business:
-        product.business = Attribute.objects.get(id=business)
+        product.business = Attribute.objects.get(second_class=business)
     product.attribute_num = attribute_num
     product.status = status
     # product.apply_type = apply_type

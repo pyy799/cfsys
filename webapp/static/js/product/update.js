@@ -140,7 +140,7 @@ var UpdateTable = function () {
                 if (con) {
                     // 选中全部通过
                     for (var i=0; i < checkedBox.length; i++) {
-                        var data = $("#update_table").DataTable().row(i).data();
+                        var data = $("#update_table").DataTable().row(i+1).data();
                         $.get("/product_management/update/invalid/" + data["id"] + "/", function (data) {
                         })
                     }
@@ -160,7 +160,7 @@ var UpdateTable = function () {
                 var con = confirm("确定取消吗?");
                 if (con) {
                     for (var i=0; i < checkedBox.length; i++) {
-                        var data = $("#update_table").DataTable().row(i).data();
+                        var data = $("#update_table").DataTable().row(i+1).data();
                         $.get("/product_management/update/delete/" + data["id"] + "/", function (data) {
                         })
                     }
