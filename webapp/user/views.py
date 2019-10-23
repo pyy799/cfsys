@@ -9,14 +9,21 @@ from django.contrib.auth.models import Permission
 @login_required
 @permission_required('webapp.user_right_management_user')
 def jump_user(request, template_name):
-    users = UserProfile.objects.all()
+    page = 1
+    pageLimit = 2
+    userCounts = UserProfile.objects.all().count()
+    if userCounts % pageLimit != 0:
+        pageCounts = int(userCounts/pageLimit)+1
+    else:
+        pageCounts = int(userCounts/pageLimit)
+    users = UserProfile.objects.all().order_by("-id")[(page-1)*pageLimit:page*pageLimit]
     groups = Group.objects.all().order_by("id")
     for user in users:
         user.date_joined = user.date_joined.strftime('%Y-%m-%d')
         user.Company = user.get_company(user.uCompany)
         gr = Group.objects.get(user=user)
         user.group = gr.name
-    return render(request, template_name, {"users": users, "groups":groups})
+    return render(request, template_name, {"users": users, "groups": groups, "pageCounts": pageCounts})
 
 
 @login_required
@@ -92,6 +99,9 @@ def modify_user(request):
 @login_required
 @permission_required('webapp.user_right_management_user')
 def search_user(request):
+    # 获得页数
+    page = int(request.POST.get("page"))
+    pageLimit = 2
     # 获得查询条件
     username = request.POST.get("username")
     uCompany = request.POST.get("uCompany")
@@ -111,12 +121,19 @@ def search_user(request):
         search_dict["groups__id"] = int(group)
     print(search_dict)
     if not search_dict:
-        user_set = UserProfile.objects.all()
+        userCounts = UserProfile.objects.all().count()
     else:
-        user_set = UserProfile.objects.filter(**search_dict)
+        userCounts = UserProfile.objects.filter(**search_dict).count()
+    if userCounts % pageLimit != 0:
+        pageCounts = int(userCounts/pageLimit)+1
+    else:
+        pageCounts = int(userCounts/pageLimit)
+    if not search_dict:
+        user_set = UserProfile.objects.all().order_by("-id")[(page-1)*pageLimit:page*pageLimit]
+    else:
+        user_set = UserProfile.objects.filter(**search_dict).order_by("-id")[(page-1)*pageLimit:page*pageLimit]
     data_list = []
     for user in user_set:
-        print(user)
         gr = Group.objects.get(user=user)
         user_dict = {
             "id": user.id,
@@ -132,8 +149,7 @@ def search_user(request):
             "is_active": user.is_active,
         }
         data_list.append(user_dict)
-
-    return JsonResponse({"status": 0, "users": data_list})
+    return JsonResponse({"status": 0, "users": data_list,"pageCounts": pageCounts,"userCounts": userCounts})
 
 
 @login_required
@@ -247,3 +263,12 @@ def delete_role(request):
             user.groups.add(group_temp)
     group.delete()
     return JsonResponse({"status": 0})
+
+
+def user_check(request):
+    username = request.GET.get("username")
+    userCount = UserProfile.objects.filter(username=username.strip()).count()
+    if userCount !=0:
+        return JsonResponse({"status": -1})
+    else:
+        return JsonResponse({"status": 0})
