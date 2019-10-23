@@ -11,7 +11,7 @@
 
 {% block content %}
 
-    <div class="box box-solid" id="tablebox" style="padding-left: 100px">
+    <div class="box box-solid" id="tablebox" style="padding-left: 20px">
         <div class="box-header with-border">
             <h3>产品审核</h3>
         </div>
@@ -20,19 +20,25 @@
             <div class="nav-tabs-custom">
             <!-- Tabs within a box -->
             <ul class="nav nav-tabs pull-left">
-                <li><a href="#waitcheck" data-toggle="tab">待审核</a></li>
+{#                <li ><a href="#waitcheck" data-toggle="tab">待审核</a></li>#}
+                <li {% if request.path == '/product_management/page_pass_product/' %}class="active" {% endif %}><a href="#waitcheck" data-toggle="tab">待审核</a></li>
                 <li><a href="#checked" data-toggle="tab">已审核</a></li>
             </ul>
             <div style="clear:both"></div>
 
             <div class="tab-content">
 
-                <div class="table-container no-padding tab-pane" id="waitcheck" style="padding:14px">
+                <div class="table-container no-padding tab-pane active" id="waitcheck" style="padding:14px">
+                    <button class="btn btn-sm green checkall" id="checkall"><i class="fa fa-check"></i> 全选/反选</button>
                     <table class="table table-striped table-bordered table-hover dataTable no-footer"
                         id="waitcheck_table" style="word-break: keep-all">
                         <thead></thead>
                         <tbody></tbody>
                     </table>
+                    <div style="text-align: right">
+                        <a href="javascript:;"><button class="btn btn-sm btn-info" id="submit"><i class="fa fa-check"></i> 通过</button></a>
+                        <a href="javascript:;"><button class="btn btn-sm btn-danger" id="cancel"><i class="fa fa-times"></i> 不通过</button></a>
+                    </div>
                 </div>
 
                 <div class="table-container no-padding tab-pane" id="checked" style="padding:14px">
@@ -43,6 +49,7 @@
                     </table>
                 </div>
 
+            </div>
             </div>
         </div>
 
@@ -72,12 +79,6 @@
     <script>
         WaitCheckTable.init();
         CheckedTable.init();
-        //批量上传文件
-
-
-
-
-
     </script>
 
 {% endblock %}

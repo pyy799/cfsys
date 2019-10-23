@@ -42,42 +42,75 @@ var WaitCheckTable = function () {
                     {"mData": "pCompany_name", "sTitle": "公司名称"},
                     // {"mData": "one_year_money", "sTitle": "过去一年销售额"},
                     // {"mData": "three_year_money", "sTitle": "过去三年销售额"},
-                    {"mData": "maturity", "sTitle": "成熟度"},
-                    {"mData": "independence", "sTitle": "自主度"},
-                    {"mData": "business", "sTitle": "业务领域"},
-                    {"mData": "technology", "sTitle": "技术形态"},
+                    {"mData": "maturity_name", "sTitle": "成熟度"},
+                    {"mData": "independence_name", "sTitle": "自主度"},
+                    {"mData": "business_name", "sTitle": "业务领域"},
+                    {"mData": "technology_name", "sTitle": "技术形态"},
                     {"mData": "uploader", "sTitle": "申请人"},
                     {"mData": "apply_type_name", "sTitle": "申请类型"},
                     {"mData": "", "sTitle": "下载相关文件",
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
-                            var download =$('<a href="{% url \'download\' %}">下载</a>');
+                            var download =$('<a href="files/formal/zip/' + oData["save_name"] + '"  download="">' + oData["real_name"] + '</a>');
                             element.append(download);
+
+                            // download.click(function () {
+                            //     var eleform = $("<form method='get'></form>");
+                            //     eleform.attr("action","D:/Rong/PycharmProjects/cfsys/files/temp/zip/测试_test_1571816620.zip")
+                            //     $(document.body).append(eleform);
+                            //     eleform.submit();
+                            // });
                         }
 
                     },
                     {"mData":null,"sTitle":"操作", "sClass": "center",
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
-                            var tongguo = $('<a href="javascript:;" class="btn btn-xs btn-primary">通过</a>');
-                            var butongguo = $('<a href="javascript:;" class="btn btn-xs btn-danger">不通过</a>');
-                            element.append(tongguo);
-                            element.append(butongguo);
+                            var submit = $('<a href="javascript:;" class="btn btn-xs btn-info">通过</a>');
+                            var cancel = $('<a href="javascript:;" class="btn btn-xs btn-danger">不通过</a>');
+                            element.append(submit);
+                            element.append(cancel);
 
-                            tongguo.on('click',function () {
+                            submit.on('click',function () {
                                 var id = oData["id"];
                                 var con = confirm("确定通过审核吗?");
                                 if (con) {
-                                    $.get("/product_management/wait_submit/cancel/" + id + "/", function (data) {
+                                    $.get("/product_management/wait_check/check/" + id + "/", function (data) {
                                         if (data.success) {
-                                            $.growlService("确认！", {type: "success"});
+                                            $.growlService("审核成功！", {type: "success"});
                                             location.href = "/product_management/page_pass_product/";
                                         } else {
-                                            $.growlService("取消！", {type: "danger"});
+                                            $.growlService(data.error_messag, {type: "danger"});
                                         }
                                     })
                                 }
                             });
+                            cancel.on('click',function () {
+                                var id = oData["id"];
+                                var reason = prompt("确定不通过审核吗? 请输入不通过理由！");
+
+                                $.ajax({
+                                    url:"/product_management/wait_check/cancel/",
+                                    type:'POST',
+                                    data:{"id":id,"reason":reason},
+                                    success:function(res){
+
+                                        location.href = "/product_management/page_pass_product/";
+                                    },
+                                    error:function () {}
+                                })
+                                // if (con) {
+                                //     $.get("/product_management/wait_check/cancel/" + id + "/", function (data) {
+                                //         if (data.success) {
+                                //             $.growlService("不通过审核！", {type: "success"});
+                                //             location.href = "/product_management/page_pass_product/";
+                                //         } else {
+                                //             $.growlService(data.error_messag, {type: "danger"});
+                                //         }
+                                //     })
+                                // }
+                            });
+
 
                         }
                     }
@@ -95,7 +128,7 @@ var WaitCheckTable = function () {
         // handle filter submit button click
         tableWrapper.on('click', '.filter-submit', function (e) {
             e.preventDefault();
-            grid.setUrl("/product_management/passed/data/");
+            grid.setUrl("/product_management/wait_pass/data/");
             grid.submitFilter();
         });
 
@@ -106,7 +139,69 @@ var WaitCheckTable = function () {
             $('.dateFilter').val('');
             grid.resetFilter();
         });
+        //全选按钮
+        $(".checkall").click(function () {
+            $("#waitcheck_table tr input[type='checkbox']").each(function () {
+                var check = $(this).parent("span").hasClass("checked");
+                if (!check) {
+                    $(this).prop("checked", true).uniform('refresh');
+                } else {
+                    $(this).prop("checked", false).uniform('refresh');
+                }
+                $(this).parents("tr").toggleClass("selected")
+            });
+        });
 
+        //多选通过按钮
+        $("#submit").on('click', function () {
+            var checkedBox = $("input[type='checkbox']:checked");
+            if (checkedBox.length < 1) {
+                alert("请至少选择一项！");
+                return
+            } else {
+                var con = confirm("确定通过审核吗?");
+                if (con) {
+                    // 选中全部通过
+                    for (var i=0; i < checkedBox.length; i++) {
+                        var data = $("#waitcheck_table").DataTable().row(i).data();
+                        $.get("/product_management/wait_check/check/" + data["id"] + "/", function (data) {
+                        })
+                    }
+                    $.growlService("审核成功！", {type: "success"});
+                    window.location.reload(true);
+                }
+            }
+        });
+        //多选不通过按钮
+        $("#cancel").on('click', function () {
+            var checkedBox = $("input[type='checkbox']:checked");
+            if (checkedBox.length < 1) {
+                alert("请至少选择一项");
+                return
+            } else {
+                // 选中全部不通过
+                var reason = prompt("确定不通过审核吗? 请输入不通过理由！");
+                if (reason) {
+                    for (var i=0; i < checkedBox.length; i++) {
+                        var data = $("#waitcheck_table").DataTable().row(i).data();
+
+                        $.ajax({
+                            url:"/product_management/wait_check/cancel/",
+                            type:'POST',
+                            data:{"id":data["id"],"reason":reason},
+                            success:function(res){
+                                location.href = "/product_management/page_pass_product/";
+                            },
+                            error:function () {}
+                        })
+                        // $.get("/product_management/wait_check/cancel/" + data["id"] + "/", function (data) {
+                        // })
+                    }
+                    // $.growlService("审核不通过！", {type: "danger"});
+                    // window.location.reload(true);
+                }
+            }
+        });
     };
 
 
