@@ -125,6 +125,7 @@ def show(request, template_name):
     # 成熟度-自主度
     num1 = 0
     num2 = 0
+    maturity_independence_max_num = 0
     maturity_independence = []
     for ind in independence:
         for mat in maturity:
@@ -132,14 +133,17 @@ def show(request, template_name):
                                           "independence__first_class": ind.first_class}
             maturity_independence_product_list = Product.objects.filter(**maturity_independence_fil1)
             num3 = len(maturity_independence_product_list)
+            maturity_independence_max_num=max(maturity_independence_max_num,num3)
             maturity_independence_one = [num1, num2, num3]
             num2 += 1
             maturity_independence.append(maturity_independence_one)
         num1 += 1
         num2 = 0
+
     # 业务领域-技术形态
     num4 = 0
     num5 = 0
+    business_technology_max_num=0
     business_technology = []
     for tec in technology:
         for bus in business:
@@ -147,6 +151,7 @@ def show(request, template_name):
                                         "technology__first_class": tec.first_class}
             business_technology_product_list = Product.objects.filter(**business_technology_fil1)
             num6 = len(business_technology_product_list)
+            business_technology_max_num=max(business_technology_max_num,num6)
             business_technology_one = [num4, num5, num6]
             num5 += 1
             business_technology.append(business_technology_one)
@@ -164,7 +169,10 @@ def show(request, template_name):
                       "business_product1": business_product1,
                       "technology_product1": technology_product1,
                       "maturity_independence": maturity_independence,
-                      "business_technology": business_technology
+                      "business_technology": business_technology,
+                      "maturity_independence_max_num":maturity_independence_max_num,
+                      "business_technology_max_num":business_technology_max_num
+
                       })
     return render(request, template_name, page_dict)
 
@@ -345,6 +353,7 @@ def search_show(request, template_name):
     maturity_independence = []
     num1 = 0
     num2 = 0
+    maturity_independence_max_num=0
     if independence_choice:
         for ind in independence:
             if independence_choice == ind.first_class:
@@ -353,6 +362,7 @@ def search_show(request, template_name):
                         if maturity_choice == mat.first_class:
                             maturity_independence_product_list = Product.objects.filter(**maturity_independence_search_dict)
                             num3 = len(maturity_independence_product_list)
+                            maturity_independence_max_num=max(maturity_independence_max_num,num3)
                         else:
                             num3 = 0
                         maturity_independence_one = [num1, num2, num3]
@@ -363,6 +373,7 @@ def search_show(request, template_name):
                         maturity_independence_search_dict["maturity__first_class"] = mat.first_class
                         maturity_independence_product_list = Product.objects.filter(**maturity_independence_search_dict)
                         num3 = len(maturity_independence_product_list)
+                        maturity_independence_max_num = max(maturity_independence_max_num, num3)
                         maturity_independence_one = [num1, num2, num3]
                         maturity_independence.append(maturity_independence_one)
                         num2 += 1
@@ -382,6 +393,7 @@ def search_show(request, template_name):
                     if maturity_choice == mat.first_class:
                         maturity_independence_product_list = Product.objects.filter(**maturity_independence_search_dict)
                         num3 = len(maturity_independence_product_list)
+                        maturity_independence_max_num = max(maturity_independence_max_num, num3)
                     else:
                         num3 = 0
                     maturity_independence_one = [num1, num2, num3]
@@ -392,6 +404,7 @@ def search_show(request, template_name):
                     maturity_independence_search_dict["maturity__first_class"] = mat.first_class
                     maturity_independence_product_list = Product.objects.filter(**maturity_independence_search_dict)
                     num3 = len(maturity_independence_product_list)
+                    maturity_independence_max_num = max(maturity_independence_max_num, num3)
                     maturity_independence_one = [num1, num2, num3]
                     maturity_independence.append(maturity_independence_one)
                     num2 += 1
@@ -402,6 +415,7 @@ def search_show(request, template_name):
     business_technology = []
     num1 = 0
     num2 = 0
+    business_technology_max_num=0
     if technology_choice:
         for tec in technology:
             if technology_choice == tec.first_class:
@@ -410,6 +424,7 @@ def search_show(request, template_name):
                         if business_choice == bus.first_class:
                             business_technology_product_list = Product.objects.filter(**business_technology_search_dict)
                             num3 = len(business_technology_product_list)
+                            business_technology_max_num=max(business_technology_max_num,num3)
                         else:
                             num3 = 0
                         business_technology_one = [num1, num2, num3]
@@ -420,6 +435,7 @@ def search_show(request, template_name):
                         business_technology_search_dict["business__first_class"] = bus.first_class
                         business_technology_product_list = Product.objects.filter(**business_technology_search_dict)
                         num3 = len(business_technology_product_list)
+                        business_technology_max_num = max(business_technology_max_num, num3)
                         business_technology_one = [num1, num2, num3]
                         business_technology.append(business_technology_one)
                         num2 += 1
@@ -439,6 +455,7 @@ def search_show(request, template_name):
                     if business_choice == bus.first_class:
                         business_technology_product_list = Product.objects.filter(**business_technology_search_dict)
                         num3 = len(business_technology_product_list)
+                        business_technology_max_num = max(business_technology_max_num, num3)
                     else:
                         num3 = 0
                     business_technology_one = [num1, num2, num3]
@@ -449,6 +466,7 @@ def search_show(request, template_name):
                     business_technology_search_dict["business__first_class"] = bus.first_class
                     business_technology_product_list = Product.objects.filter(**business_technology_search_dict)
                     num3 = len(business_technology_product_list)
+                    business_technology_max_num = max(business_technology_max_num, num3)
                     business_technology_one = [num1, num2, num3]
                     business_technology.append(business_technology_one)
                     num2 += 1
@@ -467,21 +485,27 @@ def search_show(request, template_name):
                       "business_product1": business_product1,
                       "technology_product1": technology_product1,
                       "maturity_independence": maturity_independence,
-                      "business_technology": business_technology
+                      "business_technology": business_technology,
+                      "maturity_independence_max_num": maturity_independence_max_num,
+                      "business_technology_max_num": business_technology_max_num
                       })
     return render(request, template_name, page_dict)
 
 
 # 产品详情页
 def detail(request, template_name, bid):
+    page_dict={}
     try:
         product = Product.objects.get(id=bid)
     except:
         raise Http404("产品不存在！")
     info = product.pack_data()
+    page_dict.update({"info": info})
     product_file = product.save_name
     download_path_file = os.path.join(product_file)
-    return render(request, template_name, {"info": info, "download_path_file": download_path_file})
+    page_dict.update({"download_path_file": download_path_file})
+
+    return render(request, template_name, page_dict)
 
 
 # 属性化分类表
