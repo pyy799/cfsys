@@ -1,5 +1,5 @@
 var PassedTable = function () {
-// 等待审核列表
+// 已审核列表
     var handleRecords = function () {
         var grid = new Datatable();
         //debugger;
@@ -32,8 +32,6 @@ var PassedTable = function () {
                     {"mData": "id", "sTitle": "ID", "bVisible": false},
                     {"mData": "product_name", "sTitle": "产品名称"},
                     {"mData": "pCompany_name", "sTitle": "公司名称"},
-                    // {"mData": "one_year_money", "sTitle": "过去一年销售额"},
-                    // {"mData": "three_year_money", "sTitle": "过去三年销售额"},
                     {"mData": "maturity_name", "sTitle": "成熟度"},
                     {"mData": "independence_name", "sTitle": "自主度"},
                     {"mData": "business_name", "sTitle": "业务领域"},
@@ -41,6 +39,7 @@ var PassedTable = function () {
                     {"mData": "uploader", "sTitle": "申请人"},
                     {"mData": "apply_type_name", "sTitle": "申请类型"},
                     {"mData": "status_name", "sTitle": "审核状态"},
+                    {"mData": "reason","sTitle":"不通过原因"},
                     {"mData":null,"sTitle":"操作", "sClass": "center",
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
