@@ -118,8 +118,10 @@
                                 option = {
                                     tooltip: {
                                         trigger: 'item',
-                                        formatter: '<p>{a}</p>{b}:{c}',
-                                        position: 'top'
+                                        position: 'top',
+                                        {#formatter: function (params){#}
+                                        {#    console.log(params)#}
+                                        {##}
                                     },
                                     animation: false,
                                     grid: {
@@ -145,13 +147,13 @@
                                     },
                                     visualMap: {
                                         min: 0,
-                                        max: 20,
+                                        max: {{ maturity_independence_max_num }},
                                         calculable: true,
                                         orient: 'horizontal',
                                         left: 'center',
                                         bottom: '8%',
                                         inRange: {
-                                            color: ['#98cafb', '#021a31']
+                                            color: ['#98cafb', '#033668']
                                         }
                                     },
                                     series: [{
@@ -238,7 +240,7 @@
                                     },
                                     visualMap: {
                                         min: 0,
-                                        max: 20,
+                                        max: {{ business_technology_max_num }},
                                         calculable: true,
                                         orient: 'horizontal',
                                         left: 'center',
@@ -248,7 +250,7 @@
                                         }
                                     },
                                     series: [{
-                                        name: 'ww',
+                                        name: '产品数量',
                                         type: 'heatmap',
                                         data: data2,
                                         label: {
@@ -307,6 +309,9 @@
                                     tooltip: {
                                         trigger: 'item',
                                         formatter: "{a} <br/>{b} : {c}个 ({d}%)"
+                                        {#formatter:function (params) {#}
+                                            {#console.log(params)#}
+                                        {##}
                                         {#formatter: function (params) {#}
                                         {#    var $pna = params.name;#}
                                         {#    var res = '';#}
