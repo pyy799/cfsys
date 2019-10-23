@@ -30,6 +30,4 @@ urlpatterns = [
 
     # 审核
     url(r'^page_pass_product/$', views.index, {"template_name": "pass_product.html"}, name="page_pass_product"),
-    # 属性化分类表
-    url(r'^page_table/$', views.jump, {"template_name": "table.html"}, name="page_table"),
 ]

@@ -6,6 +6,8 @@ from webapp.product_search import views
 urlpatterns = [
     # 产品查询页
     url(r'^page_search_product/$', views.index, {"template_name": "search_product.html"}, name="page_search_product"),
+    # 属性化分类表
+    url(r'^page_table/$', views.table, {"template_name": "table.html"}, name="page_table"),
     # 能力展示
     url(r'^page_show_product/$', views.show, {"template_name": "show_product.html"}, name="page_show_product"),
     # 能力展示页查询
