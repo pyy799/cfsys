@@ -5,6 +5,8 @@ import shutil
 import time
 import xlrd
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+
 from webapp.shortcuts.decorator import permission_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -509,7 +511,7 @@ def edit_submit(request, pid):
         product_old = Product.objects.get(id=pid)
         if product_old.status == ProductStatus.PASS:  # 单个更新
             product_old = Product.objects.get(id=pid)
-            product_old.is_vaild = False
+            # product_old.is_vaild = False
             product_old.save()
             product = Product()
             product.save()
@@ -724,8 +726,22 @@ def check_product(request, pid):
         return ajax_error("审核失败!")
     print(product.product_name)
     product.status=ProductStatus.PASS
-    a=product.status
-    product.save()
+    product.pass_time = datetime.date.today()
+    a=product.pass_time
+    b=product.apply_type
+    if product.apply_type==ApplyStatus.NEW:
+        product.save()
+    elif product.apply_type==ApplyStatus.ALTER:
+        product_old=Product.objects.get(Q(product_num=product.product_num),Q(version=product.version-1),Q(is_vaild=True))
+        product_old.is_vaild=False
+        product_old.save()
+        product.save()
+    elif product.apply_type==ApplyStatus.DELETE:
+        product.delete()
+    elif product.apply_type==ApplyStatus.INVALID:
+        product.is_vaild = False
+        product.save()
+
     return ajax_success()
 
 # 已审核
@@ -733,7 +749,7 @@ def check_product(request, pid):
 @login_required
 @permission_required('webapp.product_information_manege_check')
 def checked(request):
-    fil = {"status__gte": ProductStatus.PASS}
+    fil = {"status__gte": ProductStatus.PASS,"is_vaild":True}
     product_list, count, error = get_query(request, Product, **fil)
     pack_list = [i.pack_data() for i in product_list]
     res = create_data(request.POST.get("draw", 1), pack_list, count)
