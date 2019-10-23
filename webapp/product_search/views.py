@@ -40,7 +40,7 @@ def jump(request, template_name):
 # 查询页签数据
 def search(request):
     # fil = {"status": ProductStatus.PASS,"is_vaild": True}
-    fil = {"is_vaild": True}
+    fil = {"status": ProductStatus.PASS,"is_vaild": True}
     product_list, count, error = get_query(request, Product, **fil)
     pack_list = [i.pack_data() for i in product_list]
     res = create_data(request.POST.get("draw", 1), pack_list, count)
@@ -79,14 +79,22 @@ def show(request, template_name):
     business_product1 = []
     technology_product = {}
     technology_product1 = []
+    # 查询条件
+    maturity_search_dict = {"status": ProductStatus.PASS, "is_vaild": True}
+    independence_search_dict = {"status": ProductStatus.PASS, "is_vaild": True}
+    business_search_dict = {"status": ProductStatus.PASS, "is_vaild": True}
+    technology_search_dict = {"status": ProductStatus.PASS, "is_vaild": True}
+    maturity_independence_search_dict = {"status": ProductStatus.PASS, "is_vaild": True}
+    business_technology_search_dict = {"status": ProductStatus.PASS, "is_vaild": True}
 
     p1 = re.compile(r'[(or（](.*?)[)or）]', re.S)  # 取（）内文字
     # 成熟度
     for i in maturity:
-        product_list = Product.objects.filter(maturity__first_class=i.first_class)
+        maturity_search_dict.update({"maturity__first_class":i.first_class})
+        product_list = Product.objects.filter(**maturity_search_dict)
         num = len(product_list)
         name_m = re.findall(p1, i.meaning)
-        if (name_m):
+        if name_m:
             maturity_list1.append(name_m[0])
         else:
             maturity_list1.append(i.meaning)
@@ -95,7 +103,8 @@ def show(request, template_name):
         maturity_product1.append({"name": i.meaning, "value": num})
     # 自主度
     for i in independence:
-        product_list = Product.objects.filter(independence__first_class=i.first_class)
+        independence_search_dict.update({"independence__first_class":i.first_class})
+        product_list = Product.objects.filter(**independence_search_dict)
         num = len(product_list)
         name_i = re.findall(p1, i.meaning)
         if (name_i):
@@ -107,7 +116,8 @@ def show(request, template_name):
         independence_product1.append({"name": i.meaning, "value": num})
     # 业务领域
     for i in business:
-        product_list = Product.objects.filter(business__first_class=i.first_class)
+        business_search_dict.update({"business__first_class":i.first_class})
+        product_list = Product.objects.filter(**business_search_dict)
         num = len(product_list)
         business_list.append(i.meaning)
         business_list1.append(i.meaning.strip('业务大类'))
@@ -116,7 +126,8 @@ def show(request, template_name):
         business_product_list.append([i.meaning, product_list])
     # 技术形态
     for i in technology:
-        product_list = Product.objects.filter(technology__first_class=i.first_class)
+        technology_search_dict.update({"technology__first_class":i.first_class})
+        product_list = Product.objects.filter(**technology_search_dict)
         technology_list.append(i.meaning)
         num = len(product_list)
         technology_product.update({i.meaning: num})
@@ -129,9 +140,9 @@ def show(request, template_name):
     maturity_independence = []
     for ind in independence:
         for mat in maturity:
-            maturity_independence_fil1 = {"maturity__first_class": mat.first_class,
-                                          "independence__first_class": ind.first_class}
-            maturity_independence_product_list = Product.objects.filter(**maturity_independence_fil1)
+            maturity_independence_search_dict.update({"maturity__first_class": mat.first_class,
+                                          "independence__first_class": ind.first_class})
+            maturity_independence_product_list = Product.objects.filter(**maturity_independence_search_dict)
             num3 = len(maturity_independence_product_list)
             maturity_independence_max_num=max(maturity_independence_max_num,num3)
             maturity_independence_one = [num1, num2, num3]
@@ -147,9 +158,9 @@ def show(request, template_name):
     business_technology = []
     for tec in technology:
         for bus in business:
-            business_technology_fil1 = {"business__first_class": bus.first_class,
-                                        "technology__first_class": tec.first_class}
-            business_technology_product_list = Product.objects.filter(**business_technology_fil1)
+            business_technology_search_dict.update({"business__first_class": bus.first_class,
+                                        "technology__first_class": tec.first_class})
+            business_technology_product_list = Product.objects.filter(**business_technology_search_dict)
             num6 = len(business_technology_product_list)
             business_technology_max_num=max(business_technology_max_num,num6)
             business_technology_one = [num4, num5, num6]
@@ -187,7 +198,7 @@ def search_show(request, template_name):
     independence_choice = request.POST.get('independence__first_class')
     business_choice = request.POST.get('business__first_class')
     technology_choice = request.POST.get('technology__first_class')
-    search_dict = {}
+    search_dict = {"status": ProductStatus.PASS, "is_vaild": True}
     if check_box_list:
         search_dict["pCompany__in"] = check_box_list
     if maturity_choice:
