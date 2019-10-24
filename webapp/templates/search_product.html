@@ -10,7 +10,92 @@
 
 
 {% block content %}
+    <div class="box box-solid" id="tablebox" style="padding-left: 20px;padding-right: 20px">
+        <div class="box-header with-border">
+            <h3>产品信息查询</h3>
+        </div>
+        <div style="clear:both"></div>
+        <div class="table-container no-padding tab-pane active" >
+            <div class="table-actions-wrapper">
+                <div class="" style="margin-top:10px;margin-bottom: 20px;margin-left: 10px">
+                    <label>产品名称</label>
+                    <input type="text" class="form-control input-inline input-middle input-sm form-filter"
+                           name="product_name__icontains" placeholder="产品名称" style="width: 145px">
 
+                    <label style="letter-spacing: 1em">公司</label>
+                    <select class="form-control  input-inline input-small input-sm form-filter select"
+                            name="pCompany__icontains" data-placeholder='选择公司'>
+                        <option value=''></option>
+                        {% for pc in pCompany %}
+                            <option value="{{ pc.0 }}">{{ pc.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <label>目标行业</label>
+                    <input type="text" class="form-control input-inline input-middle input-sm form-filter"
+                           name="target_field__icontains" placeholder="目标行业" style="width: 145px">
+
+                    <label>应用场景</label>
+                    <input type="text" class="form-control input-inline input-middle input-sm form-filter"
+                           name="apply_situation__icontains" placeholder="应用场景" style="width: 145px">
+
+                    <label>发布日期</label>
+                    <input type="text" class="form-control input-inline input-middle input-sm date form-filter"
+                           style="width: 145px" name="pass_time__gte" placeholder="起始时间（必填）">
+                    <input type="text" class="form-control input-inline input-middle input-sm date form-filter"
+                           style="width: 145px" name="pass_time__lte" placeholder="结束时间（必填）">
+                </div>
+                <div class=""style="margin-left: 10px">
+
+                    <label style="letter-spacing: 0.35em">成熟度 </label>
+                    <select class="form-control input-inline input-small input-sm form-filter select "
+                            name="maturity__first_class" data-placeholder='成熟度' style="width: 145px">
+                        <option value=''></option>
+                        {% for s in maturity %}
+                            <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label style="letter-spacing: 0.35em">自主度</label>
+                    <select class="form-control input-inline input-small input-sm form-filter select"
+                            name="independence__first_class" data-placeholder='自主度' style="width: 145px">
+                        <option value=''></option>
+                        {% for s in independence %}
+                            <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label>业务领域</label>
+                    <select class="form-control input-inline input-small input-sm form-filter select"
+                            name="business__first_class" data-placeholder='业务领域' style="width: 145px">
+                        <option value=''></option>
+                        {% for s in business %}
+                            <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label>技术形态</label>
+                    <select class="form-control input-inline input-small input-sm form-filter select"
+                            name="technology__first_class" data-placeholder='技术形态' style="width: 145px">
+                        <option value=''></option>
+                        {% for s in technology %}
+                            <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="btn btn-sm yellow filter-submit" style="margin-left: 200px"><i
+                            class="fa fa-search"></i>
+                        查询
+                    </button>
+                    <button class="btn btn-sm red filter-cancel text-right"><i class="fa fa-times"></i> 取消查询</button>
+                </div>
+            </div>
+
+            <table class="table table-striped table-bordered table-hover dataTable no-footer"
+                   id="search_table" style="word-break: keep-all">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}
 
 {% block footer_js %}
@@ -25,4 +110,18 @@
     <script src="/static/js/table-ext.js"></script>
     <script src="/static/js/datatable.js"></script>
     <script src="/static/js/jPages.js"></script>
+    <script src="/static/js/product/searchproduct.js"></script>
+
+    <script>
+        SearchTable.init();
+        $(".date").datepicker({autoclose: true, format: "yyyy-mm-dd"});
+        $('.dateFilter').datepicker({autoclose: true, format: "yyyy-mm-dd"})
+
+        function formError(element, obj) {
+            $.each(obj, function (key, val) {
+                $("" + element + " input[name='" + key + "']").parent().parent().addClass("has-error");
+                $("" + element + " input[name='" + key + "']").parent().next().html(val)
+            })
+        }
+    </script>
 {% endblock %}

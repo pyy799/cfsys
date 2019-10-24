@@ -80,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cfdatabase',
         'USER': 'root',
-        'PASSWORD': '10213213',
+        'PASSWORD': '18911912812pyy',
         'HOST': '127.0.0.1',
         'PORT': 3306,
     }
@@ -106,8 +106,13 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, "webapp/static")
 STATIC_URL = '/static/'
 
-FILES_PATH = "/Volumes/Transcend/cfsys/files/"
+PATH = "/Volumes/Transcend/cfsys/files/"
+FILES_PATH = "/Volumes/Transcend/cfsys/files/formal/"
+TEMP_FILES_PATH = "/Volumes/Transcend/cfsys/files/temp/"
 
+
+PRODUCT_TEMP_EXCEL_PATH = os.path.join(TEMP_FILES_PATH, "excel/")
+PRODUCT_TEMP_ZIP_PATH = os.path.join(TEMP_FILES_PATH, "zip/")
 PRODUCT_EXCEL_PATH = os.path.join(FILES_PATH, "excel/")
 PRODUCT_ZIP_PATH = os.path.join(FILES_PATH, "zip/")
 LOGIN_URL = "/login/"
