@@ -25,8 +25,18 @@ from django.contrib import messages
 @login_required
 @permission_required('webapp.product_attribute_management')
 def index(request,template_name):
-    attributes = Attribute.objects.all()
-    return render(request,template_name,{'attributes': attributes})
+
+    page_dict = {}
+    maturity = Attribute.objects.filter(attribute='M').order_by('first_class','second_class')
+    independence = Attribute.objects.filter(attribute='I').order_by('first_class','second_class')
+
+    business = Attribute.objects.filter(attribute='B').order_by('first_class','second_class')
+
+    technology = Attribute.objects.filter(attribute='T').order_by('first_class','second_class')
+
+    page_dict.update({"maturity": maturity,
+                      "independence": independence, "business": business, "technology": technology})
+    return render(request, template_name, page_dict)
 
 # 增加大小类
 @login_required
@@ -70,33 +80,6 @@ def add_attribute(request):
 
     return HttpResponseRedirect("/attribute/page_attribute/")
 
-    # 验重、判空
-    # if meaning:
-    #     check_meaning = Attribute.objects.filter(meaning=meaning)
-    #     if check_meaning == []:
-    #         if second_class:
-    #             ACT = 't'
-    #             check_second = Attribute.objects.filter(second_class=second_class)
-    #             if check_second == []:
-    #                 attr = Attribute.objects.create(ACT=ACT, attribute=attribute, first_class=first_class,
-    #                                                 second_class=second_class, meaning=meaning, information=information)
-    #                 attr.save()
-    #             else:
-    #                 messages.success(request,"已有此分类")
-    #         else:
-    #             ACT = 'c'
-    #             check_first = Attribute.objects.filter(first_class=first_class)
-    #             if check_first == []:
-    #                 attr = Attribute.objects.create(ACT=ACT, attribute=attribute, first_class=first_class,
-    #                                                 second_class=second_class, meaning=meaning, information=information)
-    #                 attr.save()
-    #             else:
-    #                 print(0)
-    #     else:
-    #         print(0)
-    # else:
-    #     print(1)
-    # return HttpResponseRedirect("/attribute/page_attribute/")
 
 
 def jump(request,template_name):
