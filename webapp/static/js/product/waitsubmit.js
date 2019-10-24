@@ -34,10 +34,18 @@ var WaitSubmitTable = function () {
                         // "sTitle": '<input id="checkall" name="" type="checkbox" value="">',
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
-                            element.append("<input type='checkbox' name='checkList' />");
+                            var input = '<input id='+oData["id"]+' type="checkbox" name="checkList" />';
+                            element.append(input);
                         }
                     },
-                    {"mData": "id", "sTitle": "ID", "bVisible": false},
+                    {
+                        "mData": "product_name", "sTitle": "产品名称",
+                        "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                            var element = $(nTd).empty();
+                            var detail = $('<a href="/product_search/page_product_detail/' + oData["id"] + '">' + oData["product_name"] + '</a>');
+                            element.append(detail);
+                        }
+                    },
                     {"mData": "product_name", "sTitle": "产品名称"},
                     {"mData": "pCompany_name", "sTitle": "公司名称"},
                     // {"mData": "one_year_money", "sTitle": "过去一年销售额"},
@@ -132,17 +140,20 @@ var WaitSubmitTable = function () {
         //多选提交按钮
         $("#submit").on('click', function () {
             var checkedBox = $("input[type='checkbox']:checked");
+            // var ott = $("#waitsubmit_table").DataTable().rows(".checked");
             if (checkedBox.length < 1) {
                 alert("请至少选择一项！");
-                return
+                return;
             } else {
                 var con = confirm("确定提交吗?");
                 if (con) {
                     // 选中全部通过
-                    for (var i=0; i < checkedBox.length; i++) {
-                        var data = $("#waitsubmit_table").DataTable().row(i).data();
-                        $.get("/product_management/wait_submit/submit/" + data["id"] + "/", function (data) {
-                        })
+                    var checkedBox_all = $("input[type='checkbox']");
+                    for (var i=0; i < checkedBox_all.length; i++){
+                        if (checkedBox_all[i].checked) {
+                            var data = $("#waitsubmit_table").DataTable().row(i).data();
+                            $.get("/product_management/wait_submit/submit/" + data["id"] + "/", function (data) {})
+                        }
                     }
                     $.growlService("提交成功！", {type: "success"});
                     window.location.reload(true);
@@ -159,12 +170,14 @@ var WaitSubmitTable = function () {
                 // 选中全部不通过
                 var con = confirm("确定取消吗?");
                 if (con) {
-                    for (var i=0; i < checkedBox.length; i++) {
-                        var data = $("#waitsubmit_table").DataTable().row(i).data();
-                        $.get("/product_management/wait_submit/cancel/" + data["id"] + "/", function (data) {
-                        })
+                    var checkedBox_all = $("input[type='checkbox']");
+                    for (var i=0; i < checkedBox_all.length; i++) {
+                        if (checkedBox_all[i].checked) {
+                            var data = $("#waitsubmit_table").DataTable().row(i).data();
+                            $.get("/product_management/wait_submit/cancel/" + data["id"] + "/", function (data) {})
+                        }
                     }
-                    $.growlService("取消提交", {type: "danger"});
+                    $.growlService("取消提交成功！", {type: "danger"});
                     window.location.reload(true);
                 }
             }
