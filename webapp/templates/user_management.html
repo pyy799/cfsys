@@ -44,119 +44,84 @@
                 </select>
              <label for="role" class="control-label" style="width:50px;text-align: right"></label>
              <input type="button" id="search" name="search" value="查询"
-                       class="btn btn-large btn-primary" style="width:255px">
+                       class="btn btn-large btn-primary" style="width:255px" onclick="search_it(1)">
          </div>
         </form>
     </div>
     <div>
-    <h3 class="box-header with-border">
+        <h3 class="box-header with-border">
             查询结果
             <input type="button" class="btn btn-large btn-primary" value="新增用户"
-                    data-toggle="modal" data-target="#add" style="margin-left: 750px;font-size:18px">
+                    data-toggle="modal" data-target="#add" style="margin-left: 750px;font-size:18px" onclick="goSubmit()">
         </h3>
-    <div class="box-body">
-      <table id="userInfo" class="table table-hover" >
-        <thead>
-        <tr>
-          <th style="text-align: center">用户名</th>
-          <th style="text-align: center">性别</th>
-          <th style="text-align: center">所属公司</th>
-          <th style="text-align: center">所属部门</th>
-          <th style="text-align: center">职位</th>
-          <th style="text-align: center">角色</th>
-          <th style="text-align: center">电话</th>
-          <th style="text-align: center">邮箱</th>
-          <th style="text-align: center">创建时间</th>
-          <th style="text-align: center">用户状态</th>
-          <th style="text-align: center">操作</th>
-        </tr>
-        </thead>
-        <tbody id="user_info_table">
-        {% for user in users %}
-        <tr style="text-align: center">
-          <td id="username_{{ user.id }}">{{ user.username }}</td>
-            {% if user.gender %}
-                <td id="gender_{{ user.id }}">男</td>
-            {% else %}
-                <td id="gender_{{ user.id }}">女</td>
-            {% endif %}
-          <td id="company_{{ user.id }}">{{ user.Company }}</td>
-          <td id="department_{{ user.id }}">{{ user.department }}</td>
-          <td id="position_{{ user.id }}">{{ user.position }}</td>
-          <td id="group_{{ user.id }}">{{ user.group }}</td>
-          <td id="phone_{{ user.id }}">{{ user.phone }}</td>
-          <td id="email_{{ user.id }}">{{ user.email }}</td>
-          <td>{{ user.date_joined }}</td>
-            {% if user.is_active %}
-                <td id="active_{{ user.id }}">正在使用</td>
-            {% else %}
-                <td id="active_{{ user.id }}">已停用</td>
-            {% endif %}
-          <td>
-              <button type="button"class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"
-                      onclick="goModify('{{ user.id }}')">修改</button>
-              {% if user.is_active %}
-                  <button type="button"class="btn btn-info btn-sm" onclick="changeUse('{{ user.id }}')" id="change_{{ user.id }}">停用</button>
-              {% else %}
-                  <button type="button"class="btn  btn-info btn-sm" onclick="changeUse('{{ user.id }}')" id="change_{{ user.id }}">启用</button>
-              {% endif %}
-              <button type="button" class="btn  btn-danger btn-sm" data-toggle="modal"
-                      data-target="#delete" onclick="goDelete('{% url "delete_user"  user.id %}','{{ user.id }}')">删除</button>
-          </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-      </table>
+        <div class="box-body">
+            <table id="userInfo" class="table table-hover" >
+                <thead>
+                    <tr>
+                        <th style="text-align: center">用户名</th>
+                        <th style="text-align: center">性别</th>
+                        <th style="text-align: center">所属公司</th>
+                        <th style="text-align: center">所属部门</th>
+                        <th style="text-align: center">职位</th>
+                        <th style="text-align: center">角色</th>
+                        <th style="text-align: center">电话</th>
+                        <th style="text-align: center">邮箱</th>
+                        <th style="text-align: center">创建时间</th>
+                        <th style="text-align: center">用户状态</th>
+                        <th style="text-align: center">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="user_info_table">
+                    {% for user in users %}
+                    <tr style="text-align: center">
+                        <td id="username_{{ user.id }}">{{ user.username }}</td>
+                        {% if user.gender %}
+                        <td id="gender_{{ user.id }}">男</td>
+                        {% else %}
+                        <td id="gender_{{ user.id }}">女</td>
+                        {% endif %}
+                        <td id="company_{{ user.id }}">{{ user.Company }}</td>
+                        <td id="department_{{ user.id }}">{{ user.department }}</td>
+                        <td id="position_{{ user.id }}">{{ user.position }}</td>
+                        <td id="group_{{ user.id }}">{{ user.group }}</td>
+                        <td id="phone_{{ user.id }}">{{ user.phone }}</td>
+                        <td id="email_{{ user.id }}">{{ user.email }}</td>
+                        <td>{{ user.date_joined }}</td>
+                        {% if user.is_active %}
+                        <td id="active_{{ user.id }}">正在使用</td>
+                        {% else %}
+                        <td id="active_{{ user.id }}">已停用</td>
+                        {% endif %}
+                        <td>
+                            <button type="button"class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"
+                                onclick="goModify('{{ user.id }}')">修改</button>
+                            {% if user.is_active %}
+                            <button type="button"class="btn btn-info btn-sm" onclick="changeUse('{{ user.id }}')" id="change_{{ user.id }}">停用</button>
+                            {% else %}
+                            <button type="button"class="btn  btn-info btn-sm" onclick="changeUse('{{ user.id }}')" id="change_{{ user.id }}">启用</button>
+                            {% endif %}
+                            <button type="button" class="btn  btn-danger btn-sm" data-toggle="modal"
+                                data-target="#delete" onclick="goDelete('{% url "delete_user"  user.id %}','{{ user.id }}')">删除</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="box-footer" style="text-align: center">
+            <div class="col-sm-6">
+                <div class="pagination" style="float:left">共有<span id="pageCounts">{{ pageCounts }}</span>页<span id="pageError"></span></div>
+
+            </div>
+            <div class="col-sm-6">
+                <ul class="pagination" style="float:right">
+                    <li class="paginate_button previous"><a href="" onclick="previous_search_it();return false;">上一页</a></li>
+                    <li class="paginate_button"><a href="javascript:void(0)">第&nbsp;<span id="pageNum">1</span>&nbsp;页</a></li>
+                    <li class="paginate_button next"><a onclick="next_search_it();return false;">下一页</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
-{#    <div class="row">#}
-{#        <div class="col-sm-5">#}
-{#            <div class="userInfoSum" id="userInfoSum" role="status" aria-live="polite" style="margin-left: 5px">#}
-{#                共有{{ counts }}个用户,这里展示了其中的第{{ start }}位到第{{ end }}位用户#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="col-sm-7">#}
-{#            <div class="dataTables_paginate paging_simple_numbers" id="paginate">#}
-{#                <ul class="pagination">#}
-{#                    <li class="paginate_button previous" id="userInfo_previous">#}
-{#                        <a href="#" aria-controls="userInfo" data-dt-idx="0" tabindex="0">#}
-{#                            上一页#}
-{#                        </a>#}
-{#                    </li>#}
-{#                    <li class="paginate_button ">#}
-{#                        <a href="#" aria-controls="userInfo" data-dt-idx="1" tabindex="0">#}
-{#                            1#}
-{#                        </a>#}
-{#                    </li>#}
-{#                    <li class="paginate_button active">#}
-{#                        <a href="#" aria-controls="userInfo" data-dt-idx="2" tabindex="0">#}
-{#                            2#}
-{#                        </a>#}
-{#                    </li>#}
-{#                    <li class="paginate_button ">#}
-{#                        <a href="#" aria-controls="userInfo" data-dt-idx="3" tabindex="0">#}
-{#                            3#}
-{#                        </a>#}
-{#                    </li>#}
-{#                    <li class="paginate_button ">#}
-{#                        <a href="#" aria-controls="userInfo" data-dt-idx="4" tabindex="0">#}
-{#                            4#}
-{#                        </a>#}
-{#                    </li>#}
-{#                    <li class="paginate_button next" id="userInfo_next">#}
-{#                        <a href="#" aria-controls="userInfo" data-dt-idx="5" tabindex="0">#}
-{#                            下一页#}
-{#                        </a>#}
-{#                    </li>#}
-{#                </ul>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-  </div>
-
-
-
-
-
 </div>
 <div class="modal fade" id="add" tabindex="-1"
      role="dialog" aria-labelledby="addLabel" aria-hidden="true">
@@ -166,7 +131,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
                 <h5 class="modal-title" id="addLabel" style="font-weight:bold">新增用户</h5>
             </div>
-            <form style=";float:none" class="form-horizontal" method="post" action="{% url 'add_user' %}">
+            <form style=";float:none" class="form-horizontal" method="post" action="{% url 'add_user' %}" id="add_user_form">
                 {% csrf_token %}
                 <div class="modal-form" style="margin-top: 0">
                     <div class="col-sm-12" style="margin-top: 5px">
@@ -215,7 +180,7 @@
                 <div class="col-sm-12" id="err_message" style="height:30px;margin-top: 5px"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="submit" class="btn btn-primary">确认</button>
+                    <button type="button" class="btn btn-primary" onclick="check_submit()">确认</button>
                 </div>
             </form>
         </div><!-- /.modal-content -->
@@ -275,9 +240,8 @@
                                     placeholder="请输入邮箱" class="form-control input-inline" style="width: 200px">
                     </div>
                 </div>
-                <div class="col-sm-12" style="height: 30px;margin-top:5px">
-                    <input type="hidden" id="modify_id"/>
-                </div>
+                <div class="col-sm-12" style="height: 30px;margin-top:5px" id="err_message2"></div>
+                <input type="hidden" id="modify_id"/>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                     <button type="button" class="btn btn-primary" id="modify_it">确认</button>
@@ -332,7 +296,7 @@
         })
     }
     function goModify(id){
-
+        $('#err_message2').html("")
         $('#modify_id').val(id)
         $('#modify_name').val($('#username_'+id).html())
         $('#modify_department').val($('#department_'+id).html())
@@ -371,41 +335,48 @@
               'email': $('#modify_email').val(),
               'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
           }
-
-        $.ajax({
-            url:'modify/',
-            type:'POST',
-            data:data,
-            async:true,
-            success:function(res){
-                console.log(res)
-                $('#modify').modal('hide')
-                var id = data.id
-                $('#username_'+id).html(res.username)
-                if(res.gender===1)
-                    $('#gender_'+id).html('男')
-                else
-                    $('#gender_'+id).html('女')
-                $('#company_'+id).html(res.Company)
-                $('#department_'+id).html(res.department)
-                $('#position_'+id).html(res.position)
-                $('#group_'+id).html(res.group)
-                $('#phone_'+id).html(res.phone)
-                $('#email_'+id).html(res.email)
-            },
-            error:function(){
-                console.log("出现错误!!")
-            }
-        });
-        return false;
+          if(data.username==="")
+          {
+              $('#err_message2').html("用户名不能为空!")
+          }
+          else
+          {
+              $.ajax({
+                    url:'modify/',
+                    type:'POST',
+                    data:data,
+                    async:true,
+                    success:function(res){
+                        console.log(res)
+                        $('#modify').modal('hide')
+                        var id = data.id
+                        $('#username_'+id).html(res.username)
+                        if(res.gender===1)
+                            $('#gender_'+id).html('男')
+                        else
+                            $('#gender_'+id).html('女')
+                        $('#company_'+id).html(res.Company)
+                        $('#department_'+id).html(res.department)
+                        $('#position_'+id).html(res.position)
+                        $('#group_'+id).html(res.group)
+                        $('#phone_'+id).html(res.phone)
+                        $('#email_'+id).html(res.email)
+                    },
+                    error:function(){
+                        console.log("出现错误!!")
+                    }
+              });
+              return false;
+          }
       })
-    $('#search').click(function(){
+    function search_it(page){
         var data = {
             'username':$('#name').val(),
             'uCompany':$('#company').val(),
             'department':$('#department').val(),
             'position':$('#position').val(),
             'group':$('#role').val(),
+            'page': page,
             'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
         }
         $.ajax({
@@ -414,10 +385,14 @@
             type:'post',
             async:true,
             success:function(res){
-                console.log(res.users)
+                $('#pageError').html("")
                 $('#user_info_table').html("")
+                $('#pageCounts').html(res.pageCounts)
+                $('#pageNum').html(page)
                res.users.forEach(function(value){
-                   var deleteUrl = '/user/page_user_management/delete/'+value.id+'/'
+                 
+                   var deleteUrl ="/user/page_user_management/delete/"+value.id+"/"
+
                    var usernameString = '<td id="username_' + value.id + '">'+value.username+'</td>'
                    var genderString
                    if(value.gender ===1)
@@ -451,12 +426,69 @@
                    $('#user_info_table').append('<tr style="text-align: center">' + usernameString + genderString +
                        companyString + departString + positionString + groupString + phoneString + emailString +dateString+activeString
                        + '<td>'+ modifyString + useString + deleteString + '</td></tr>')
-
                 })
             },
             error:function(){}
         })
-    })
+    }
+    function next_search_it(){
+        var next_page = parseInt($('#pageNum').html())+1
+        if(next_page<=parseInt($('#pageCounts').html()))
+        {
+            search_it(next_page)
+            $('#pageError').html("")
+        }
+        else
+        {
+            $('#pageError').html(",这是最后一页了")
+        }
+    }
+    function previous_search_it(){
+        var previous_page = parseInt($('#pageNum').html()) - 1
+        if(previous_page<=0)
+        {
+            $('#pageError').html(",没有上一页了")
+        }
+        else
+        {
+            search_it(previous_page)
+            $('#pageError').html("")
+        }
+
+    }
+    function goSubmit() {
+        $('#err_message').html("")
+    }
+    function check_submit(){
+        var username = $('#add_name').val()
+        if(username==="")
+        {
+            $('#err_message').html("用户名不能为空!")
+            return false
+        }
+        else
+        {
+            $.ajax({
+                url:'user_check',
+                type:'get',
+                data:{"username":username},
+                success:function(res){
+                    if(res.status===-1)
+                    {
+                        $('#err_message').html("用户名已存在!")
+                    }
+                    else{
+                        $('#err_message').html("")
+                        $('#add_user_form').submit()
+                    }
+                },
+                error:function(res)
+                {
+                    $('#err_message').html("服务器出错了!")
+                }
+            })
+        }
+    }
 </script>
 {% endblock %}
 
