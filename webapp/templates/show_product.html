@@ -20,13 +20,41 @@
                 {% csrf_token %}
                 <div class="row" style="margin-top: 0px" id="company_checkbox">
                     <label><b>公司</b></label>
-                    <input class="" type='checkbox' value="1" name="check_box_list"><label>股份</label>
-                    <input class="" type='checkbox' value="2" name="check_box_list"><label>精一</label>
-                    <input class="" type='checkbox' value="3" name="check_box_list"><label>科威</label>
-                    <input class="" type='checkbox' value="4" name="check_box_list"><label>医疗</label>
-                    <input class="" type='checkbox' value="5" name="check_box_list"><label>柏克</label>
-                    <input class="" type='checkbox' value="6" name="check_box_list"><label>科技</label>
-                    <input class="" type='checkbox' value="7" name="check_box_list"><label>浙子</label>
+                    {% if "1" in check_box_list %}
+                        <input class="" type='checkbox' value="1" name="check_box_list" checked><label>股份</label>
+                    {% else %}
+                        <input class="" type='checkbox' value="1" name="check_box_list"><label>股份</label>
+                    {% endif %}
+                    {% if "2" in check_box_list %}
+                        <input class="" type='checkbox' value="2" name="check_box_list" checked><label>精一</label>
+                    {% else %}
+                        <input class="" type='checkbox' value="2" name="check_box_list"><label>精一</label>
+                    {% endif %}
+                    {% if "3" in check_box_list %}
+                        <input class="" type='checkbox' value="3" name="check_box_list" checked><label>科威</label>
+                    {% else %}
+                        <input class="" type='checkbox' value="3" name="check_box_list"><label>科威</label>
+                    {% endif %}
+                    {% if "4" in check_box_list %}
+                        <input class="" type='checkbox' value="4" name="check_box_list" checked><label>医疗</label>
+                    {% else %}
+                        <input class="" type='checkbox' value="4" name="check_box_list"><label>医疗</label>
+                    {% endif %}
+                    {% if "5" in check_box_list %}
+                        <input class="" type='checkbox' value="5" name="check_box_list" checked><label>柏克</label>
+                    {% else %}
+                        <input class="" type='checkbox' value="5" name="check_box_list"><label>柏克</label>
+                    {% endif %}
+                    {% if "6" in check_box_list %}
+                        <input class="" type='checkbox' value="6" name="check_box_list" checked><label>科技</label>
+                    {% else %}
+                        <input class="" type='checkbox' value="6" name="check_box_list"><label>科技</label>
+                    {% endif %}
+                    {% if "7" in check_box_list %}
+                        <input class="" type='checkbox' value="7" name="check_box_list" checked><label>浙子</label>
+                    {% else %}
+                        <input class="" type='checkbox' value="7" name="check_box_list"><label>浙子</label>
+                    {% endif %}
                     <button type="button" class="btn btn-sm green checkall" id="checkall"><i class="fa fa-check"></i>
                         全选/反选
                     </button>
@@ -42,7 +70,12 @@
                             name="maturity__first_class" data-placeholder='成熟度' style="width: 145px">
                         <option value=''></option>
                         {% for s in maturity %}
-                            <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                            {% if maturity_choice == s.first_class %}
+                                <option value="{{ s.first_class }}" selected>{{ s.meaning }}</option>
+                            {% else %}
+                                <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                            {% endif %}
+
                         {% endfor %}
                     </select>
 
@@ -51,7 +84,12 @@
                             name="independence__first_class" data-placeholder='自主度' style="width: 145px">
                         <option value=''></option>
                         {% for s in independence %}
-                            <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                            {% if independence_choice == s.first_class %}
+                                <option value="{{ s.first_class }}" selected>{{ s.meaning }}</option>
+                            {% else %}
+                                <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                            {% endif %}
+
                         {% endfor %}
                     </select>
 
@@ -60,7 +98,11 @@
                             name="business__first_class" data-placeholder='业务领域' style="width: 145px">
                         <option value=''></option>
                         {% for s in business %}
-                            <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                            {% if business_choice == s.first_class %}
+                                <option value="{{ s.first_class }}" selected>{{ s.meaning }}</option>
+                            {% else %}
+                                <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
 
@@ -69,7 +111,11 @@
                             name="technology__first_class" data-placeholder='技术形态' style="width: 145px">
                         <option value=''></option>
                         {% for s in technology %}
-                            <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                            {% if technology_choice == s.first_class %}
+                                <option value="{{ s.first_class }}" selected>{{ s.meaning }}</option>
+                            {% else %}
+                                <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                     <button class="btn btn-sm yellow filter-submit" style="margin-left:100px"><i
@@ -117,11 +163,22 @@
 
                                 option = {
                                     tooltip: {
-                                        trigger: 'item',
+                                        {#trigger: 'item',#}
                                         position: 'top',
                                         {#formatter: function (params){#}
                                         {#    console.log(params)#}
                                         {##}
+
+                                    },
+                                    tooltip: {
+                                        //trigger: 'item',
+                                        {#trigger: 'axis',#}
+                                        formatter: function (param) {
+                                            console.log(param)
+                                            if (param.value[2] != 0) {
+                                                return '产品数量：' + param.value[2];
+                                            }
+                                        }
                                     },
                                     animation: false,
                                     grid: {
@@ -130,7 +187,7 @@
                                         x: '8%'
                                     },
                                     xAxis: {
-                                        name:'成熟度',
+                                        name: '成熟度',
                                         type: 'category',
                                         data: legendData2,
                                         splitArea: {
@@ -138,7 +195,7 @@
                                         }
                                     },
                                     yAxis: {
-                                        name:'自主度',
+                                        name: '自主度',
                                         type: 'category',
                                         data: legendData1,
                                         splitArea: {
@@ -214,7 +271,13 @@
 
                                 option = {
                                     tooltip: {
-                                        position: 'top'
+                                        position: 'top',
+                                        formatter: function (param) {
+                                            {#console.log(param)#}
+                                            if (param.value[2] != 0) {
+                                                return '产品数量：' + param.value[2];
+                                            }
+                                        }
                                     },
                                     animation: false,
                                     grid: {
@@ -223,7 +286,7 @@
                                         y: '8%'
                                     },
                                     xAxis: {
-                                        name:'业务领域',
+                                        name: '业务领域',
                                         type: 'category',
                                         data: legendData1,
                                         splitArea: {
@@ -231,7 +294,7 @@
                                         }
                                     },
                                     yAxis: {
-                                        name:'技术形态',
+                                        name: '技术形态',
                                         type: 'category',
                                         data: legendData2,
                                         splitArea: {
@@ -266,7 +329,7 @@
                                         }
                                     }]
                                 };
-                                ;
+
                                 if (option && typeof option === "object") {
                                     myChart.setOption(option, true);
                                 }
@@ -310,7 +373,7 @@
                                         trigger: 'item',
                                         formatter: "{a} <br/>{b} : {c}个 ({d}%)"
                                         {#formatter:function (params) {#}
-                                            {#console.log(params)#}
+                                        {#console.log(params)#}
                                         {##}
                                         {#formatter: function (params) {#}
                                         {#    var $pna = params.name;#}

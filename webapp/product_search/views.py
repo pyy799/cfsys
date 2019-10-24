@@ -498,7 +498,10 @@ def search_show(request, template_name):
                       "maturity_independence": maturity_independence,
                       "business_technology": business_technology,
                       "maturity_independence_max_num": maturity_independence_max_num,
-                      "business_technology_max_num": business_technology_max_num
+                      "business_technology_max_num": business_technology_max_num,
+                      "check_box_list": check_box_list, "maturity_choice": maturity_choice,
+                      "independence_choice": independence_choice, "business_choice": business_choice,
+                      "technology_choice": technology_choice
                       })
     return render(request, template_name, page_dict)
 
