@@ -29,7 +29,14 @@ var WaitPassTable = function () {
                 //"bServerSide": true, //开启服务器模式，使用服务器端处理配置datatable。注意：sAjaxSource参数也必须被给予为了给datatable源代码来获取所需的数据对于每个画。 这个翻译有点别扭。开启此模式后，你对datatables的每个操作 每页显示多少条记录、下一页、上一页、排序（表头）、搜索，这些都会传给服务器相应的值。
                 //"sAjaxSource": "{{rootUrl}}", //给服务器发请求的url
                 "aoColumns": [ //这个属性下的设置会应用到所有列，按顺序没有是空,bVisible是否可见
-                    {"mData": "id", "sTitle": "ID", "bVisible": false},
+                    {
+                        "mData": "product_name", "sTitle": "产品名称",
+                        "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                            var element = $(nTd).empty();
+                            var detail = $('<a href="/product_search/page_product_detail/' + oData["id"] + '">' + oData["product_name"] + '</a>');
+                            element.append(detail);
+                        }
+                    },
                     {"mData": "product_name", "sTitle": "产品名称"},
                     {"mData": "pCompany_name", "sTitle": "公司名称"},
                     // {"mData": "one_year_money", "sTitle": "过去一年销售额"},

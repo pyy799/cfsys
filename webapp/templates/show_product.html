@@ -146,8 +146,11 @@
                             {#                            <div id="containerl1" style="width: 700px;height:420px;" height="700" width="420"></div>#}
                             <div id="containerl1" style="width: 100%;height:420px;"></div>
 
+
+                            <input value="{{ mi_companys }}" id="mi_companys">
                             <script type="text/javascript">
                                 var dom = document.getElementById("containerl1");
+                                var mi_companys = document.getElementById("mi_companys");
                                 var myChart = echarts.init(dom);
                                 var app = {};
                                 option = null;
@@ -174,9 +177,13 @@
                                         //trigger: 'item',
                                         {#trigger: 'axis',#}
                                         formatter: function (param) {
+
                                             {#console.log(param)#}
+
+                                            param.value[3]=mi_companys;
+
                                             if (param.value[2] != 0) {
-                                                return '产品数量：' + param.value[2];
+                                                return '产品数量：' + param.value[2]+'相关公司：'+param.value[3];
                                             }
                                         }
                                     },
@@ -274,8 +281,10 @@
                                         position: 'top',
                                         formatter: function (param) {
                                             {#console.log(param)#}
+                                            param.value.append("999");
                                             if (param.value[2] != 0) {
                                                 return '产品数量：' + param.value[2];
+
                                             }
                                         }
                                     },
