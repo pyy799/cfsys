@@ -99,8 +99,10 @@ def show(request, template_name):
         else:
             maturity_list1.append(i.meaning)
         maturity_list.append(i.meaning)
-        maturity_product.update({i.meaning: num})
+        maturity_product.update({i.meaning: product_list})
+
         maturity_product1.append({"name": i.meaning, "value": num})
+    # print(maturity_product)
     # 自主度
     for i in independence:
         independence_search_dict.update({"independence__first_class":i.first_class})
@@ -175,6 +177,7 @@ def show(request, template_name):
                       "business_list": business_list, "technology_list": technology_list,
                       "maturity_list1": maturity_list1, "independence_list1": independence_list1,
                       "business_list1": business_list1,
+                      "maturity_product": maturity_product,
                       "maturity_product1": maturity_product1,
                       "independence_product1": independence_product1,
                       "business_product1": business_product1,
@@ -506,6 +509,10 @@ def search_show(request, template_name):
     return render(request, template_name, page_dict)
 
 
+#展示页-查询列表
+def result(request,template_name,bid):
+    page_dict={"test":bid}
+    return render(request,template_name,page_dict)
 # 产品详情页
 def detail(request, template_name, bid):
     page_dict={}
