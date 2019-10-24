@@ -8,8 +8,121 @@
     <link rel="stylesheet" href="/static/plugins/morris/morris.css">
 {% endblock %}
 
-
 {% block content %}
+<div class="box box-solid" style="padding-left: 100px;">
+    <div><h3 class="box-header with-border" style="margin-top: 0;padding-top: 30px">用户管理</h3></div>
+    <div class="box-body">
+        <form style="float:left">
+         <div class="col-sm-12">
+             <label for="name" style="width:50px;text-align: right">用户名</label>
+             <input type="text" id="name" name="name"
+                   placeholder="请输入用户名" class="form-control input-inline" style="width:255px">
+             <label for="company" style="width:50px;text-align: right">公司</label>
+             <select type="text" id="company" name="company" class="form-control input-inline" style="width:255px">
+                <option value="0" selected>所有</option>
+                <option value="1">股份</option>
+                <option value="2">精一</option>
+                <option value="3">科威</option>
+                <option value="4">医疗</option>
+                <option value="5">柏克</option>
+                <option value="6">科技</option>
+                <option value="7">浙子</option>
+            </select>
+             <label for="department" style="width:50px;text-align: right">部门</label>
+             <input type="text" id="department" name="department" class="form-control input-inline"
+                   placeholder="部门" value="" style="width:255px">
+         </div>
+         <div class="col-sm-12" style="margin-top: 5px">
+             <label for="position" class="control-label" style="width:50px;text-align: right">职位</label>
+             <input type="text" id="position" name="position" class="form-control input-inline" placeholder="职位" style="width:255px">
+             <label for="role" class="control-label" style="width:50px;text-align: right">角色</label>
+                <select type="text" id="role" name="role" class="form-control input-inline" style="width:255px">
+                    <option value="0" selected>所有</option>
+                    {% for group in groups %}
+                    <option value="{{ group.id }}">{{ group.name }}</option>
+                    {% endfor %}
+                </select>
+             <label for="role" class="control-label" style="width:50px;text-align: right"></label>
+             <input type="button" id="search" name="search" value="查询"
+                       class="btn btn-large btn-primary" style="width:255px" onclick="search_it(1)">
+         </div>
+        </form>
+    </div>
+    <div>
+        <h3 class="box-header with-border">
+            查询结果
+            <input type="button" class="btn btn-large btn-primary" value="新增用户"
+                    data-toggle="modal" data-target="#add" style="margin-left: 750px;font-size:18px" onclick="goSubmit()">
+        </h3>
+        <div class="box-body">
+            <table id="userInfo" class="table table-hover" >
+                <thead>
+                    <tr>
+                        <th style="text-align: center">用户名</th>
+                        <th style="text-align: center">性别</th>
+                        <th style="text-align: center">所属公司</th>
+                        <th style="text-align: center">所属部门</th>
+                        <th style="text-align: center">职位</th>
+                        <th style="text-align: center">角色</th>
+                        <th style="text-align: center">电话</th>
+                        <th style="text-align: center">邮箱</th>
+                        <th style="text-align: center">创建时间</th>
+                        <th style="text-align: center">用户状态</th>
+                        <th style="text-align: center">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="user_info_table">
+                    {% for user in users %}
+                    <tr style="text-align: center">
+                        <td id="username_{{ user.id }}">{{ user.username }}</td>
+                        {% if user.gender %}
+                        <td id="gender_{{ user.id }}">男</td>
+                        {% else %}
+                        <td id="gender_{{ user.id }}">女</td>
+                        {% endif %}
+                        <td id="company_{{ user.id }}">{{ user.Company }}</td>
+                        <td id="department_{{ user.id }}">{{ user.department }}</td>
+                        <td id="position_{{ user.id }}">{{ user.position }}</td>
+                        <td id="group_{{ user.id }}">{{ user.group }}</td>
+                        <td id="phone_{{ user.id }}">{{ user.phone }}</td>
+                        <td id="email_{{ user.id }}">{{ user.email }}</td>
+                        <td>{{ user.date_joined }}</td>
+                        {% if user.is_active %}
+                        <td id="active_{{ user.id }}">正在使用</td>
+                        {% else %}
+                        <td id="active_{{ user.id }}">已停用</td>
+                        {% endif %}
+                        <td>
+                            <button type="button"class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"
+                                onclick="goModify('{{ user.id }}')">修改</button>
+                            {% if user.is_active %}
+                            <button type="button"class="btn btn-info btn-sm" onclick="changeUse('{{ user.id }}')" id="change_{{ user.id }}">停用</button>
+                            {% else %}
+                            <button type="button"class="btn  btn-info btn-sm" onclick="changeUse('{{ user.id }}')" id="change_{{ user.id }}">启用</button>
+                            {% endif %}
+                            <button type="button" class="btn  btn-danger btn-sm" data-toggle="modal"
+                                data-target="#delete" onclick="goDelete('{% url "delete_user"  user.id %}','{{ user.id }}')">删除</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="box-footer" style="text-align: center">
+            <div class="col-sm-6">
+                <div class="pagination" style="float:left">共有<span id="pageCounts">{{ pageCounts }}</span>页<span id="pageError"></span></div>
+
+            </div>
+            <div class="col-sm-6">
+                <ul class="pagination" style="float:right">
+                    <li class="paginate_button previous"><a href="" onclick="previous_search_it();return false;">上一页</a></li>
+                    <li class="paginate_button"><a href="javascript:void(0)">第&nbsp;<span id="pageNum">1</span>&nbsp;页</a></li>
+                    <li class="paginate_button next"><a onclick="next_search_it();return false;">下一页</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="add" tabindex="-1"
      role="dialog" aria-labelledby="addLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -18,96 +131,56 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
                 <h5 class="modal-title" id="addLabel" style="font-weight:bold">新增用户</h5>
             </div>
-            <form style=";float:none" class="form-horizontal" method="post" action="{% url 'add_user' %}">
+            <form style=";float:none" class="form-horizontal" method="post" action="{% url 'add_user' %}" id="add_user_form">
                 {% csrf_token %}
                 <div class="modal-form" style="margin-top: 0">
-                    <div class="col-sm-6" style=";height:45px;text-align:center">
-                        <div style="margin-top: 8px">
-                            <label for="add_name" class="control-label">用户</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="add_name" name="add_name"
-                                    placeholder="请输入用户名" class="form-control">
-                            </div>
-                        </div>
+                    <div class="col-sm-12" style="margin-top: 5px">
+                        <label for="add_name" class="control-label" style="width:50px;text-align: right">用户名</label>
+                        <input type="text" id="add_name" name="add_name"
+                               placeholder="请输入用户名" class="form-control input-inline" style="width: 200px">
+                        <label for="add_gender" class="control-label" style="width:50px;text-align: right">性别</label>
+                        <select  id="add_gender" name="add_gender" class="form-control input-inline" style="width: 200px">
+                            <option value="1" selected>男</option>
+                            <option value="0">女</option>
+                        </select>
                     </div>
-                    <div class="col-sm-6" style="height:45px;text-align:center">
-                        <div style="margin-top: 8px">
-                            <label for="add_gender" class="control-label">性别</label>
-                                <div class="col-sm-10">
-                                    <select type="text" id="add_gender" name="add_gender" class="form-control">
-                                        <option value="1" selected>男</option>
-                                        <option value="0">女</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    <div class="col-sm-6" style="height:45px;text-align:center">
-                        <div style="margin-top: 8px">
-                            <label for="add_company" class="control-label">公司</label>
-                                <div class="col-sm-10">
-                                    <select type="text" id="add_company" name="add_company" class="form-control">
-                                        <option value="1" selected>股份</option>
-                                        <option value="2">精一</option>
-                                        <option value="3">科威</option>
-                                        <option value="4">医疗</option>
-                                        <option value="5">柏克</option>
-                                        <option value="6">科技</option>
-                                        <option value="7">浙子</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    <div class="col-sm-6" style="height:45px;text-align:center">
-                        <div style="margin-top: 8px">
-                            <label for="add_department" class="control-label">部门</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="add_department" name="add_department" class="form-control" value="" placeholder="部门名称">
-                            </div>
-                        </div>
+                    <div class="col-sm-12" style="margin-top: 5px">
+                        <label for="add_company" class="control-label" style="width:50px;text-align: right">公司</label>
+                        <select  id="add_company" name="add_company" class="form-control input-inline" style="width: 200px">
+                            <option value="1" selected>股份</option>
+                            <option value="2">精一</option>
+                            <option value="3">科威</option>
+                            <option value="4">医疗</option>
+                            <option value="5">柏克</option>
+                            <option value="6">科技</option>
+                            <option value="7">浙子</option>
+                        </select>
+                        <label for="add_department" class="control-label" style="width:50px;text-align: right">部门</label>
+                        <input type="text" id="add_department" name="add_department" class="form-control input-inline" value="" placeholder="部门名称" style="width: 200px">
                     </div>
-                    <div class="col-sm-6" style="height:45px;text-align: center">
-                        <div style="margin-top: 8px">
-                            <label for="add_position" class="control-label">职位</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="add_position" name="add_position" class="form-control" value="" placeholder="职位">
-                            </div>
-                        </div>
+                    <div class="col-sm-12" style="margin-top: 5px">
+                        <label for="add_position" class="control-label" style="width:50px;text-align: right">职位</label>
+                        <input type="text" id="add_position" name="add_position" class="form-control input-inline" value="" placeholder="职位" style="width: 200px">
+                        <label for="add_role" class="control-label" style="width:50px;text-align: right">角色</label>
+                        <select id="add_role" name="add_role" class="form-control input-inline" style="width: 200px">
+                            {% for group in groups %}
+                            <option value="{{ group.id }}">{{ group.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
-                    <div class="col-sm-6" style="height:45px;text-align: center">
-            <div style="margin-top: 8px">
-                 <label for="role" class="control-label">角色</label>
-                 <div class="col-sm-10">
-                    <select type="text" id="add_role" name="add_role" class="form-control">
-                        {% for group in groups %}
-                        <option value="{{ group.id }}">{{ group.name }}</option>
-                        {% endfor %}
-                    </select>
-                 </div>
-             </div>
-            </div>
-                <div class="col-sm-6" style=";height:45px;text-align:center">
-                    <div style="margin-top: 8px">
-                        <label for="add_phone" class="control-label">电话</label>
-                        <div class="col-sm-10">
+                    <div class="col-sm-12" style="margin-top: 5px">
+                        <label for="add_phone" class="control-label" style="width:50px;text-align: right">电话</label>
                             <input type="text" id="add_phone" name="add_phone"
-                                placeholder="请输入电话" class="form-control">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6" style=";height:45px;text-align:center">
-                    <div style="margin-top: 8px">
-                        <label for="add_email" class="control-label">邮箱</label>
-                        <div class="col-sm-10">
+                                placeholder="请输入电话" class="form-control input-inline" style="width: 200px">
+                        <label for="add_email" class="control-label" style="width:50px;text-align: right">邮箱</label>
                             <input type="text" id="add_email" name="add_email"
-                                placeholder="请输入邮箱" class="form-control">
-                        </div>
+                                placeholder="请输入邮箱" class="form-control input-inline" style="width: 200px">
                     </div>
                 </div>
-            </div>
-                <div class="col-sm-12" style="height: 20px;margin-top:8px" id="err_message"></div>
+                <div class="col-sm-12" id="err_message" style="height:30px;margin-top: 5px"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="submit" class="btn btn-primary">确认</button>
+                    <button type="button" class="btn btn-primary" onclick="check_submit()">确认</button>
                 </div>
             </form>
         </div><!-- /.modal-content -->
@@ -124,31 +197,19 @@
             <form style=";float:none" class="form-horizontal" enctype="application/x-www-form-urlencoded">
                 {% csrf_token %}
                 <div class="modal-form" style="margin-top: 0">
-                    <div class="col-sm-6" style=";height:45px;text-align:center">
-                        <div style="margin-top: 8px">
-                            <label for="modify_name" class="control-label">用户</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="modify_name" name="modify_name"
-                                    placeholder="请输入用户名" class="form-control">
-                            </div>
-                        </div>
+                    <div class="col-sm-12" style="margin-top: 5px">
+                        <label for="modify_name" class="control-label" style="width:50px;text-align: right">用户名</label>
+                        <input type="text" id="modify_name" name="modify_name"
+                                    placeholder="请输入用户名" class="form-control input-inline" style="width: 200px">
+                        <label for="modify_gender" class="control-label" style="width:50px;text-align: right">性别</label>
+                        <select id="modify_gender" name="modify_gender" class="form-control input-inline" style="width: 200px">
+                            <option value="1">男</option>
+                            <option value="0">女</option>
+                        </select>
                     </div>
-                    <div class="col-sm-6" style="height:45px;text-align:center">
-                        <div style="margin-top: 8px">
-                            <label for="modify_gender" class="control-label">性别</label>
-                                <div class="col-sm-10">
-                                    <select type="text" id="modify_gender" name="modify_gender" class="form-control">
-                                        <option value="1">男</option>
-                                        <option value="0">女</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    <div class="col-sm-6" style="height:45px;text-align:center">
-                        <div style="margin-top: 8px">
-                            <label for="modify_company" class="control-label">公司</label>
-                                <div class="col-sm-10">
-                                    <select type="text" id="modify_company" name="modify_company" class="form-control">
+                    <div class="col-sm-12" style="margin-top: 5px">
+                        <label for="modify_company" class="control-label" style="width:50px;text-align: right">公司</label>
+                        <select id="modify_company" name="modify_company" class="form-control input-inline" style="width: 200px">
                                         <option value="1">股份</option>
                                         <option value="2">精一</option>
                                         <option value="3">科威</option>
@@ -157,60 +218,30 @@
                                         <option value="6">科技</option>
                                         <option value="7">浙子</option>
                                     </select>
-                                </div>
-                            </div>
-                        </div>
-                    <div class="col-sm-6" style="height:45px;text-align:center">
-                        <div style="margin-top: 8px">
-                            <label for="modify_department" class="control-label">部门</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="modify_department" name="modify_department" class="form-control" value="" placeholder="部门">
-                            </div>
-                        </div>
+                        <label for="modify_department" class="control-label" style="width:50px;text-align: right">部门</label>
+                        <input type="text" id="modify_department" name="modify_department" class="form-control input-inline" value="" placeholder="部门" style="width: 200px">
                     </div>
-                    <div class="col-sm-6" style="height:45px;text-align: center">
-                        <div style="margin-top: 8px">
-                            <label for="modify_position" class="control-label">职位</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="modify_position" name="modify_position" class="form-control" value="" placeholder="职位">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6" style="height:45px;text-align: center">
-            <div style="margin-top: 8px">
-                 <label for="role" class="control-label">角色</label>
-                 <div class="col-sm-10">
-                    <select type="text" id="modify_role" name="modify_role" class="form-control">
+                    <div class="col-sm-12" style="margin-top: 5px">
+                        <label for="modify_position" class="control-label" style="width:50px;text-align: right">职位</label>
+                        <input type="text" id="modify_position" name="modify_position" class="form-control input-inline" value="" placeholder="职位" style="width: 200px">
+                        <label for="modify_role" class="control-label" style="width:50px;text-align: right">角色</label>
+                        <select  id="modify_role" name="modify_role" class="form-control input-inline" style="width: 200px">
                         {% for group in groups %}
                         <option value="{{ group.id }}">{{ group.name }}</option>
                         {% endfor %}
-                    </select>
-                 </div>
-             </div>
-            </div>
-                    <div class="col-sm-6" style=";height:45px;text-align:center">
-                        <div style="margin-top: 8px">
-                            <label for="modify_phone" class="control-label">电话</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="modify_phone" name="modify_phone"
-                                    placeholder="请输入电话" class="form-control">
-                            </div>
-                        </div>
+                        </select>
                     </div>
-                    <div class="col-sm-6" style=";height:45px;text-align:center">
-                        <div style="margin-top: 8px">
-                            <label for="modify_email" class="control-label">邮箱</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="modify_email" name="modify_email"
-                                    placeholder="请输入邮箱" class="form-control">
-                            </div>
-                        </div>
+                    <div class="col-sm-12" style="margin-top: 5px">
+                        <label for="modify_phone" class="control-label" style="width:50px;text-align: right">电话</label>
+                        <input type="text" id="modify_phone" name="modify_phone"
+                                    placeholder="请输入电话" class="form-control input-inline" style="width: 200px">
+                        <label for="modify_email" class="control-label" style="width:50px;text-align: right">邮箱</label>
+                        <input type="text" id="modify_email" name="modify_email"
+                                    placeholder="请输入邮箱" class="form-control input-inline" style="width: 200px">
                     </div>
-
                 </div>
-                <div class="col-sm-12" style="height: 20px;margin-top:8px">
-                    <input type="hidden" id="modify_id"/>
-                </div>
+                <div class="col-sm-12" style="height: 30px;margin-top:5px" id="err_message2"></div>
+                <input type="hidden" id="modify_id"/>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                     <button type="button" class="btn btn-primary" id="modify_it">确认</button>
@@ -237,190 +268,6 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
     </div>
-<div class="container">
-    <div style=";height: 40px">
-        <h1 style="font-weight: bold;padding-left: 30px">用户管理</h1>
-    </div>
-    <div style=";height:125px">
-        <form style=";float:none" class="form-horizontal">
-         <div class="col-sm-4" style=";height:60px;text-align: center">
-             <div style="margin-top: 15px">
-                 <label for="name" class="control-label">用户名</label>
-                 <div class="col-sm-10">
-                    <input type="text" id="name" name="name"
-                        placeholder="请输入用户名" class="form-control">
-                 </div>
-             </div>
-         </div>
-         <div class="col-sm-4" style="height:60px;text-align:center">
-                <div style="margin-top: 15px">
-                 <label for="company" class="control-label">公司</label>
-                 <div class="col-sm-10">
-                    <select type="text" id="company" name="company" class="form-control">
-                        <option value="0" selected>所有</option>
-                        <option value="1">股份</option>
-                        <option value="2">精一</option>
-                        <option value="3">科威</option>
-                        <option value="4">医疗</option>
-                        <option value="5">柏克</option>
-                        <option value="6">科技</option>
-                        <option value="7">浙子</option>
-                    </select>
-                 </div>
-             </div>
-         </div>
-         <div class="col-sm-4" style="height:60px;text-align:center">
-            <div style="margin-top: 15px">
-                 <label for="department" class="control-label">部门</label>
-                 <div class="col-sm-10">
-                    <input type="text" id="department" name="department" class="form-control" placeholder="部门" value="">
-                 </div>
-             </div>
-         </div>
-         <div class="col-sm-4" style="height:60px;text-align: center">
-            <div style="margin-top: 15px">
-                 <label for="position" class="control-label">职位</label>
-                 <div class="col-sm-10">
-                    <input type="text" id="position" name="position" class="form-control" placeholder="职位">
-                 </div>
-             </div>
-         </div>
-         <div class="col-sm-4" style="height:60px;text-align: center">
-            <div style="margin-top: 15px">
-                 <label for="role" class="control-label">角色</label>
-                 <div class="col-sm-10">
-                    <select type="text" id="role" name="role" class="form-control">
-                        <option value="0" selected>所有</option>
-                        {% for group in groups %}
-                        <option value="{{ group.id }}">{{ group.name }}</option>
-                        {% endfor %}
-                    </select>
-                 </div>
-             </div>
-         </div>
-         <div class="col-sm-4" style="height:60px">
-            <div style="margin-top: 15px" class="col-sm-10">
-                <input type="button" id="search" name="search" value="查询"
-                       class="btn btn-large btn-primary btn-block">
-             </div>
-         </div>
-    </form>
-    </div>
-    <div style=";height: 60px">
-        <div class="col-sm-6" >
-            <h1 style="font-weight: bold;text-align: left;padding-left: 10px;margin-top: 10px">查询结果</h1>
-        </div>
-        <div class="col-sm-6">
-            <input type="button" class="btn  btn-success" value="新增用户"
-                   style=";margin-top:5px;font-size: 25px;margin-left: 260px"
-                    data-toggle="modal" data-target="#add">
-        </div>
-    </div>
-    <div style="height:500px;margin-top:15px;">
-        <div class="box">
-            <div class="box-header">
-              <h3 class="box-title" style=";font-weight: bold;margin-left: 15px">用户信息表</h3>
-            </div>
-            <div class="box-body">
-              <table id="userInfo" class="table table-bordered table-hover" >
-                <thead>
-                <tr>
-                  <th style="text-align: center">用户名</th>
-                  <th style="text-align: center">性别</th>
-                  <th style="text-align: center">所属公司</th>
-                  <th style="text-align: center">所属部门</th>
-                  <th style="text-align: center">职位</th>
-                  <th style="text-align: center">角色</th>
-                  <th style="text-align: center">电话</th>
-                  <th style="text-align: center">邮箱</th>
-                  <th style="text-align: center">创建时间</th>
-                  <th style="text-align: center">用户状态</th>
-                  <th style="text-align: center">操作</th>
-                </tr>
-                </thead>
-                <tbody id="user_info_table">
-                {% for user in users %}
-                <tr style="text-align: center">
-                  <td id="username_{{ user.id }}">{{ user.username }}</td>
-                    {% if user.gender %}
-                        <td id="gender_{{ user.id }}">男</td>
-                    {% else %}
-                        <td id="gender_{{ user.id }}">女</td>
-                    {% endif %}
-                  <td id="company_{{ user.id }}">{{ user.Company }}</td>
-                  <td id="department_{{ user.id }}">{{ user.department }}</td>
-                  <td id="position_{{ user.id }}">{{ user.position }}</td>
-                  <td id="group_{{ user.id }}">{{ user.group }}</td>
-                  <td id="phone_{{ user.id }}">{{ user.phone }}</td>
-                  <td id="email_{{ user.id }}">{{ user.email }}</td>
-                  <td>{{ user.date_joined }}</td>
-                    {% if user.is_active %}
-                        <td id="active_{{ user.id }}">正在使用</td>
-                    {% else %}
-                        <td id="active_{{ user.id }}">已停用</td>
-                    {% endif %}
-                  <td>
-                      <button type="button"class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"
-                              onclick="goModify('{{ user.id }}')">修改</button>
-                      {% if user.is_active %}
-                          <button type="button"class="btn btn-info btn-sm" onclick="changeUse('{{ user.id }}')" id="change_{{ user.id }}">停用</button>
-                      {% else %}
-                          <button type="button"class="btn  btn-info btn-sm" onclick="changeUse('{{ user.id }}')" id="change_{{ user.id }}">启用</button>
-                      {% endif %}
-                      <button type="button" class="btn  btn-danger btn-sm" data-toggle="modal"
-                              data-target="#delete" onclick="goDelete('{% url "delete_user"  user.id %}','{{ user.id }}')">删除</button>
-                  </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-              </table>
-            </div>
-            <div class="row">
-                <div class="col-sm-5">
-                    <div class="userInfoSum" id="userInfoSum" role="status" aria-live="polite" style="margin-left: 5px">
-                        共有{{ counts }}个用户,这里展示了其中的第{{ start }}位到第{{ end }}位用户
-                    </div>
-                </div>
-                <div class="col-sm-7">
-                    <div class="dataTables_paginate paging_simple_numbers" id="paginate">
-                        <ul class="pagination">
-                            <li class="paginate_button previous" id="userInfo_previous">
-                                <a href="#" aria-controls="userInfo" data-dt-idx="0" tabindex="0">
-                                    上一页
-                                </a>
-                            </li>
-                            <li class="paginate_button ">
-                                <a href="#" aria-controls="userInfo" data-dt-idx="1" tabindex="0">
-                                    1
-                                </a>
-                            </li>
-                            <li class="paginate_button active">
-                                <a href="#" aria-controls="userInfo" data-dt-idx="2" tabindex="0">
-                                    2
-                                </a>
-                            </li>
-                            <li class="paginate_button ">
-                                <a href="#" aria-controls="userInfo" data-dt-idx="3" tabindex="0">
-                                    3
-                                </a>
-                            </li>
-                            <li class="paginate_button ">
-                                <a href="#" aria-controls="userInfo" data-dt-idx="4" tabindex="0">
-                                    4
-                                </a>
-                            </li>
-                            <li class="paginate_button next" id="userInfo_next">
-                                <a href="#" aria-controls="userInfo" data-dt-idx="5" tabindex="0">
-                                    下一页
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-          </div>
-    </div>
-</div>
 <script src="/static/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script>
     function goDelete(text,id){
@@ -443,13 +290,12 @@
                     $('#active_'+id).html("正在使用")
                     $('#change_'+id).html("停用")
                 }
-
             },
             error:function(res){}
         })
     }
     function goModify(id){
-
+        $('#err_message2').html("")
         $('#modify_id').val(id)
         $('#modify_name').val($('#username_'+id).html())
         $('#modify_department').val($('#department_'+id).html())
@@ -488,40 +334,53 @@
               'email': $('#modify_email').val(),
               'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
           }
-        $.ajax({
-            url:'modify/',
-            type:'POST',
-            data:data,
-            async:true,
-            success:function(res){
-                console.log(res)
-                $('#modify').modal('hide')
-                var id = data.id
-                $('#username_'+id).html(res.username)
-                if(res.gender===1)
-                    $('#gender_'+id).html('男')
-                else
-                    $('#gender_'+id).html('女')
-                $('#company_'+id).html(res.Company)
-                $('#department_'+id).html(res.department)
-                $('#position_'+id).html(res.position)
-                $('#group_'+id).html(res.group)
-                $('#phone_'+id).html(res.phone)
-                $('#email_'+id).html(res.email)
-            },
-            error:function(){
-                console.log("出现错误!!")
-            }
-        });
-        return false;
+          if($.trim(data.username)==="")
+          {
+              $('#err_message2').html("用户名不能为空!")
+          }
+          else
+          {
+              $.ajax({
+                  url:'modify/',
+                  type:'POST',
+                  data:data,
+                  async:true,
+                  success:function(res){
+                      if(res.status===-1)
+                      {
+                          $('#err_message2').html("用户名已存在!")
+                      }
+                      else{
+                          $('#modify').modal('hide')
+                          var id = data.id
+                          $('#username_'+id).html(res.username)
+                          if(res.gender===1)
+                              $('#gender_'+id).html('男')
+                          else
+                              $('#gender_'+id).html('女')
+                          $('#company_'+id).html(res.Company)
+                          $('#department_'+id).html(res.department)
+                          $('#position_'+id).html(res.position)
+                          $('#group_'+id).html(res.group)
+                          $('#phone_'+id).html(res.phone)
+                          $('#email_'+id).html(res.email)
+                      }
+                    },
+                    error:function(){
+                        console.log("出现错误!!")
+                    }
+              });
+              return false;
+          }
       })
-    $('#search').click(function(){
+    function search_it(page){
         var data = {
             'username':$('#name').val(),
             'uCompany':$('#company').val(),
             'department':$('#department').val(),
             'position':$('#position').val(),
             'group':$('#role').val(),
+            'page': page,
             'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
         }
         $.ajax({
@@ -530,9 +389,13 @@
             type:'post',
             async:true,
             success:function(res){
-                console.log(res.users)
+                $('#pageError').html("")
                 $('#user_info_table').html("")
+                $('#pageCounts').html(res.pageCounts)
+                $('#pageNum').html(page)
                res.users.forEach(function(value){
+
+                   var deleteUrl ="/user/page_user_management/delete/"+value.id+"/"
                    var usernameString = '<td id="username_' + value.id + '">'+value.username+'</td>'
                    var genderString
                    if(value.gender ===1)
@@ -560,17 +423,74 @@
                    }
                    var modifyString = '<button type="button"class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"'
                         +'onclick="goModify('+value.id + ')">修改</button>'
-                   var deleteString = '<button type="button" class="btn  btn-danger btn-sm" data-toggle="modal"'+'data-target="#delete" onclick="goDelete('+'/user/page_user_management/delete/'+value.id+','+value.id
+                   var deleteString = '<button type="button" class="btn  btn-danger btn-sm" data-toggle="modal"'+'data-target="#delete" onclick="goDelete('
+                       +"'"+deleteUrl+"'"+','+value.id
                             +')">删除</button>'
                    $('#user_info_table').append('<tr style="text-align: center">' + usernameString + genderString +
                        companyString + departString + positionString + groupString + phoneString + emailString +dateString+activeString
                        + '<td>'+ modifyString + useString + deleteString + '</td></tr>')
-
                 })
             },
             error:function(){}
         })
-    })
+    }
+    function next_search_it(){
+        var next_page = parseInt($('#pageNum').html())+1
+        if(next_page<=parseInt($('#pageCounts').html()))
+        {
+            search_it(next_page)
+            $('#pageError').html("")
+        }
+        else
+        {
+            $('#pageError').html(",这是最后一页了")
+        }
+    }
+    function previous_search_it(){
+        var previous_page = parseInt($('#pageNum').html()) - 1
+        if(previous_page<=0)
+        {
+            $('#pageError').html(",没有上一页了")
+        }
+        else
+        {
+            search_it(previous_page)
+            $('#pageError').html("")
+        }
+    }
+    function goSubmit() {
+        $('#err_message').html("")
+    }
+    function check_submit(){
+        var username = $('#add_name').val()
+        if($.trim(username)==="")
+        {
+            $('#err_message').html("用户名不能为空!")
+            return false
+        }
+        else
+        {
+            $.ajax({
+                url:'user_check',
+                type:'get',
+                data:{"username":username},
+                success:function(res){
+                    if(res.status===-1)
+                    {
+                        $('#err_message').html("用户名已存在!")
+                    }
+                    else{
+                        $('#err_message').html("")
+                        $('#add_user_form').submit()
+                    }
+                },
+                error:function(res)
+                {
+                    $('#err_message').html("服务器出错了!")
+                }
+            })
+        }
+    }
 </script>
 {% endblock %}
 
