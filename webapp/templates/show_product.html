@@ -174,7 +174,7 @@
                                         //trigger: 'item',
                                         {#trigger: 'axis',#}
                                         formatter: function (param) {
-                                            console.log(param)
+                                            {#console.log(param)#}
                                             if (param.value[2] != 0) {
                                                 return '产品数量：' + param.value[2];
                                             }
@@ -429,9 +429,17 @@
                                     ]
                                 };
 
+
                                 if (option && typeof option === "object") {
                                     myChart.setOption(option, true);
                                 }
+                                ;
+                                // 处理点击事件并且跳转到相应的搜索页面
+                                {#myChart.on('click', function (params) {#}
+                                {#    alert(params.name);#}
+                                    {#window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));#}
+                                    {#window.open('result/' + {{ business_list|safe }});#}
+                                //})
                             </script>
                         </div>
                     </div>
@@ -473,7 +481,7 @@
                                         top: 20,
                                         bottom: 20,
                                         data: {{ technology_list|safe }},
-                                        selected: true,
+                                        selected: true
                                     },
                                     series: [
                                         {
@@ -682,6 +690,7 @@
     <script src="/static/js/datatable.js"></script>
     <script src="/static/js/jPages.js"></script>
     <script>
+
         $('#checkall').click(function () {
             //全选按钮
             $("#company_checkbox input[type='checkbox']").each(function () {
@@ -702,5 +711,6 @@
                 $(this).prop("checked", false);
             })
         })
+
     </script>
 {% endblock %}
