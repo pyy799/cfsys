@@ -14,5 +14,7 @@ urlpatterns = [
     url(r'^page_role_management/add_role/$', views.add_role, name="add_role"),
     url(r'^page_role_management/modify/$', views.modify_role, name="modify_role"),
     url(r'^page_role_management/delete$',views.delete_role,name="delete_role"),
-    url(r'^page_user_management/user_check$',views.user_check,name="user_add_check")
+    url(r'^page_user_management/user_check$',views.user_check,name="user_add_check"),
+    url(r'^page_role_management/send_group_company/$', views.send_group_company, name="send_group_company"),
+    url(r'^page_role_management/get_group_company$', views.get_group_company, name="get_group_company")
 ]

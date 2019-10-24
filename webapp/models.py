@@ -15,6 +15,11 @@ COMPANY_CHOICE = (
 )
 
 
+class GroupCom(models.Model):
+    id = models.IntegerField("角色", primary_key=True)
+    comStr = models.CharField("角色对应的公司字符序列", max_length=32)
+
+
 class UserProfileManager(models.Manager):
     def create_user(self, username, password, gender,
                     uCompany,department, position,role, phone,

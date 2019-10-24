@@ -2,9 +2,9 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.csrf import csrf_exempt
-from webapp.models import UserProfile, Group
+from webapp.models import UserProfile, Group, GroupCom
 from django.contrib.auth.models import Permission
-
+import json
 
 @login_required
 @permission_required('webapp.user_right_management_user')
@@ -213,6 +213,10 @@ def add_role(request):
         perm_list.append("user_right_management_role")
         group.permissions.add(permission)
     group = Group.objects.get(name=group_name)
+    groupCom = GroupCom()
+    groupCom.id = int(group.id)
+    groupCom.comStr = "0"
+    groupCom.save()
     group_dic = {"id": group.id, "name": group.name, "perm_list": perm_list, "status":0}
     return JsonResponse(group_dic)
 
@@ -264,17 +268,17 @@ def modify_role(request):
 
 def delete_role(request):
     delete_id = request.GET.get("id")
-    print(delete_id)
     group = Group.objects.get(id=delete_id)
     group.permissions.clear()
     user_set = UserProfile.objects.filter(groups__id=delete_id)
     group_temp = Group.objects.get(name="无权限角色")
-    print(user_set.count())
     if user_set.count() != 0:
         for user in user_set:
             user.groups.remove(group)
             user.groups.add(group_temp)
     group.delete()
+    groupCom = GroupCom.objects.get(id=int(delete_id))
+    groupCom.delete()
     return JsonResponse({"status": 0})
 
 
@@ -285,3 +289,23 @@ def user_check(request):
         return JsonResponse({"status": -1})
     else:
         return JsonResponse({"status": 0})
+
+
+@csrf_exempt
+def send_group_company(request):
+    gid = request.POST.get("id")
+    strlist = json.loads(request.POST.get("list"))
+    stri = ""
+    for i in strlist:
+        stri = i+stri
+    groupCom = GroupCom.objects.get(id=int(gid))
+    groupCom.comStr = stri
+    groupCom.save()
+    # return JsonResponse({"str": stri, "groupComStr": groupCom.comStr,"id":gid})
+    return JsonResponse({"status": 0})
+
+
+def get_group_company(request):
+    gid = request.GET.get("id")
+    groupCom = GroupCom.objects.get(id=int(gid))
+    return JsonResponse({"comStr": groupCom.comStr})
