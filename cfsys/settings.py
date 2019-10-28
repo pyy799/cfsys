@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'cfsys.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cfdatabase',
+        'NAME': 'cfdatabase2',
         'USER': 'root',
         'PASSWORD': '10213213',
         'HOST': '127.0.0.1',
@@ -111,3 +111,11 @@ FILES_PATH = "/Volumes/Transcend/cfsys/files/"
 PRODUCT_EXCEL_PATH = os.path.join(FILES_PATH, "excel/")
 PRODUCT_ZIP_PATH = os.path.join(FILES_PATH, "zip/")
 LOGIN_URL = "/login/"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.163.com'  # 163邮箱的smtp地址
+EMAIL_PORT = 25  # smtp的端口号
+EMAIL_HOST_USER = '17801006742@163.com'
+EMAIL_HOST_PASSWORD = 'cjw259lcy5290428'
+EMAIL_SUBJECT_PREFIX = '[gxq]'
+EMAIL_FROM = '17801006742@163.com'

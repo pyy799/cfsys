@@ -99,7 +99,7 @@
               <li><span class="like">欢迎,游客朋友!</span></li>
               <li><a href="{% url 'login' %}">您尚未登陆,请登陆</a></li>
           {% else %}
-              <li><span class="like">欢迎,{{ request.user }}&nbsp;!</span></li>
+              <li><a href="{% url 'userinformation' %}">欢迎,{{ request.user }}&nbsp;!</a></li>
               <li><a href="{% url 'logout' %}">退出登陆</a></li>
           {% endif %}
       </ul>
@@ -117,7 +117,7 @@
         {% endblock %}
 
         <!-- Main content -->
-        <section class="content" style="padding:0;padding-bottom: 50px;min-height: 700px">
+        <section class="content" style="padding: 0; padding-bottom: 50px;min-height: 700px">
             {% block content %}
 
             {% endblock %}
