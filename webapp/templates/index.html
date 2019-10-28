@@ -30,7 +30,7 @@
 {% endblock %}
 
 {% block content %}
-    <section class="content"style="margin-top: -10px;">
+    <section class="content" style="margin-top: -10px;">
         <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
             <!-- 指示器 -->
             <ol class="carousel-indicators">
@@ -53,10 +53,12 @@
                 </div>
             </div>
             <!-- 控制按钮：左右切换 -->
-            <a class="left carousel-control" style="margin-left: -60px" href="#carousel-example-generic" role="button" data-slide="prev">
+            <a class="left carousel-control" style="margin-left: -60px" href="#carousel-example-generic" role="button"
+               data-slide="prev">
                 <span class="glyphicon glyphicon-chevron-left"></span>
             </a>
-            <a class="right carousel-control" style="margin-right: -60px" href="#carousel-example-generic" role="button" data-slide="next">
+            <a class="right carousel-control" style="margin-right: -60px" href="#carousel-example-generic" role="button"
+               data-slide="next">
                 <span class="glyphicon glyphicon-chevron-right"></span>
             </a>
         </div>
@@ -65,125 +67,151 @@
             <div class="container">
                 <div class="row top30">
                     <div class="col-lg-4 col-lg-push-1 col-md-4 col-xs-4" style="">
-                        <div class="media">
-                            <a class="pull-left" href="{% url 'page_table' %}">
-                                <img src="/static/dist/img/home/rule.png" alt="" width="45px" height="45px">
-                            </a>
-                            <div class="media-body">
-                                <h2 class="media-heading">
-                                    <b>编码规则</b>
-                                </h2>
-                                <p>产品属性分类编码表下载</p>
+                        <a href="{% url 'page_table' %}">
+                            <div class="media">
+                                <div class="pull-left">
+                                    <img src="/static/dist/img/home/rule.png" alt="" width="45px" height="45px">
+                                </div>
+                                <div class="media-body">
+                                    <h2 class="media-heading">
+                                        <b>编码规则</b>
+                                    </h2>
+                                    <p>产品属性分类编码表下载</p>
+                                </div>
                             </div>
-                        </div>
+                        </a>
+
                     </div>
                     <div class="col-lg-4 col-lg-push-1 col-md-4 col-xs-4" style="">
-                        <div class="media">
-                            <a class="pull-left" href="{% url 'page_search_product' %}">
-                                <img src="/static/dist/img/home/search.png" alt="" width="45px" height="45px">
-                            </a>
-                            <div class="media-body">
-                                <h2 class="media-heading">
-                                    <b>信息查询</b>
-                                </h2>
-                                <p>查询产品信息</p>
+                        <a href="{% url 'page_search_product' %}">
+                            <div class="media">
+                                <div class="pull-left">
+                                    <img src="/static/dist/img/home/search.png" alt="" width="45px" height="45px">
+                                </div>
+                                <div class="media-body">
+                                    <h2 class="media-heading">
+                                        <b>信息查询</b>
+                                    </h2>
+                                    <p>查询产品信息</p>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     <div class="col-lg-4 col-lg-push-1 col-md-4 col-xs-4" style="">
-                        <div class="media">
-                            <a class="pull-left" href="{% url 'page_show_product' %}">
-                                <img src="/static/dist/img/home/show.png" alt="" width="45px" height="45px">
-                            </a>
-                            <div class="media-body">
-                                <h2 class="media-heading">
-                                    <b>能力展示</b>
-                                </h2>
-                                <p>公司产品能力展示</p>
+                        <a href="{% url 'page_show_product' %}">
+                            <div class="media">
+                                <div class="pull-left">
+                                    <img src="/static/dist/img/home/show.png" alt="" width="45px" height="45px">
+                                </div>
+                                <div class="media-body">
+                                    <h2 class="media-heading">
+                                        <b>能力展示</b>
+                                    </h2>
+                                    <p>公司产品能力展示</p>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row top50">
-                    <div class="col-lg-4 col-lg-push-1 col-md-4 col-xs-4" style="">
-                        <div class="media">
-                            <a class="pull-left" href="{% url 'page_new_product' %}">
-                                <img src="/static/dist/img/home/upload.png" alt="" width="45px" height="45px">
-                            </a>
-                            <div class="media-body">
-                                <h2 class="media-heading">
-                                    <b>新建产品</b>
-                                </h2>
-                                <p>上传产品信息及附件</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-lg-push-1 col-md-4 col-xs-4" style="">
-                        <div class="media">
-                            <a class="pull-left" href="#">
-                                <img src="/static/dist/img/home/update.png" alt="" width="45px" height="45px">
-                            </a>
-                            <div class="media-body">
-                                <h2 class="media-heading">
-                                    <b>更新产品</b>
-                                </h2>
-                                <p>修改产品信息及附件</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-lg-push-1 col-md-4 col-xs-4" style="">
-                        <div class="media">
-                            <a class="pull-left" href="{% url 'page_pass_product' %}">
-                                <img src="/static/dist/img/home/check.png" alt="" width="45px" height="45px">
-                            </a>
-                            <div class="media-body">
-                                <h2 class="media-heading">
-                                    <b>产品审核</b>
-                                </h2>
-                                <P>审核上传产品信息</P>
-                            </div>
-                        </div>
+                        </a>
+
                     </div>
                 </div>
                 <div class="row top50">
                     <div class="col-lg-4 col-lg-push-1 col-md-4 col-xs-4" style="">
-                        <div class="media">
-                            <a class="pull-left" href="{% url 'page_user_management' %}">
-                                <img src="/static/dist/img/home/user.png" alt="" width="45px" height="45px">
-                            </a>
-                            <div class="media-body">
-                                <h2 class="media-heading">
-                                    <b>用户管理</b>
-                                </h2>
-                                <p>查询并修改用户信息</p>
+                        <a href="{% url 'page_new_product' %}">
+                            <div class="media">
+                                <div class="pull-left">
+                                    <img src="/static/dist/img/home/upload.png" alt="" width="45px" height="45px">
+                                </div>
+                                <div class="media-body">
+                                    <h2 class="media-heading">
+                                        <b>新建产品</b>
+                                    </h2>
+                                    <p>上传产品信息及附件</p>
+                                </div>
                             </div>
-                        </div>
+                        </a>
+
                     </div>
                     <div class="col-lg-4 col-lg-push-1 col-md-4 col-xs-4" style="">
-                        <div class="media">
-                            <a class="pull-left" href="{% url 'page_role_management' %}">
-                                <img src="/static/dist/img/home/role.png" alt="" width="45px" height="45px">
-                            </a>
-                            <div class="media-body">
-                                <h2 class="media-heading">
-                                    <b>角色管理</b>
-                                </h2>
-                                <p>用户角色权限管理</p>
+                        <a href="/product_management/update/">
+                            <div class="media">
+                                <div class="pull-left">
+                                    <img src="/static/dist/img/home/update.png" alt="" width="45px" height="45px">
+                                </div>
+                                <div class="media-body">
+                                    <h2 class="media-heading">
+                                        <b>更新产品</b>
+                                    </h2>
+                                    <p>修改产品信息及附件</p>
+                                </div>
                             </div>
-                        </div>
+                        </a>
+
                     </div>
                     <div class="col-lg-4 col-lg-push-1 col-md-4 col-xs-4" style="">
-                        <div class="media">
-                            <a class="pull-left" href="{% url 'page_attribute' %}">
-                                <img src="/static/dist/img/home/attribute.png" alt="" width="45px" height="45px">
-                            </a>
-                            <div class="media-body">
-                                <h2 class="media-heading">
-                                    <b>属性管理</b>
-                                </h2>
-                                <p>修改产品属性信息</p>
+                        <a href="{% url 'page_pass_product' %}">
+                            <div class="media">
+                                <div class="pull-left">
+                                    <img src="/static/dist/img/home/check.png" alt="" width="45px" height="45px">
+                                </div>
+                                <div class="media-body">
+                                    <h2 class="media-heading">
+                                        <b>产品审核</b>
+                                    </h2>
+                                    <P>审核上传产品信息</P>
+                                </div>
                             </div>
-                        </div>
+                        </a>
+
+                    </div>
+                </div>
+                <div class="row top50">
+                    <div class="col-lg-4 col-lg-push-1 col-md-4 col-xs-4" style="">
+                        <a href="{% url 'page_user_management' %}">
+                            <div class="media">
+                                <div class="pull-left">
+                                    <img src="/static/dist/img/home/user.png" alt="" width="45px" height="45px">
+                                </div>
+                                <div class="media-body">
+                                    <h2 class="media-heading">
+                                        <b>用户管理</b>
+                                    </h2>
+                                    <p>查询并修改用户信息</p>
+                                </div>
+                            </div>
+                        </a>
+
+                    </div>
+                    <div class="col-lg-4 col-lg-push-1 col-md-4 col-xs-4" style="">
+                        <a href="{% url 'page_role_management' %}">
+                            <div class="media">
+                                <div class="pull-left">
+                                    <img src="/static/dist/img/home/role.png" alt="" width="45px" height="45px">
+                                </div>
+                                <div class="media-body">
+                                    <h2 class="media-heading">
+                                        <b>角色管理</b>
+                                    </h2>
+                                    <p>用户角色权限管理</p>
+                                </div>
+                            </div>
+                        </a>
+
+                    </div>
+                    <div class="col-lg-4 col-lg-push-1 col-md-4 col-xs-4" style="">
+                        <a href="{% url 'page_attribute' %}">
+                            <div class="media">
+                                <div class="pull-left">
+                                    <img src="/static/dist/img/home/attribute.png" alt="" width="45px" height="45px">
+                                </div>
+                                <div class="media-body">
+                                    <h2 class="media-heading">
+                                        <b>属性管理</b>
+                                    </h2>
+                                    <p>修改产品属性信息</p>
+                                </div>
+                            </div>
+                        </a>
+
                     </div>
                 </div>
             </div>
