@@ -6,10 +6,872 @@
     <link rel="stylesheet" href="/static/css/jpage.css">
     <!-- Morris chart -->
     <link rel="stylesheet" href="/static/plugins/morris/morris.css">
+    <script src="/static/js/echarts/echarts.min.js"></script>
+    <script src="/static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+
 {% endblock %}
 
 
 {% block content %}
+    <div id="subbody">
+        <div class="box box-solid" id="tablebox" style="padding-left: 20px;padding-right: 20px">
+            <div class="box-header with-border">
+                <h3>产品能力展示</h3>
+            </div>
+            <div class="box-body">
+                <form method="post" action="{% url 'page_show_product' %}" style="float: left;margin-left: 20px">
+                    {% csrf_token %}
+                    <div class="row" style="margin-top: 0px" id="company_checkbox">
+                        <label><b>公司</b></label>
+                        {% if "1" in check_box_list %}
+                            <input class="" type='checkbox' value="1" name="check_box_list" checked><label>股份</label>
+                        {% else %}
+                            <input class="" type='checkbox' value="1" name="check_box_list"><label>股份</label>
+                        {% endif %}
+                        {% if "2" in check_box_list %}
+                            <input class="" type='checkbox' value="2" name="check_box_list" checked><label>精一</label>
+                        {% else %}
+                            <input class="" type='checkbox' value="2" name="check_box_list"><label>精一</label>
+                        {% endif %}
+                        {% if "3" in check_box_list %}
+                            <input class="" type='checkbox' value="3" name="check_box_list" checked><label>科威</label>
+                        {% else %}
+                            <input class="" type='checkbox' value="3" name="check_box_list"><label>科威</label>
+                        {% endif %}
+                        {% if "4" in check_box_list %}
+                            <input class="" type='checkbox' value="4" name="check_box_list" checked><label>医疗</label>
+                        {% else %}
+                            <input class="" type='checkbox' value="4" name="check_box_list"><label>医疗</label>
+                        {% endif %}
+                        {% if "5" in check_box_list %}
+                            <input class="" type='checkbox' value="5" name="check_box_list" checked><label>柏克</label>
+                        {% else %}
+                            <input class="" type='checkbox' value="5" name="check_box_list"><label>柏克</label>
+                        {% endif %}
+                        {% if "6" in check_box_list %}
+                            <input class="" type='checkbox' value="6" name="check_box_list" checked><label>科技</label>
+                        {% else %}
+                            <input class="" type='checkbox' value="6" name="check_box_list"><label>科技</label>
+                        {% endif %}
+                        {% if "7" in check_box_list %}
+                            <input class="" type='checkbox' value="7" name="check_box_list" checked><label>浙子</label>
+                        {% else %}
+                            <input class="" type='checkbox' value="7" name="check_box_list"><label>浙子</label>
+                        {% endif %}
+                        <button type="button" class="btn btn-sm green checkall" id="checkall"><i
+                                class="fa fa-check"></i>
+                            全选/反选
+                        </button>
+                        <button type="button" class="btn btn-warning btn-sm red clearAll" id="clearall"><i
+                                class="fa fa-times"></i> 清除
+                        </button>
+                    </div>
+
+                    <div class="row" style="margin-top: 20px;margin-bottom: 20px">
+                        <label><b>属性</b></label>
+                        <label style="letter-spacing: 0.35em">成熟度 </label>
+                        <select class="form-control input-inline input-small input-sm form-filter select "
+                                name="maturity__first_class" data-placeholder='成熟度' style="width: 145px">
+                            <option value=''></option>
+                            {% for s in maturity1 %}
+                                {% if maturity_choice == s.first_class %}
+                                    <option value="{{ s.first_class }}" selected>{{ s.first_class }}-{{ s.meaning }}</option>
+                                {% else %}
+                                    <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
+                                {% endif %}
+
+                            {% endfor %}
+                        </select>
+
+                        <label style="letter-spacing: 0.35em">自主度</label>
+                        <select class="form-control input-inline input-small input-sm form-filter select"
+                                name="independence__first_class" data-placeholder='自主度' style="width: 145px">
+                            <option value=''></option>
+                            {% for s in independence1 %}
+                                {% if independence_choice == s.first_class %}
+                                    <option value="{{ s.first_class }}" selected>{{ s.first_class }}-{{ s.meaning }}</option>
+                                {% else %}
+                                    <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
+                                {% endif %}
+
+                            {% endfor %}
+                        </select>
+
+                        <label>业务领域</label>
+                        <select class="form-control input-inline input-small input-sm form-filter select"
+                                name="business__first_class" data-placeholder='业务领域' style="width: 145px">
+                            <option value=''></option>
+                            {% for s in business %}
+                                {% if business_choice == s.first_class %}
+                                    <option value="{{ s.first_class }}" selected>{{ s.first_class }}-{{ s.meaning }}</option>
+                                {% else %}
+                                    <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+
+                        <label>技术形态</label>
+                        <select class="form-control input-inline input-small input-sm form-filter select"
+                                name="technology__first_class" data-placeholder='技术形态' style="width: 145px">
+                            <option value=''></option>
+                            {% for s in technology %}
+                                {% if technology_choice == s.first_class %}
+                                    <option value="{{ s.first_class }}" selected>{{ s.first_class }}-{{ s.meaning }}</option>
+                                {% else %}
+                                    <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <button class="btn btn-sm yellow filter-submit" style="margin-left:100px"><i
+                                class="fa fa-search"></i> 查询
+                        </button>
+                        <a type="button" class="btn btn-sm red filter-cancel text-right"
+                           href="{% url 'page_show_product' %}"><i class="fa fa-times"></i> 取消查询</a>
+                    </div>
+                </form>
+            </div>
+            <section class="content" style="margin-bottom: -80px">
+                <!-- Main row -->
+                <div class="row">
+                    <!--/.left col -->
+                    <section class="col-lg-7 col-md-12 col-sm-12">
+                        <!-- 成熟度-自主度 -->
+                        <div class="box box-success">
+                            <div class="box-header">
+                                <h3 class="box-title">成熟度-自主度</h3>
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                            class="fa fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                            class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                            <div class="box-footer text-black">
+                                <div id="containerl1" style="width: 100%;height:420px;"></div>
+                                <script type="text/javascript">
+                                    var dom = document.getElementById("containerl1");
+                                    var myChart = echarts.init(dom);
+                                    var app = {};
+                                    option = null;
+                                    app.title = '成熟度-自主度';
+
+                                    var legendData1 = {{ independence_list1|safe }};
+                                    var legendData2 = {{ maturity_list1|safe }};
+                                    var maturity_independence_product = {{ maturity_independence_product|safe }};
+                                    var data1 = {{ maturity_independence }}
+                                        data1 = data1.map(function (item) {
+                                            return [item[1], item[0], item[2] || '-'];
+                                        });
+
+                                    option = {
+                                        tooltip: {
+                                            position: 'top',
+                                            formatter: function (param) {
+                                                if (param.value[2] != 0) {
+                                                    return '成熟度：' + legendData2[param.value[0]] + '<br/>自主度：' + legendData1[param.value[1]] + '<br/>产品数量：' + param.value[2] + '<br/>产品列表：' + maturity_independence_product[param.value[1]][param.value[0]];
+                                                }
+                                            }
+                                        },
+                                        animation: false,
+                                        grid: {
+                                            height: '65%',
+                                            y: '8%',
+                                            x: '8%'
+                                        },
+                                        xAxis: {
+                                            name: '成熟度',
+                                            type: 'category',
+                                            data: legendData2,
+                                            splitArea: {
+                                                show: true
+                                            }
+                                        },
+                                        yAxis: {
+                                            name: '自主度',
+                                            type: 'category',
+                                            data: legendData1,
+                                            splitArea: {
+                                                show: true
+                                            }
+                                        },
+                                        visualMap: {
+                                            min: 0,
+                                            max: {{ maturity_independence_max_num }},
+                                            calculable: true,
+                                            orient: 'horizontal',
+                                            left: 'center',
+                                            bottom: '8%',
+                                            inRange: {
+                                                color: ['#98cafb', '#033668']
+                                            }
+                                        },
+                                        series: [{
+                                            name: '产品数量',
+                                            type: 'heatmap',
+                                            data: data1,
+                                            label: {
+                                                normal: {
+                                                    show: true
+                                                }
+                                            },
+                                            itemStyle: {
+                                                emphasis: {
+                                                    shadowBlur: 10,
+                                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                                }
+                                            }
+                                        }]
+                                    };
+
+                                    if (option && typeof option === "object") {
+                                        myChart.setOption(option, true);
+                                    }
+                                    var chk_value = [];//定义一个数组
+                                    $('input[name="check_box_list"]:checked').each(function () {
+                                        chk_value.push($(this).val());
+                                    });
+                                    // 处理点击事件并且跳转到相应的搜索页面
+                                    myChart.on('click', function (param) {
+                                        {#console.log(param)#}
+                                        maturity_independence_product_list ={{ maturity_independence_product_list|safe }};
+                                        {#alert("查看产品列表");#}
+
+                                        var data = {
+                                            'product_list': JSON.stringify(maturity_independence_product_list[param.value[1]][param.value[0]]),
+                                            'check_box_list': JSON.stringify(chk_value),
+                                            'maturity_choice': $('select[name="maturity__first_class"]').val(),
+                                            'independence_choice': $('select[name="independence__first_class"]').val(),
+                                            'business_choice': $('select[name="business__first_class"]').val(),
+                                            'technology_choice': $('select[name="technology__first_class"]').val(),
+                                            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
+                                        };
+
+                                        $.ajax({
+                                            url: "/product_search/page_chart_product_list/",
+
+                                            data: data,
+                                            async: true,
+                                            type: "POST",
+                                            traditional: true,
+                                            success: function (result) {
+                                                document.write(result)
+                                            },
+                                            fail: function (result) {
+                                            }
+                                        });
+                                        {#window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));#}
+                                    })
+                                </script>
+                                <span>产品的成熟度和自主程度是衡量产品效益的重要参考因素，因此产品能力的成熟度-自主度的（M-I）交叉矩阵所代表的是两个维度上不同级别的产品能力，便于公司内部评估分层管理。</span>
+
+                            </div>
+
+                        </div>
+                        <!-- 业务领域-技术形态 -->
+                        <div class="box box-success">
+                            <div class="box-header">
+                                <h3 class="box-title">业务领域-技术形态</h3>
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                            class="fa fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                            class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-footer text-black">
+                                <div id="containerl2" style="width: 100%;height:420px;"></div>
+
+                                <script type="text/javascript">
+                                    var dom = document.getElementById("containerl2");
+                                    var myChart = echarts.init(dom);
+                                    var app = {};
+                                    option = null;
+                                    app.title = '业务领域-技术形态';
+
+                                    var legendData3 = {{ business_list1|safe }};
+                                    var legendData4 = {{ technology_list|safe }};
+                                    var business_technology_product = {{ business_technology_product|safe }};
+                                    var data2 = {{ business_technology }}
+                                        data2 = data2.map(function (item) {
+                                            return [item[1], item[0], item[2] || '-'];
+                                        });
+
+                                    option = {
+                                        tooltip: {
+                                            position: 'top',
+                                            formatter: function (param) {
+                                                if (param.value[2] != 0) {
+                                                    return '业务领域：' + legendData3[param.value[0]] + '<br/>技术形态：' + legendData4[param.value[1]] + '<br/>产品数量：' + param.value[2] + '<br/>产品列表：' + business_technology_product[param.value[1]][param.value[0]];
+                                                }
+                                            }
+                                        },
+                                        animation: false,
+                                        grid: {
+                                            height: '65%',
+                                            x: '8%',
+                                            y: '8%'
+                                        },
+                                        xAxis: {
+                                            name: '业务领域',
+                                            type: 'category',
+                                            data: legendData3,
+                                            splitArea: {
+                                                show: true
+                                            }
+                                        },
+                                        yAxis: {
+                                            name: '技术形态',
+                                            type: 'category',
+                                            data: legendData4,
+                                            splitArea: {
+                                                show: true
+                                            }
+                                        },
+                                        visualMap: {
+                                            min: 0,
+                                            max: {{ business_technology_max_num }},
+                                            calculable: true,
+                                            orient: 'horizontal',
+                                            left: 'center',
+                                            bottom: '8%',
+                                            inRange: {
+                                                color: ['#88f7fb', '#023e41']
+                                            }
+                                        },
+                                        series: [{
+                                            name: '产品数量',
+                                            type: 'heatmap',
+                                            data: data2,
+                                            label: {
+                                                normal: {
+                                                    show: true
+                                                }
+                                            },
+                                            itemStyle: {
+                                                emphasis: {
+                                                    shadowBlur: 10,
+                                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                                }
+                                            }
+                                        }]
+                                    };
+
+                                    if (option && typeof option === "object") {
+                                        myChart.setOption(option, true);
+                                    }
+                                    var chk_value = [];//定义一个数组
+                                    $('input[name="check_box_list"]:checked').each(function () {
+                                        chk_value.push($(this).val());
+                                    });
+                                    // 处理点击事件并且跳转到相应的搜索页面
+                                    myChart.on('click', function (param) {
+                                        {#console.log(param)#}
+                                        business_technology_product_list ={{ business_technology_product_list|safe }};
+                                        {#alert("查看产品列表");#}
+
+                                        var data = {
+                                            'product_list': JSON.stringify(business_technology_product_list[param.value[1]][param.value[0]]),
+                                            'check_box_list': JSON.stringify(chk_value),
+                                            'maturity_choice': $('select[name="maturity__first_class"]').val(),
+                                            'independence_choice': $('select[name="independence__first_class"]').val(),
+                                            'business_choice': $('select[name="business__first_class"]').val(),
+                                            'technology_choice': $('select[name="technology__first_class"]').val(),
+                                            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
+                                        };
+
+                                        $.ajax({
+                                            url: "/product_search/page_chart_product_list/",
+
+                                            data: data,
+                                            async: true,
+                                            type: "POST",
+                                            traditional: true,
+                                            success: function (result) {
+                                                document.write(result)
+                                            },
+                                            fail: function (result) {
+                                            }
+                                        });
+                                        {#window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));#}
+                                    })
+                                </script>
+                                <span>产品的业务领域和技术形态是产品应用方向的重要参考因素，因此产品能力的业务领域-技术形态的（B-T）交叉矩阵所代表的是各个细分行业领域所适用的产品能力，便于公司外部应用评估。</span>
+
+                            </div>
+                        </div>
+                    </section>
+                    <!-- /.right col -->
+                    <section class="col-lg-5 col-md-12 col-sm-12">
+                        <!-- 业务领域 -->
+                        <div class="box box-success">
+                            <div class="box-header ui-sortable-handle" style="cursor: move;">
+                                <h3 class="box-title">业务领域</h3>
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                            class="fa fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                            class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div id="container1" style="width: 100%;height:189px"></div>
+
+                                <script type="text/javascript">
+                                    var dom = document.getElementById("container1");
+                                    var myChart = echarts.init(dom);
+                                    var app = {};
+                                    var business_product = {{ business_product|safe }};
+
+                                    option = null;
+
+                                    option = {
+                                        title: {
+                                            text: '',
+                                            subtext: '',
+                                            x: 'center'
+                                        },
+                                        tooltip: {
+                                            formatter: function (param) {
+                                                {#console.log(param)#}
+                                                if (param.value != 0) {
+                                                    return '业务领域：' + param.name + '<br/>' + '产品数量：' + param.value + '<br/>' + '产品列表：' + business_product[param.dataIndex];
+                                                }
+                                            }
+                                        },
+                                        legend: {
+                                            type: 'scroll',
+                                            orient: 'vertical',
+                                            right: 10,
+                                            top: 20,
+                                            bottom: 20,
+
+                                            data: {{ business_list|safe }},
+                                            selected: true
+
+                                        },
+                                        series: [
+                                            {
+                                                name: '产品数量',
+                                                type: 'pie',
+                                                radius: '55%',
+                                                center: ['35%', '50%'],
+                                                selectedMode: 'single',
+                                                data: {{ business_product1|safe }},
+                                                itemStyle: {
+                                                    emphasis: {
+                                                        shadowBlur: 10,
+                                                        shadowOffsetX: 0,
+                                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                                    },
+                                                    normal: {
+                                                        label: {
+                                                            show: true,
+                                                            formatter: '{d}%'
+                                                        },
+                                                        labelLine: {show: true}
+                                                    }
+                                                }
+                                            }
+
+                                        ]
+                                    };
+
+
+                                    if (option && typeof option === "object") {
+                                        myChart.setOption(option, true);
+                                    }
+                                    var chk_value = [];//定义一个数组
+                                    $('input[name="check_box_list"]:checked').each(function () {
+                                        chk_value.push($(this).val());
+                                    });
+                                    // 处理点击事件并且跳转到相应的搜索页面
+                                    myChart.on('click', function (param) {
+                                        {#console.log(param)#}
+                                        business_product_list ={{ business_product_list|safe }};
+                                        {#alert("查看产品列表");#}
+
+                                        var data = {
+                                            'product_list': JSON.stringify(business_product_list[param.dataIndex]),
+                                            'check_box_list': JSON.stringify(chk_value),
+                                            'maturity_choice': $('select[name="maturity__first_class"]').val(),
+                                            'independence_choice': $('select[name="independence__first_class"]').val(),
+                                            'business_choice': $('select[name="business__first_class"]').val(),
+                                            'technology_choice': $('select[name="technology__first_class"]').val(),
+                                            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
+                                        };
+
+                                        $.ajax({
+                                            url: "/product_search/page_chart_product_list/",
+
+                                            data: data,
+                                            async: true,
+                                            type: "POST",
+                                            traditional: true,
+                                            success: function (result) {
+                                                document.write(result)
+                                            },
+                                            fail: function (result) {
+                                            }
+                                        });
+                                        {#window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));#}
+                                    })
+                                </script>
+                            </div>
+                        </div>
+
+                        <!-- 技术形态 -->
+                        <div class="box box-success">
+                            <div class="box-header ui-sortable-handle" style="cursor: move;">
+                                <h3 class="box-title">技术形态</h3>
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                            class="fa fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                            class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div id="container2" style="width: 100%;height:189px"></div>
+                                <script type="text/javascript">
+                                    var dom = document.getElementById("container2");
+                                    var myChart = echarts.init(dom);
+                                    var app = {};
+                                    var technology_product = {{ technology_product|safe }};
+                                    option = null;
+
+                                    option = {
+                                        title: {
+                                            text: '',
+                                            subtext: '',
+                                            x: 'center'
+                                        },
+                                        tooltip: {
+                                            formatter: function (param) {
+                                                if (param.value != 0) {
+                                                    return '技术形态：' + param.name + '<br/>' + '产品数量：' + param.value + '<br/>' + '产品列表：' + technology_product[param.dataIndex];
+                                                }
+                                            }
+
+                                        },
+                                        legend: {
+                                            type: 'scroll',
+                                            orient: 'vertical',
+                                            right: 70,
+                                            top: 20,
+                                            bottom: 20,
+                                            data: {{ technology_list|safe }},
+                                            selected: true
+                                        },
+                                        series: [
+                                            {
+                                                name: '产品数量',
+                                                type: 'pie',
+                                                radius: '55%',
+                                                center: ['35%', '50%'],
+                                                selectedMode: 'single',
+                                                data: {{ technology_product1|safe }},
+                                                itemStyle: {
+                                                    emphasis: {
+                                                        shadowBlur: 10,
+                                                        shadowOffsetX: 0,
+                                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                                    },
+                                                    normal: {
+                                                        label: {
+                                                            show: true,
+                                                            formatter: '{d}%'
+                                                        },
+                                                        labelLine: {show: true}
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    }
+
+                                    if (option && typeof option === "object") {
+                                        myChart.setOption(option, true);
+                                    }
+                                    var chk_value = [];//定义一个数组
+                                    $('input[name="check_box_list"]:checked').each(function () {
+                                        chk_value.push($(this).val());
+                                    });
+                                    // 处理点击事件并且跳转到相应的搜索页面
+                                    myChart.on('click', function (param) {
+                                        {#console.log(param)#}
+                                        technology_product_list ={{ technology_product_list|safe }};
+                                        {#alert("查看产品列表");#}
+
+                                        var data = {
+                                            'product_list': JSON.stringify(technology_product_list[param.dataIndex]),
+                                            'check_box_list': JSON.stringify(chk_value),
+                                            'maturity_choice': $('select[name="maturity__first_class"]').val(),
+                                            'independence_choice': $('select[name="independence__first_class"]').val(),
+                                            'business_choice': $('select[name="business__first_class"]').val(),
+                                            'technology_choice': $('select[name="technology__first_class"]').val(),
+                                            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
+                                        };
+
+                                        $.ajax({
+                                            url: "/product_search/page_chart_product_list/",
+
+                                            data: data,
+                                            async: true,
+                                            type: "POST",
+                                            traditional: true,
+                                            success: function (result) {
+                                                document.write(result)
+                                            },
+                                            fail: function (result) {
+                                            }
+                                        });
+                                        {#window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));#}
+                                    })
+                                </script>
+                            </div>
+                        </div>
+                        <!-- 成熟度 -->
+                        <div class="box box-success">
+                            <div class="box-header ui-sortable-handle" style="cursor: move;">
+                                <h3 class="box-title">成熟度</h3>
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                            class="fa fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                            class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div id="container3" style="width: 100%;height:189px"></div>
+                                <script type="text/javascript">
+                                    var dom = document.getElementById("container3");
+                                    var myChart = echarts.init(dom);
+                                    var app = {};
+                                    var maturity_product = {{ maturity_product|safe }};
+                                    {#console.log(maturity_product)#}
+                                    option = null;
+
+                                    option = {
+                                        title: {
+                                            text: '',
+                                            subtext: '',
+                                            x: 'center'
+                                        },
+                                        tooltip: {
+                                            formatter: function (param) {
+                                                if (param.value != 0) {
+                                                    return '成熟度：' + param.name + '<br/>' + '产品数量：' + param.value + '<br/>' + '产品列表：' + maturity_product[param.dataIndex];
+                                                }
+                                            }
+                                        },
+                                        legend: {
+                                            type: 'scroll',
+                                            orient: 'vertical',
+                                            right: -10,
+                                            top: 20,
+                                            bottom: 20,
+                                            data: {{ maturity_list|safe }},
+                                            selected: true
+                                        },
+                                        series: [
+                                            {
+                                                name: '产品数量',
+                                                type: 'pie',
+                                                radius: '55%',
+                                                center: ['35%', '50%'],
+                                                selectedMode: 'single',
+                                                data: {{ maturity_product1|safe }},
+                                                itemStyle: {
+                                                    emphasis: {
+                                                        shadowBlur: 10,
+                                                        shadowOffsetX: 0,
+                                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                                    },
+                                                    normal: {
+                                                        label: {
+                                                            show: true,
+                                                            formatter: '{d}%'
+                                                        },
+                                                        labelLine: {show: true}
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    };
+
+                                    if (option && typeof option === "object") {
+                                        myChart.setOption(option, true);
+                                    }
+                                    var chk_value = [];//定义一个数组
+                                    $('input[name="check_box_list"]:checked').each(function () {
+                                        chk_value.push($(this).val());
+                                    });
+                                    // 处理点击事件并且跳转到相应的搜索页面
+                                    myChart.on('click', function (param) {
+                                        {#console.log(param)#}
+                                        maturity_product_list ={{ maturity_product_list|safe }};
+                                        {#alert("查看产品列表");#}
+
+                                        var data = {
+                                            'product_list': JSON.stringify(maturity_product_list[param.dataIndex]),
+                                            'check_box_list': JSON.stringify(chk_value),
+                                            'maturity_choice': $('select[name="maturity__first_class"]').val(),
+                                            'independence_choice': $('select[name="independence__first_class"]').val(),
+                                            'business_choice': $('select[name="business__first_class"]').val(),
+                                            'technology_choice': $('select[name="technology__first_class"]').val(),
+                                            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
+                                        };
+
+                                        $.ajax({
+                                            url: "/product_search/page_chart_product_list/",
+
+                                            data: data,
+                                            async: true,
+                                            type: "POST",
+                                            traditional: true,
+                                            success: function (result) {
+                                                document.write(result)
+                                            },
+                                            fail: function (result) {
+                                            }
+                                        });
+                                        {#window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));#}
+                                    })
+                                </script>
+                            </div>
+                        </div>
+                        <!-- 自主度 -->
+                        <div class="box box-success">
+                            <div class="box-header ui-sortable-handle" style="cursor: move;">
+                                <h3 class="box-title">自主度</h3>
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                            class="fa fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                            class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div id="container4" style="width: 100%;height:189px"></div>
+                                <script type="text/javascript">
+                                    var dom = document.getElementById("container4");
+                                    var myChart = echarts.init(dom);
+                                    var app = {};
+                                    var independence_product = {{ independence_product|safe }};
+                                    option = null;
+
+                                    option = {
+                                        title: {
+                                            text: '',
+                                            subtext: '',
+                                            x: 'center'
+                                        },
+                                        tooltip: {
+                                            formatter: function (param) {
+                                                if (param.value != 0) {
+                                                    return '自主度：' + param.name + '<br/>' + '产品数量：' + param.value + '<br/>' + '产品列表：' + independence_product[param.dataIndex];
+                                                }
+                                            }
+                                        },
+                                        legend: {
+                                            type: 'scroll',
+                                            orient: 'vertical',
+                                            right: -10,
+                                            top: 20,
+                                            bottom: 20,
+                                            data: {{ independence_list|safe }},
+                                            selected: true,
+                                        },
+                                        series: [
+                                            {
+                                                name: '产品数量',
+                                                type: 'pie',
+                                                radius: '55%',
+                                                center: ['35%', '50%'],
+                                                selectedMode: 'single',
+                                                data: {{ independence_product1|safe }},
+                                                itemStyle: {
+                                                    emphasis: {
+                                                        shadowBlur: 10,
+                                                        shadowOffsetX: 0,
+                                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                                    },
+                                                    normal: {
+                                                        label: {
+                                                            show: true,
+                                                            formatter: '{d}%'
+                                                        },
+                                                        labelLine: {show: true}
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    };
+
+                                    if (option && typeof option === "object") {
+                                        myChart.setOption(option, true);
+                                    }
+                                    var chk_value = [];//定义一个数组
+                                    $('input[name="check_box_list"]:checked').each(function () {
+                                        chk_value.push($(this).val());
+                                    });
+                                    // 处理点击事件并且跳转到相应的搜索页面
+                                    myChart.on('click', function (param) {
+                                        {#console.log(param)#}
+                                        independence_product_list ={{ independence_product_list|safe }};
+                                        {#alert("查看产品列表");#}
+
+                                        var data = {
+                                            'product_list': JSON.stringify(independence_product_list[param.dataIndex]),
+                                            'check_box_list': JSON.stringify(chk_value),
+                                            'maturity_choice': $('select[name="maturity__first_class"]').val(),
+                                            'independence_choice': $('select[name="independence__first_class"]').val(),
+                                            'business_choice': $('select[name="business__first_class"]').val(),
+                                            'technology_choice': $('select[name="technology__first_class"]').val(),
+                                            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
+                                        };
+
+                                        $.ajax({
+                                            url: "/product_search/page_chart_product_list/",
+
+                                            data: data,
+                                            async: true,
+                                            type: "POST",
+                                            traditional: true,
+                                            success: function (result) {
+                                                document.write(result)
+                                            },
+                                            fail: function (result) {
+                                            }
+                                        });
+                                        {#window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));#}
+                                    })
+                                </script>
+                            </div>
+                        </div>
+
+                    </section>
+                    <!-- right col -->
+                </div>
+                <!-- /.row (main row) -->
+
+            </section>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
 
 
 {% endblock %}
@@ -26,4 +888,28 @@
     <script src="/static/js/table-ext.js"></script>
     <script src="/static/js/datatable.js"></script>
     <script src="/static/js/jPages.js"></script>
+    <script>
+
+        $('#checkall').click(function () {
+            //全选按钮
+            $("#company_checkbox input[type='checkbox']").each(function () {
+                var check = $(this).is(":checked");
+                if (!check) {
+                    {#console.log(true)#}
+                    $(this).prop("checked", true);
+                } else {
+                    {#console.log(false)#}
+                    $(this).prop("checked", false);
+                }
+                {#$(this).toggleClass("selected")#}
+            });
+
+        })
+        $('#clearall').click(function () {
+            $("#company_checkbox input[type='checkbox']").each(function () {
+                $(this).prop("checked", false);
+            })
+        })
+
+    </script>
 {% endblock %}

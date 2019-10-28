@@ -31,21 +31,28 @@ var WaitSubmitTable = function () {
                 "aoColumns": [ //这个属性下的设置会应用到所有列，按顺序没有是空,bVisible是否可见
                     {
                         "mData": null,
-                        // "sTitle": '<input id="checkall" name="" type="checkbox" value="">',
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
-                            element.append("<input type='checkbox' name='checkList' />");
+                            var input = '<input id='+oData["id"]+' type="checkbox" name="checkList" class="check"/>';
+                            element.append(input);
                         }
                     },
-                    {"mData": "id", "sTitle": "ID", "bVisible": false},
+                    {
+                        "mData": "product_name", "sTitle": "产品名称",
+                        "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                            var element = $(nTd).empty();
+                            var detail = $('<a href="/product_search/page_product_detail/' + oData["id"] + '">' + oData["product_name"] + '</a>');
+                            element.append(detail);
+                        }
+                    },
                     {"mData": "product_name", "sTitle": "产品名称"},
                     {"mData": "pCompany_name", "sTitle": "公司名称"},
                     // {"mData": "one_year_money", "sTitle": "过去一年销售额"},
                     // {"mData": "three_year_money", "sTitle": "过去三年销售额"},
-                    {"mData": "maturity", "sTitle": "成熟度"},
-                    {"mData": "independence", "sTitle": "自主度"},
-                    {"mData": "business", "sTitle": "业务领域"},
-                    {"mData": "technology", "sTitle": "技术形态"},
+                    {"mData": "maturity_name", "sTitle": "成熟度"},
+                    {"mData": "independence_name", "sTitle": "自主度"},
+                    {"mData": "business_name", "sTitle": "业务领域"},
+                    {"mData": "technology_name", "sTitle": "技术形态"},
                     {"mData": "uploader", "sTitle": "申请人"},
                     {"mData": "apply_type_name", "sTitle": "申请类型"},
                     {"mData":null,"sTitle":"操作", "sClass": "center",
@@ -65,9 +72,9 @@ var WaitSubmitTable = function () {
                                     $.get("/product_management/wait_submit/cancel/" + id + "/", function (data) {
                                         if (data.success) {
                                             $.growlService("取消提交！", {type: "success"});
-                                            location.href = "/product_management/page_new_product/";
+                                            location.href = "/product_management/page_waitsubmit_product/";
                                         } else {
-                                            $.growlService("取消失败！", {type: "danger"});
+                                            $.growlService(data.error_messag, {type: "danger"});
                                         }
                                     })
                                 }
@@ -79,9 +86,9 @@ var WaitSubmitTable = function () {
                                     $.get("/product_management/wait_submit/submit/" + id + "/", function (data) {
                                         if (data.success) {
                                             $.growlService("提交成功！", {type: "success"});
-                                            location.href = "/product_management/page_new_product/";
+                                            location.href = "/product_management/page_waitpass_product/";
                                         } else {
-                                            $.growlService("提交失败！", {type: "danger"});
+                                            $.growlService(data.error_messag, {type: "danger"});
                                         }
                                     })
                                 }
@@ -131,41 +138,57 @@ var WaitSubmitTable = function () {
 
         //多选提交按钮
         $("#submit").on('click', function () {
-            var ott = $("#waitsubmit_table").DataTable().rows(".selected");
-            if (ott[0].length < 1) {
+            var checkedBox = $("input[type='checkbox']:checked");
+            // var ott = $("#waitsubmit_table").DataTable().rows(".checked");
+            if (checkedBox.length < 1) {
                 alert("请至少选择一项！");
-                return
+                return;
             } else {
                 var con = confirm("确定提交吗?");
                 if (con) {
                     // 选中全部通过
-                    for (var i in ott[0]) {
-                        var data = $("#waitsubmit_table").DataTable().row(i).data();
-                        $.get("/product_management/wait_submit/submit/" + data["id"] + "/", function (data) {
-                        })
+                    var checkedBox_all = $("input[class='check']");
+                    for (var i=0; i < checkedBox_all.length; i++){
+                        if (checkedBox_all[i].checked) {
+                            var data = $("#waitsubmit_table").DataTable().row(i).data();
+                            $.get("/product_management/wait_submit/submit/" + data["id"] + "/", function (data) {
+                                if (data.success) {
+                                            $.growlService("提交成功！", {type: "success"});
+                                            location.href = "/product_management/page_waitpass_product/";
+                                        } else {
+                                            $.growlService(data.error_messag, {type: "danger"});
+                                        }
+                            })
+                        }
                     }
-                    $.growlService("提交成功！", {type: "success"});
-                    window.location.reload(true);
+
                 }
             }
         });
         //多选不通过按钮
         $("#cancel_submit").on('click', function () {
-            var ott = $("#waitsubmit_table").DataTable().rows(".selected");
-            if (ott[0].length < 1) {
+            var checkedBox = $("input[type='checkbox']:checked");
+            if (checkedBox.length < 1) {
                 alert("请至少选择一项");
                 return
             } else {
                 // 选中全部不通过
                 var con = confirm("确定取消吗?");
                 if (con) {
-                    for (var i in ott[0]) {
-                        var data = $("#waitsubmit_table").DataTable().row(i).data();
-                        $.get("/product_management/wait_submit/cancel/" + data["id"] + "/", function (data) {
-                        })
+                    var checkedBox_all = $("input[class='check']");
+                    for (var i=0; i < checkedBox_all.length; i++) {
+                        if (checkedBox_all[i].checked) {
+                            var data = $("#waitsubmit_table").DataTable().row(i).data();
+                            $.get("/product_management/wait_submit/cancel/" + data["id"] + "/", function (data) {
+                                if (data.success) {
+                                            $.growlService("提交成功！", {type: "success"});
+                                            location.href = "/product_management/page_waitsubmit_product/";
+                                        } else {
+                                            $.growlService(data.error_messag, {type: "danger"});
+                                        }
+                            })
+                        }
                     }
-                    $.growlService("取消提交", {type: "danger"});
-                    window.location.reload(true);
                 }
             }
         });

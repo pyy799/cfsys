@@ -7,12 +7,11 @@
     <!-- Morris chart -->
     <link rel="stylesheet" href="/static/plugins/morris/morris.css">
 
-
 {% endblock %}
 
 
 {% block content %}
-    <div class="box box-solid" id="tablebox" style="padding-left: 100px">
+    <div class="box box-solid" id="tablebox" style="padding-left: 20px">
         <div class="box-header with-border">
             <h3>属性管理</h3>
         </div>
@@ -20,131 +19,562 @@
             <div class="nav-tabs-custom">
             <!-- Tabs within a box -->
             <ul class="nav nav-tabs pull-left">
-                <li class="active"><a href="#M" data-toggle="tab">M成熟度</a></li>
-                <li><a href="#I" data-toggle="tab">I自由度</a></li>
-                <li><a href="#B" data-toggle="tab">B业务</a></li>
-                <li><a href="#T" data-toggle="tab">T技术形态</a></li>
+                <li {% if request.path == '/attribute/page_attribute/' %}class="active" {% endif %}><a href="#M" data-toggle="tab">M成熟度</a></li>
+                <li ><a href="#I" data-toggle="tab">I自由度</a></li>
+                <li ><a href="#B" data-toggle="tab">B业务领域</a></li>
+                <li ><a href="#T" data-toggle="tab">T技术形态</a></li>
             </ul>
             <div style="clear:both"></div>
+            <div class="tab-content">
 
-            </div>
-        </div>
-        <!--属性信息-->
-        <div class="box box-default">
-                <div class="box-header with-border">
-                    <h3 class="box-title">基本信息</h3>
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                <div class="table-container no-padding tab-pane active" id="M" style="padding:14px">
+                    <div class="table-actions-wrapper">
+
+                        <div class="box-header with-border">
+                            <h3 class="box-title">基本信息</h3>
+                        </div>
+                         <table border="1"id='attribute'class="table table-bordered table-hover" style="text-align: left">
+                                    <tbody>
+                                    {% for attr in maturity %}
+                                        {% if attr.ACT == 'a'%}
+                                            <tr>
+                                                <td style="width: 100px;"><b>属性</b></td>
+                                                <td>{{ attr.attribute }}</td>
+                                            </tr>
+                                             <tr>
+                                                <td style="width: 100px"><b>含义</b></td>
+                                                <td>{{ attr.meaning }}</td>
+                                            </tr>
+                                             <tr>
+                                                <td style="width: 100px"><b>备注</b></td>
+                                                <td>{{ attr.information }}</td>
+                                                 <td>
+                                                     <button class="btn btn-sm pull-right green" style="height: 30px" data-toggle="modal" data-target="#attribute-edit" onclick="attributeedit('{{ attr.id }}','{{ attr.attribute }}','{{ attr.meaning }}','{{ attr.information }}')"><i class="fa fa-edit"></i> 修改</button>
+                                                 </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+
+                        <hr style="height: 5px;border-top: 5px double skyblue"/>
+                        <div class="box-header with-border">
+                                <h3 class="box-title">属性分类</h3>
+                        </div>
+                        <table border="1"id='attrclass'class="table table-bordered table-hover" style="text-align: center">
+                                    <thead>
+                                    <tr>
+                                        <th style="text-align: center;width: 150px">属性</th>
+                                        <th style="text-align: center;width: 150px">大类</th>
+                                        <th style="text-align: center;width: 150px">小类</th>
+                                        <th style="text-align: center;width: 250px">含义</th>
+                                        <th style="text-align: center;width: 250px">备注</th>
+                                        <th style="text-align: center;width: 250px">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for attr in maturity %}
+                                        {% if attr.ACT != 'a'%}
+                                            <tr>
+                                                <td>{{ attr.attribute }}</td>
+                                                <td>{{ attr.first_class }}</td>
+                                                <td>{{ attr.second_class }}</td>
+                                                <td>{{ attr.meaning }}</td>
+                                                <td>{{ attr.information }}</td>
+                                                <td>
+                                                    <button type="button"class="btn  btn-success btn-sm green" data-toggle="modal" data-target="#class-edit"
+                                                            onclick="classEdit('{{ attr.id }}','{{ attr.ACT }}','{{ attr.attribute }}','{{ attr.first_class }}',
+                                                                    '{{ attr.second_class }}','{{ attr.meaning }}','{{ attr.information }}')">修改</button>
+                                                    <button type="button" class="btn  btn-danger btn-sm red" data-toggle="modal" data-target="#class-delete" onclick="classDelete('{{ attr.id }}','{{ attr.ACT }}','{{ attr.first_class }}')">删除</button>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <button class="btn btn-sm pull-right blue" style="height: 30px" data-toggle="modal" data-target="#class-add" onclick="addClass('M')"><i class="fa fa-plus"></i> 增加分类</button>
+
+                                    </tbody>
+                                </table>
+                    </div>
+                </div>{#                        M结束#}
+
+                <div class="table-container no-padding tab-pane" id="I" style="padding:14px">
+                    <div class="table-actions-wrapper">
+
+
+                         <div class="box-header with-border">
+                            <h3 class="box-title">基本信息</h3>
+                         </div>
+                        <table border="1"id='attribute'class="table table-bordered table-hover" style="text-align: left">
+                                    <tbody>
+                                    {% for attr in independence %}
+                                        {% if attr.ACT == 'a' %}
+                                            <tr>
+                                                <td style="width: 100px;"><b>属性</b></td>
+                                                <td>{{ attr.attribute }}</td>
+                                            </tr>
+                                             <tr>
+                                                <td style="width: 100px"><b>含义</b></td>
+                                                <td>{{ attr.meaning }}</td>
+                                            </tr>
+                                             <tr>
+                                                <td style="width: 100px"><b>备注</b></td>
+                                                <td>{{ attr.information }}</td>
+                                                 <td>
+                                                     <button class="btn btn-sm pull-right green" style="height: 30px" data-toggle="modal" data-target="#attribute-edit" onclick="attributeedit('{{ attr.id }}','{{ attr.attribute }}','{{ attr.meaning }}','{{ attr.information }}')"><i class="fa fa-edit"></i> 修改</button>
+                                                 </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+
+
+                        <hr style="height: 5px;border: none;border-top: 5px double skyblue"/>
+                        <div class="box-header with-border">
+                                <h3 class="box-title">属性分类</h3>
+                        </div>
+                    <table border="1"id='attrclass'class="table table-bordered table-hover" style="text-align: center">
+                                    <thead>
+                                    <tr>
+                                        <th style="text-align: center;width: 150px">属性</th>
+                                        <th style="text-align: center;width: 150px">大类</th>
+                                        <th style="text-align: center;width: 150px">小类</th>
+                                        <th style="text-align: center;width: 250px">含义</th>
+                                        <th style="text-align: center;width: 250px">备注</th>
+                                        <th style="text-align: center;width: 250px">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for attr in independence %}
+                                        {% if attr.ACT != 'a' %}
+                                            <tr>
+                                                <td>{{ attr.attribute }}</td>
+                                                <td>{{ attr.first_class }}</td>
+                                                <td>{{ attr.second_class }}</td>
+                                                <td>{{ attr.meaning }}</td>
+                                                <td>{{ attr.information }}</td>
+                                                <td>
+                                                    <button type="button"class="btn  btn-success btn-sm green" data-toggle="modal" data-target="#class-edit"
+                                                    onclick="classEdit('{{ attr.id }}','{{ attr.ACT }}','{{ attr.attribute }}','{{ attr.first_class }}',
+                                                                    '{{ attr.second_class }}','{{ attr.meaning }}','{{ attr.information }}')">修改</button>
+                                                    <button type="button" class="btn  btn-danger btn-sm red" data-toggle="modal" data-target="#class-delete" onclick="classDelete('{{ attr.id }}','{{ attr.ACT }}','{{ attr.first_class }}')">删除</button>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                      <button class="btn btn-sm pull-right blue" style="height: 30px" data-toggle="modal" data-target="#class-add" onclick="addClass('I')"><i class="fa fa-plus"></i> 增加分类</button>
+
+                                    </tbody>
+                                </table>
                     </div>
                 </div>
-                <input type="hidden" name="csrfmiddlewaretoken" value="s5gDSD8WRGKK8z3T026uOzrTd5oMdaXw">
-                <div class="box-body">
 
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">属性</label>
+                <div class="table-container no-padding tab-pane" id="B" style="padding:14px">
+                    <div class="table-actions-wrapper">
 
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" name="contact_person" value="" style="width: 600px">
+                         <div class="box-header with-border">
+                            <h3 class="box-title">基本信息</h3>
+                         </div>
+                         <table border="1"id='attribute'class="table table-bordered table-hover" style="text-align: left">
+                                    <tbody>
+                                    {% for attr in business %}
+                                        {% if attr.ACT == 'a' %}
+                                            <tr>
+                                                <td style="width: 100px;"><b>属性</b></td>
+                                                <td>{{ attr.attribute }}</td>
+                                            </tr>
+                                             <tr>
+                                                <td style="width: 100px"><b>含义</b></td>
+                                                <td>{{ attr.meaning }}</td>
+                                            </tr>
+                                             <tr>
+                                                <td style="width: 100px"><b>备注</b></td>
+                                                <td>{{ attr.information }}</td>
+                                             <td>
+                                                 <button class="btn btn-sm pull-right green" style="height: 30px" data-toggle="modal" data-target="#attribute-edit" onclick="attributeedit('{{ attr.id }}','{{ attr.attribute }}','{{ attr.meaning }}','{{ attr.information }}')"><i class="fa fa-edit"></i> 修改</button>
+                                             </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+
+                        <hr style="height: 5px;border: none;border-top: 5px double skyblue"/>
+                        <div class="box-header with-border">
+                                <h3 class="box-title">属性分类</h3>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">缩写</label>
 
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" name="contact_tel" value="" style="width: 600px">
-                        </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">含义</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" name="service_rank_money" value="" style="width: 600px">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">备注</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" name="service_rank_money" value="" style="width: 600px;height: 200px">
-                        </div>
-                    </div>
- <!--修改属性-->
-             <button class="btn btn-sm pull-right blue" style="height: 30px" data-toggle="modal" data-target="#mymodal-data"><i class="fa fa-edit"></i> 修改属性</button>
-                                   <div class="modal fade" id="mymodal-data" role="dialog" aria-labelledby="mymodal-data"
-                         aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header" style="margin-top: 100px">
-                                    <h4 class="modal-title" id="mymodal-data">修改属性</h4>
+                    <table border="1"id='attrclass'class="table table-bordered table-hover" style="text-align: center">
+                                    <thead>
+                                    <tr>
+                                        <th style="text-align: center;width: 150px">属性</th>
+                                        <th style="text-align: center;width: 150px">大类</th>
+                                        <th style="text-align: center;width: 150px">小类</th>
+                                        <th style="text-align: center;width: 250px">含义</th>
+                                        <th style="text-align: center;width: 250px">备注</th>
+                                        <th style="text-align: center;width: 250px">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for attr in business %}
+                                        {% if attr.ACT != 'a' %}
+                                            <tr>
+                                                <td>{{ attr.attribute }}</td>
+                                                <td>{{ attr.first_class }}</td>
+                                                <td>{{ attr.second_class }}</td>
+                                                <td>{{ attr.meaning }}</td>
+                                                <td>{{ attr.information }}</td>
+                                                <td>
+                                                    <button type="button"class="btn  btn-success btn-sm green" data-toggle="modal" data-target="#class-edit"
+                                                    onclick="classEdit('{{ attr.id }}','{{ attr.ACT }}','{{ attr.attribute }}','{{ attr.first_class }}',
+                                                                    '{{ attr.second_class }}','{{ attr.meaning }}','{{ attr.information }}')">修改</button>
+                                                    <button type="button" class="btn  btn-danger btn-sm red" data-toggle="modal" data-target="#class-delete" onclick="classDelete('{{ attr.id }}','{{ attr.ACT }}','{{ attr.first_class }}')" >删除</button>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                      <button class="btn btn-sm pull-right blue" style="height: 30px" data-toggle="modal" data-target="#class-add" onclick="addClass('B')"><i class="fa fa-plus"></i> 增加分类</button>
 
-                                    <div class="box box-primary">
-                                        <form id="approval_note_form">
-                                            {% csrf_token %}
-                                            <div class="box-body">
-                                                <div class="col-sm-6">
-                                                    <textarea id="approval_note" name="approval_note"
-                                                              style="height: 200px; width: 500px"></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer" style="">
-                                                <button type="submit" class="btn btn-primary">提交</button>
-                                                <button class="btn btn-default" data-dismiss="modal">关闭</button>
-                                            </div>
-                                        </form>
+                                    </tbody>
+                                </table>
+                    </div>
+                </div>
+
+                <div class="table-container no-padding tab-pane" id="T" style="padding:14px">
+                    <div class="table-actions-wrapper">
+
+                         <div class="box-header with-border">
+                            <h3 class="box-title">基本信息</h3>
+                         </div>
+                         <table border="1"id='attribute'class="table table-bordered table-hover" style="text-align: left">
+                                    <tbody>
+                                    {% for attr in technology %}
+                                        {% if attr.ACT == 'a' %}
+                                            <tr>
+                                                <td style="width: 100px;"><b>属性</b></td>
+                                                <td>{{ attr.attribute }}</td>
+                                            </tr>
+                                             <tr>
+                                                <td style="width: 100px"><b>含义</b></td>
+                                                <td>{{ attr.meaning }}</td>
+                                            </tr>
+                                             <tr>
+                                                <td style="width: 100px"><b>备注</b></td>
+                                                <td>{{ attr.information }}</td>
+                                                 <td>
+                                                     <button class="btn btn-sm pull-right green" style="height: 30px" data-toggle="modal" data-target="#attribute-edit" onclick="attributeedit('{{ attr.id }}','{{ attr.attribute }}','{{ attr.meaning }}','{{ attr.information }}')"><i class="fa fa-edit"></i> 修改</button>
+                                                 </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+
+                        <hr style="height: 5px;border: none;border-top: 5px double skyblue"/>
+                        <div class="box-header with-border">
+                                <h3 class="box-title">属性分类</h3>
+                        </div>
+
+
+
+                 <table border="1"id='attrclass'class="table table-bordered table-hover" style="text-align: center">
+                                    <thead>
+                                    <tr>
+                                        <th style="text-align: center;width: 150px">属性</th>
+                                        <th style="text-align: center;width: 150px">大类</th>
+                                        <th style="text-align: center;width: 150px">小类</th>
+                                        <th style="text-align: center;width: 250px">含义</th>
+                                        <th style="text-align: center;width: 250px">备注</th>
+                                        <th style="text-align: center;width: 250px">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for attr in technology %}
+                                        {% if attr.ACT != 'a' %}
+                                            <tr>
+                                                <td>{{ attr.attribute }}</td>
+                                                <td>{{ attr.first_class }}</td>
+                                                <td>{{ attr.second_class }}</td>
+                                                <td>{{ attr.meaning }}</td>
+                                                <td>{{ attr.information }}</td>
+                                                <td>
+                                                    <button type="button"class="btn  btn-success btn-sm green" data-toggle="modal" data-target="#class-edit"
+                                                    onclick="classEdit('{{ attr.id }}','{{ attr.ACT }}','{{ attr.attribute }}','{{ attr.first_class }}',
+                                                                    '{{ attr.second_class }}','{{ attr.meaning }}','{{ attr.information }}')">修改</button>
+                                                    <button type="button" class="btn  btn-danger btn-sm red" data-toggle="modal" data-target="#class-delete" onclick="classDelete('{{ attr.id }}','{{ attr.ACT }}','{{ attr.first_class }}')">删除</button>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <button class="btn btn-sm pull-right blue" style="height: 30px" data-toggle="modal" data-target="#class-add" onclick="addClass('T')"><i class="fa fa-plus"></i> 增加分类</button>
+
+                                    </tbody>
+                                </table>
+                        {#                        T结束#}
+                    </div>
+                </div>
+
+                <div class="modal fade" id="attribute-edit" role="dialog" aria-labelledby="addLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+                                <h4 class="modal-title" id="addLabel" style="font-weight:bold">修改备注</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="box box-primary">
+                                    <br>
+                            <form style=";float:none" class="form-horizontal" method="post">
+                                {% csrf_token %}
+                                <div class="form-group" style="margin-top: 0">
+                                    <div class="col-sm-6" style="height:45px;width:600px;text-align: center">
+                                        <div class="col-sm-2" style="text-align: left">
+                                            <label for="attribute-e" class="control-label">属性</label>
+                                        </div>
+                                        <div class="col-sm-10" style="text-align: right">
+                                            <input id="attribute-e" name="attribute-e" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6" style="height:45px;width:600px;text-align: center">
+                                        <div class="col-sm-2" style="text-align: left">
+                                            <label for="meaning" class="control-label">含义</label>
+                                        </div>
+                                        <div class="col-sm-10" style="text-align: right">
+                                            <input id="meaning" name="meaning" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6" style="height:45px;width:600px;text-align: center">
+                                        <div class="col-sm-2" style="text-align: left">
+                                            <label for="information_edit" class="control-label">备注</label>
+                                        </div>
+                                        <div class="col-sm-10" style="text-align: right">
+                                            <textarea   id="information_edit" name="information_edit" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" style="height: 30px;margin-top:5px">
+                                        <input type="hidden" id="attribute_id"/>
                                     </div>
                                 </div>
+
+                                <div class="modal-footer" style="text-align: center">
+                                    <button type="button" class="btn btn-primary" onclick="goattr_edit()">确认</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                </div>
+                            </form>
+                                </div>
                             </div>
-                            <!-- /.modal-content -->
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal -->
+                </div>
+
+                <div class="modal fade" id="class-edit" role="dialog" aria-labelledby="addLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+                                <h4 class="modal-title" id="addLabel" style="font-weight:bold">修改分类</h4>
+                                <h5>带有<span style="color:red">*</span>标识的为必填项，且不可与已有分类重复！</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="box box-primary">
+                                    <br>
+                            <form style=";float:none" class="form-horizontal" method="post" action="">
+                                {% csrf_token %}
+                                <div class="form-group" style="margin-top: 0">
+                                    <div class="col-sm-10" style=";height:45px;width:600px">
+
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="class_attribute" class="control-label">属性</label>
+                                            </div>
+                                             <div class="col-sm-10">
+                                                 <input type="text" id="class_attribute" name="class_attribute" class="form-control" readonly>
+                                            </div>
+
+                                    </div>
+                                     <div class="col-sm-10" style=";height:45px;width:600px">
+
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="first_class_edit" class="control-label">大类<span style="color:red">*</span></label>
+                                            </div>
+                                            <div class="col-sm-10" style="text-align: right">
+                                                <input type="text" id="first_class_edit" name="first_class_edit" class="form-control">
+
+                                        </div>
+                                    </div>
+                                     <div class="col-sm-10" style=";height:45px;width:600px">
+
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="second_class_edit" class="control-label">小类<span style="color:red">*</span></label>
+                                            </div>
+                                            <div class="col-sm-10" style="text-align: right">
+                                                <input type="text" id="second_class_edit" name="second_class_edit"  class="form-control">
+                                            </div>
+
+                                    </div>
+
+                                    <div class="col-sm-10" style="height:45px;width:600px">
+
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="class_meaning" class="control-label">含义<span style="color:red">*</span></label>
+                                            </div>
+                                            <div class="col-sm-10" style="text-align: right">
+                                                <input type="text" id="class_meaning" name="class_meaning" class="form-control" value="">
+                                            </div>
+
+                                    </div>
+
+                                    <div class="col-sm-10" style="height:45px;width:600px">
+                                            <div class="col-sm-2" style="text-align: left">
+                                            <label for="class_information" class="control-label">备注</label>
+                                            </div>
+                                            <div class="col-sm-10" style="text-align: right">
+                                                <textarea   id="class_information" name="class_information" class="form-control" value="" placeholder="请输入备注"></textarea>
+                                            </div>
+                                    </div>
+                                    <div class="col-sm-12" style="height: 30px;margin-top:5px">
+                                        <input type="hidden" id="class_id"/>
+                                    </div>
+                                    <div class="col-sm-12" style="height: 30px;margin-top:5px">
+                                        <input type="hidden" id="class_act"/>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer" style="text-align: center">
+                                    <button type="submit" class="btn btn-primary" onclick="goClassEdit()">确认</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                </div>
+
+                            </form>
+                                </div>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal -->
+                </div>
+
+                <div class="modal fade" id="class-add" role="dialog" aria-labelledby="addLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+                                <h4 class="modal-title" id="addLabel" style="font-weight:bold">增加分类</h4>
+                                <h5>带有<span style="color:red">*</span>标识的为必填项，且不可与已有分类重复！</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="box box-primary">
+                                    <br>
+                            <form style=";float:none" class="form-horizontal" method="post" action="{% url 'add_attribute' %}">
+                                {% csrf_token %}
+                                <div class="form-group" style="margin-top: 0">
+                                    <div class="col-sm-10" style="height:45px;width:600px">
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="attribute_add" class="control-label">属性<span style="color:red">*</span></label>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                <input type="text" id="attribute_add" name="attribute_add" class="form-control" readonly>
+                                            </div>
+
+                                    </div>
+                                     <div class="col-sm-10" style=";height:45px;width:600px">
+
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="first_class_add" class="control-label">大类<span style="color:red">*</span></label>
+                                            </div>
+                                            <div class="col-sm-10" style="text-align: right">
+                                                <input type="text" id="first_class_add" name="first_class_add" placeholder="请输入大类" class="form-control" required/>
+
+                                        </div>
+                                    </div>
+                                     <div class="col-sm-10" style=";height:45px;width:600px">
+
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="second_class_add" class="control-label">小类</label>
+                                            </div>
+                                            <div class="col-sm-10" style="text-align: right">
+                                                <input type="text" id="second_class_add" name="second_class_add" placeholder="请输入小类 , 小类为空则默认新增大类！" class="form-control">
+                                            </div>
+
+                                    </div>
+
+                                    <div class="col-sm-10" style="height:45px;width:600px">
+
+                                            <div class="col-sm-2" style="text-align: left">
+                                                <label for="meaning_add" class="control-label">含义<span style="color:red">*</span></label>
+                                            </div>
+                                            <div class="col-sm-10" style="text-align: right">
+                                                <input type="text" id="meaning_add" name="meaning_add" class="form-control" value="" placeholder="请输入含义" required/>
+                                            </div>
+
+                                    </div>
+
+                                    <div class="col-sm-10" style="height:45px;width:600px">
+                                            <div class="col-sm-2" style="text-align: left">
+                                            <label for="information_add" class="control-label">备注</label>
+                                            </div>
+                                            <div class="col-sm-10" style="text-align: right">
+                                                <textarea   id="information_add" name="information_add" class="form-control" value="" placeholder="请输入备注"></textarea>
+                                            </div>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="modal-footer" style="text-align: center">
+                                    <button type="submit" class="btn btn-primary">确认</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                </div>
+                            </form>
+{#                                    {% if messages %}#}
+{#                                    <script>#}
+{#                                        {% for msg in messages %}#}
+{#                                            alert('{{ msg.message }}');#}
+{#                                        {% endfor %}#}
+{#                                    </script>#}
+{#                                {% endif %}#}
+                                </div>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal -->
+                </div>
+
+                <div class="modal fade" id="class-delete" role="dialog" aria-labelledby="addLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" style="color:green" data-dismiss="modal" aria-hidden="false"></button>
+                                <h4 class="modal-title" id="addLabel" style="font-weight:bold;color: red">删除警告</h4>
+                            </div>
+                            <form style=";float:none" class="form-horizontal" method="get" action="">
+                                {% csrf_token %}
+                                <div class="modal-form" style="text-align: center;height:45px">此属性关联产品共有 <span id="del_count"></span> 条,<span id="warning"></span></div>
+                                <div class="col-sm-12" style="height: 30px;margin-top:5px">
+                                    <input type="hidden" id="delete_id"/>
+                                    <input type="hidden" id="delete_count"/>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" id="a_delete" onclick="godelete_class()">确认</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                </div>
+                            </form>
                         </div>
-                        <!-- /.modal -->
-                    </div>
-                </div>
-                <!-- /.box-body -->
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
 
+                {% if messages %}
+                    <script>
+                        {% for msg in messages %}
+                            alert('{{ msg.message }}');
+                            {% endfor %}
+                    </script>
+                {% endif %}
+
+
+            {#                结束#}
             </div>
-        <!--属性分类-->
-            <div class="box box-default">
-                <div class="box-header with-border">
-                    <h3 class="box-title">属性分类</h3>
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                    </div>
-                </div>
-                <input type="hidden" name="csrfmiddlewaretoken" value="s5gDSD8WRGKK8z3T026uOzrTd5oMdaXw">
-                <div class="box-body">
-                      <table border="1"id='attrclass'class="table table-bordered table-hover" style="text-align: center">
-                            <tr>
-                                <th style="text-align: center">用户名</th>
-                                <th style="text-align: center">属性</th>
-                                <th style="text-align: center">大类</th>
-                                <th style="text-align: center">小类</th>
-                                <th style="text-align: center">含义</th>
-                                <th style="text-align: center">备注</th>
-                                <th style="text-align: center">操作</th>
-                            </tr>
-                            <tr>
-                                <td>January</td>
-                                <td>$100</td>
-                                <td>January</td>
-                                <td>January</td>
-                                <td>January</td>
-                                <td>January</td>
-                                <td>January</td>
-
-                            </tr>
-
-                        </table>
-
-
-
-                </div>
-                <!-- /.box-body -->
             </div>
-
-
+        </div>
     </div>
-
-
-
 
 {% endblock %}
 
@@ -152,7 +582,6 @@
     <!-- Morris.js charts -->
     <script src="/static/js/raphael/raphael-min.js"></script>
     <script src="/static/plugins/morris/morris.min.js"></script>
-
     <script src="/static/plugins/jquery.blockui.min.js"></script>
     <script src="/static/plugins/datatables/jquery.dataTables.js"></script>
     <script src="/static/plugins/datatables/dataTables.bootstrap.min.js"></script>
@@ -160,4 +589,146 @@
     <script src="/static/js/table-ext.js"></script>
     <script src="/static/js/datatable.js"></script>
     <script src="/static/js/jPages.js"></script>
+{#<script src="/static/plugins/jQuery/jquery-2.2.3.min.js"></script>#}
+    <script>
+    function addClass(a) {
+        $("#attribute_add").val(a)
+        console.log(a)
+    }
+    function attributeedit(id,attr,mean,infor) {
+        $("#attribute_id").val(id)
+        $("#attribute-e").val(attr)
+        $("#meaning").val(mean)
+        $("#information_edit").val(infor)
+        console.log(attr)
+    }
+    function goattr_edit() {
+        $('#attribute-edit').modal('hide')
+        var data = {
+              'attribute_id': $("#attribute_id").val(),
+            'information_edit': $("#information_edit").val()
+        }
+        $.ajax({
+            url:'attribute_edit/',
+            type:'POST',
+            data:data,
+            success:function(res) {
+                console.log(res)
+                if (res.status === 0) {
+                    alert("修改成功！");
+                    location.reload();
+                }
+                else if(res.status === 1){
+                    alert("输入内容与修改前相同，请重新输入！");
+                    location.reload();
+                }
+                else if(res.status === 2){
+                    alert("找不到此属性！");
+                    location.reload();
+                }
+            },
+            error:function () {}
+        })
+    }
+    function classEdit(id,act,attr,firstclass,secondclass,mean,infor) {
+        $("#class_id").val(id)
+        $("#class_act").val(act)
+        $("#class_attribute").val(attr)
+        $("#first_class_edit").val(firstclass)
+        $("#second_class_edit").val(secondclass)
+        $("#class_meaning").val(mean)
+        $("#class_information").val(infor)
+        if(act==='c'){
+            $("#first_class_edit").attr("readonly",false)
+            $("#second_class_edit").attr("readonly",true)
+        }
+        else if(act==='t'){
+            $("#first_class_edit").attr("readonly",true)
+            $("#second_class_edit").attr("readonly",false)
+        }
+        console.log(attr)
+    }
+    function goClassEdit() {
+        $('#class-edit').modal('hide')
+        var data={
+            "class_id":$("#class_id").val(),
+            "class_act":$("#class_act").val(),
+            "class_attribute":$("#class_attribute").val(),
+            "first_class_edit":$("#first_class_edit").val(),
+            "second_class_edit": $("#second_class_edit").val(),
+            "class_meaning": $("#class_meaning").val(),
+            "class_information": $("#class_information").val()
+        }
+        $.ajax({
+            url:'class_edit/',
+            type:'POST',
+            data:data,
+            success:function (res) {
+                console.log(res)
+                if (res.status0===0 && res.status1===0) {
+                    console.log('0')
+                    alert("修改成功！相关产品的属性信息已同步！");
+                    location.reload();
+                }else if (res.status0===1 && res.status1===0){
+                    alert("请填写必填项！");
+                    location.reload();
+                }else if (res.status0===0 && res.status1===1){
+                    alert("已有此分类，请重新输入！");
+                    location.reload();
+                }
+            },
+            error:function () {
+            }
+        })
+    }
+    function classDelete(id,ACT,first_class){
+        var data={
+            "id":id,
+            "act":ACT,
+            "first_class":first_class
+        }
+       $.ajax({
+           url:'delete_class',
+           type:'GET',
+           data:data,
+           success:function(res){
+{#               console.log(res)#}
+               $('#delete_id').val(res.id_s)
+               $('#del_count').html(res.count)
+               $('#delete_count').val(res.count)
+               if(res.count===0){
+                   $('#warning').html("可以删除该属性!")
+                   $('#a_delete').attr("disabled",false)
+               }else{
+                   $('#warning').html("请先修改产品信息!")
+                   $('#a_delete').attr("disabled",true)
+               }
+           },
+           error:function(){}
+       })
+    }
+    function godelete_class() {
+        $('#class-delete').modal('hide')
+        var delete_id=$("#delete_id").val()
+        var delete_count=$('#delete_count').val()
+        $.ajax({
+            url:'godelete_class',
+            type:'GET',
+            data:{"delete_id":delete_id,"delete_count":delete_count},
+            success:function(res) {
+                console.log(res)
+                if (res.status === 0) {
+                    alert("删除成功！");
+                    location.reload();
+                }
+            },
+            error:function () {
+
+            }
+        })
+    }
+
+    </script>
+
+
 {% endblock %}

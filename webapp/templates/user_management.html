@@ -394,8 +394,8 @@
                 $('#pageCounts').html(res.pageCounts)
                 $('#pageNum').html(page)
                res.users.forEach(function(value){
-
                    var deleteUrl ="/user/page_user_management/delete/"+value.id+"/"
+
                    var usernameString = '<td id="username_' + value.id + '">'+value.username+'</td>'
                    var genderString
                    if(value.gender ===1)

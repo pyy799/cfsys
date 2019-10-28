@@ -39,7 +39,7 @@
     {% block header_js %}
     {% endblock %}
     <style>
-        .like{
+        .like {
             color: #fff;
             padding: 15px 15px;
             display: block;
@@ -52,8 +52,11 @@
     <header class="main-header">
         <nav class="navbar navbar-static-top" role="navigation">
             <div class="container-fluid">
-                <div class="navbar-header" style="margin-left:50px; margin-right:50px ">
-                    <a href="/" class="navbar-brand"><b>产品管理系统</b></a>
+                <div class="navbar-header" style="margin-left:20px; margin-right:50px ">
+                    <div class="navbar-header" style="margin-right:20px ">
+                        <a href="/"> <img src="/static/dist/img/home/cf.png" style="width: 45px;height: 45px"></a>
+                    </div>
+                    <a href="/" class="navbar-brand"><b>产品能力分类管理系统</b></a>
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                             data-target="#navbar-collapse">
                         <i class="fa fa-bars"></i>
@@ -65,7 +68,8 @@
                     <ul class="nav navbar-nav">
                         <li><a href="/">首页</a></li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">信息查询及能力展示<span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">信息查询及能力展示<span
+                                    class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="{% url 'page_search_product' %}">产品信息查询</a></li>
                                 <li><a href="{% url 'page_show_product' %}">产品能力展示</a></li>
@@ -79,6 +83,7 @@
                                 <li><a href="{% url 'page_table' %}">产品属性化分类表</a></li>
                             </ul>
                         </li>
+
                     <li><a href="{% url 'page_attribute' %}">产品属性管理</a></li>
                     {% if perms.webapp.user_right_management_user or perms.webapp.user_right_management_role %}
                     <li class="dropdown">

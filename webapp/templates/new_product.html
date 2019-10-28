@@ -23,7 +23,7 @@
 
 
 {% block content %}
-    <div class="box box-solid" id="tablebox" style="padding-left: 100px">
+    <div class="box box-solid" id="tablebox" style="padding-left: 20px">
         <div class="box-header with-border">
             <h3>提交产品信息</h3>
         </div>
@@ -31,19 +31,21 @@
             <div class="nav-tabs-custom">
             <!-- Tabs within a box -->
             <ul class="nav nav-tabs pull-left">
-                <li {% if request.path == '/product_management/page_new_product/' %}class="active" {% endif %}><a href="#new" data-toggle="tab">新建产品</a></li>
-                <li><a href="#update" data-toggle="tab">更新产品</a></li>
-                <li {% if request.path == '/product_management/upload_many/' %}class="active" {% endif %}><a href="#waitsubmit" data-toggle="tab">待提交</a></li>
-                <li><a href="#waitpass" data-toggle="tab">待审核</a></li>
-                <li><a href="#passed" data-toggle="tab">已审核</a></li>
+                <li {% if request.path == '/product_management/page_new_product/' %} class="active" {% endif %}><a href="#new" data-toggle="tab">新建产品</a></li>
+                <li {% if request.path == '/product_management/page_update_product/' %} class="active" {% endif %}><a href="#update" data-toggle="tab">更新产品</a></li>
+                <li {% if request.path == '/product_management/page_waitsubmit_product/' %} class="active" {% endif %}><a href="#waitsubmit" data-toggle="tab">待提交</a></li>
+                <li {% if request.path == '/product_management/page_waitpass_product/' %} class="active" {% endif %}><a href="#waitpass" data-toggle="tab">待审核</a></li>
+                <li {% if request.path == '/product_management/page_passed_product/' %} class="active" {% endif %}><a href="#passed" data-toggle="tab">已审核</a></li>
             </ul>
             <div style="clear:both"></div>
             <div class="tab-content">
-                <div class="table-container no-padding tab-pane active" id="new" style="padding:14px">
+                <div {% if request.path == '/product_management/page_new_product/' %}
+                class="active table-container no-padding tab-pane" {% endif %}
+                 class="table-container no-padding tab-pane" id="new" style="padding:14px">
                     <div class="table-actions-wrapper">
 
                         <a type="button" class="btn btn-default"  target="_blank"
-                        href="{{ download_path_excel }}" download="产品信息模版">批量新建产品excel模版下载</a>
+                        href="/static/documents/template.xlsx" download="产品信息模版.xlsx">批量新建产品excel模版下载</a>
 
                         <div class="modal fade" id="many" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
@@ -75,7 +77,7 @@
                                             </div>
                                             </div>
                                             </div>
-                                            <div class="modal-footer" style="width:50%">
+                                            <div class="modal-footer" style="text-align: center">
                                                 <button type="submit" class="btn btn-primary">提交</button>
                                                 <button class="btn btn-default" data-dismiss="modal">关闭</button>
                                             </div>
@@ -99,39 +101,95 @@
                     </div>
                 </div>
 
-                <div class="table-container no-padding tab-pane" id="update" style="padding:14px">
+                <div {% if request.path == '/product_management/page_update_product/' %}
+                class="active table-container no-padding tab-pane" {% endif %}
+                 class="table-container no-padding tab-pane" id="update" style="padding:14px">
                     <div class="table-actions-wrapper">
+                    <label>产品名称</label>
                         <input type="text" class="form-control input-inline input-middle input-sm form-filter"
-                               name="contract_number__icontains" placeholder="产品编号" style="width: 200px">
-                        <input type="text" class="form-control input-inline input-middle input-sm form-filter"
-                               name="customer__name__icontains" placeholder="产品名称" style="width: 200px">
+                               name="product_name__icontains" placeholder="产品名称" style="width: 200px">
+                        <label>公司</label>
                         <select class="form-control input-inline input-small input-sm form-filter select"
-                                name="salesman__pk" data-placeholder='公司'>
+                                name="pCompany" data-placeholder='公司'>
                             <option value=''></option>
-                            {% for s in salesmen %}
-                                <option value="{{ s.pk }}">{{ s.cname }}</option>
+                            {% for s in company_choice %}
+                                <option value="{{ s.0 }}">{{ s.1 }}</option>
                             {% endfor %}
                         </select>
+                        <label>申请类型</label>
                         <select class="form-control input-inline input-small input-sm form-filter select"
-                                name="approval_status" data-placeholder='上传者'>
-                            <option value='' selected disabled>---</option>
-                            {% for s in approval_status %}
+                                name="apply_type" data-placeholder='申请类型'>
+                            <option value=''></option>
+                            {% for s in apply_choice %}
                                 <option value="{{ s.0 }}">{{ s.1 }}</option>
                             {% endfor %}
                         </select>
                         <button class="btn btn-sm yellow filter-submit"><i class="fa fa-search"></i> 查询</button>
                         <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> 取消查询</button>
-                                                <a class="btn btn-sm blue" type="button" href="/contract/contract_info/edit/0/"><i class="fa fa-plus"></i>批量更新</a>
+                        <button class="btn btn-sm green checkall" id="checkall"><i class="fa fa-check"></i> 全选/反选</button>
+                        <button class="btn btn-sm blue" data-toggle="modal" data-target="#update_many">
+                            <i class="fa fa-plus"></i> 批量更新</button>
+                        <div class="modal fade" id="update_many" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content" style="height: 400px">
+                                    <div class="modal-header" style="margin-top: 100px">
+                                        <h3 class="modal-title" id="myModalLabel">批量更新产品</h3>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="box box-primary">
+                                            <form id="manyupdateForm" class="form-horizontal" enctype="multipart/form-data" method="post">
+                                            {% csrf_token %}
+                                            <div class="box-body">
+                                                <div class="form-group">
+                                                    <div class="col-sm-12">
+                                                        <div class="col-sm-6">
+                                                        <label class="control-label">请上传包含产品信息的文件(.xlsx)*请使用指定模版进行批量上传</label>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <input type="file" class="form-control" name="update_excel"
+                                                             style="width: 250px" id="update_excel" accept=".xlsx,.xls" required/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="col-sm-6">
+                                                        <label class="control-label">请上传包含审批信息的压缩文件(.zip)</label>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <input type="file" class="form-control" name="update_zip"
+                                                             style="width: 250px" id="update_zip" accept=".zip,.rar" required/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer" style="text-align: center">
+                                                <button type="submit" class="btn btn-primary">提交</button>
+                                                <button class="btn btn-default" data-dismiss="modal">关闭</button>
+                                            </div>
+                                            </form>
+                                        </div>
+                                    </div>
 
+
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal -->
+                        </div>
                     </div>
-                    <table class="table table-striped table-bordered table-hover dataTable no-footer" id="approved"
-                           style="word-break: keep-all">
+                    <table class="table table-striped table-bordered table-hover dataTable no-footer"
+                    id="update_table" style="word-break: keep-all">
                         <thead></thead>
                         <tbody></tbody>
                     </table>
+                    <div style="text-align: right">
+                        <a href="javascript:;"><button class="btn btn-sm btn-warning" id="invalid_many"><i class="fa fa-warning "></i> 停用</button></a>
+                        <a href="javascript:;"><button class="btn btn-sm btn-danger" id="delete_many"><i class="fa fa-times"></i> 删除</button></a>
+                    </div>
                 </div>
 
-                <div class="table-container no-padding tab-pane" id="waitsubmit" style="padding:14px">
+                <div {% if request.path == '/product_management/page_waitsubmit_product/' %}
+                class="active table-container no-padding tab-pane" {% endif %}
+                 class="table-container no-padding tab-pane" id="waitsubmit" style="padding:14px">
                     <div class="table-actions-wrapper">
                     <label>产品名称</label>
                         <input type="text" class="form-control input-inline input-middle input-sm form-filter"
@@ -161,13 +219,26 @@
                         <thead></thead>
                         <tbody></tbody>
                     </table>
+                    <div>
+
+                    {% if file_names %}待提交文件：
+                        {% for s in file_names %}
+                            <a href="/product_management/wait_submit/delete_file/{{ s.1 }}/"
+                             class="btn btn-default" type="button"> {{ s.0 }}<i class="fa fa-times"></i></a>
+                        {% endfor %}
+                    {% else %}
+
+                    {% endif %}
+                    </div>
                     <div style="text-align: right">
                         <a href="javascript:;"><button class="btn btn-sm btn-danger" id="cancel_submit"><i class="fa fa-times"></i> 取消</button></a>
                         <a href="javascript:;"><button class="btn btn-sm btn-info" id="submit"><i class="fa fa-check"></i> 提交</button></a>
                     </div>
                 </div>
 
-                <div class="table-container no-padding tab-pane" id="waitpass" style="padding:14px">
+                <div {% if request.path == '/product_management/page_waitpass_product/' %}
+                class="active table-container no-padding tab-pane" {% endif %}
+                 class="table-container no-padding tab-pane" id="waitpass" style="padding:14px">
                     <div class="table-actions-wrapper">
                     <label>产品名称</label>
                         <input type="text" class="form-control input-inline input-middle input-sm form-filter"
@@ -198,7 +269,9 @@
                     </table>
                 </div>
 
-                <div class="table-container no-padding tab-pane" id="passed" style="padding:14px">
+                <div {% if request.path == '/product_management/page_passed_product/' %}
+                class="active table-container no-padding tab-pane" {% endif %}
+                 class="table-container no-padding tab-pane" id="passed" style="padding:14px">
                     <div class="table-actions-wrapper">
                     <label>产品名称</label>
                         <input type="text" class="form-control input-inline input-middle input-sm form-filter"
@@ -246,23 +319,43 @@
     <script src="/static/js/table-ext.js"></script>
     <script src="/static/js/datatable.js"></script>
     <script src="/static/js/jPages.js"></script>
+    <script src="/static/js/product/update.js"></script>
     <script src="/static/js/product/waitsubmit.js"></script>
     <script src="/static/js/product/waitpass.js"></script>
     <script src="/static/js/product/passed.js"></script>
 
     <script>
+        UpdateTable.init();
         WaitSubmitTable.init();
         WaitPassTable.init();
         PassedTable.init();
-        //批量上传文件
+        //批量新建
         $("#manyuploadForm").ajaxForm({
             type: "post",
-            url: "/product_management/upload_many/",    //提交到的url
+            url: "/product_management/new_many/",    //提交到的url
             success: function (data) {
                 if (data.success) {
                     location.href = "";
                 } else {
-                    $.growlService("上传文件有误", {type: "danger"})
+                    $.growlService(data.error_message, {type: "danger"})
+                }
+            }
+        });
+        function formError(element, obj) {
+            $.each(obj, function (key, val) {
+                $("" + element + " input[name='" + key + "']").parent().parent().addClass("has-error");
+                $("" + element + " input[name='" + key + "']").parent().next().html(val)
+            })
+        }
+        //批量更新
+        $("#manyupdateForm").ajaxForm({
+            type: "post",
+            url: "/product_management/update_many/",    //提交到的url
+            success: function (data) {
+                if (data.success) {
+                    location.href = "";
+                } else {
+                    $.growlService(data.error_message, {type: "danger"})
                 }
             }
         });

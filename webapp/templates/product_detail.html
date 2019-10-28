@@ -1,0 +1,142 @@
+{% extends 'base1.html' %}
+
+{% block header_js %}
+    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/jpage.css">
+    <!-- Morris chart -->
+    <link rel="stylesheet" href="/static/plugins/morris/morris.css">
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="box box-solid" id="tablebox" style="padding-left: 30px;padding-right: 30px">
+        <div class="box-header with-border">
+            <h3 class="text-center">产品详情</h3>
+        </div>
+        <div class="box-body">
+            <div class="nav-tabs-custom">
+                <!-- Tabs within a box -->
+                <div style="clear:both"></div>
+
+                <div class="table-container no-padding tab-pane active" id="" style="padding:14px">
+                    <div class="table-actions-wrapper">
+                        <table border="1" id='product_detail' class="table table-bordered table-hover"
+                               style="text-align: left">
+                            <tbody>
+                            {#                            {% for attr in info %}#}
+                            {#                                {% if attr.ACT == 'a' and attr.attribute == 'M' %}#}
+                            <tr>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>产品名称</b>
+                                </td>
+                                <td class="col-lg-4 col-md-4 col-sm-4">{{ info.product_name }}</td>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>旧产品名称</b>
+                                </td>
+                                <td class="col-lg-4 col-md-4 col-sm-4">{{ info.old_product_name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>所属公司</b>
+                                </td>
+                                <td class="col-lg-4 col-md-4 col-sm-4">{{ info.pCompany_name }}</td>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>是否重叠</b>
+                                </td>
+                                <td class="col-lg-4 col-md-4 col-sm-4">{{ info.is_overlap }}</td>
+                            </tr>
+                            <tr>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle">
+                                    <b>成熟度</b></td>
+                                <td class="col-lg-4 col-md-4 col-sm-4">{{ info.maturity_name }}</td>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle">
+                                    <b>自主度</b></td>
+                                <td class="col-lg-4 col-md-4 col-sm-4">{{ info.independence_name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>业务领域</b>
+                                </td>
+                                <td class="col-lg-4 col-md-4 col-sm-4">{{ info.business_name }}</td>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>技术形态</b>
+                                </td>
+                                <td class="col-lg-4 col-md-4 col-sm-4">{{ info.technology_name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>过去一年销售额</b>
+                                </td>
+                                <td class="col-lg-4 col-md-4 col-sm-4">{{ info.one_year_money }}万元</td>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>过去一年销售数量</b>
+                                </td>
+                                <td class="col-lg-4 col-md-4 col-sm-4">{{ info.one_year_num }}套</td>
+                            </tr>
+                            <tr>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>过去三年销售额</b>
+                                </td>
+                                <td class="col-lg-4 col-md-4 col-sm-4">{{ info.three_year_money }}万元</td>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>过去三年销售数量</b>
+                                </td>
+                                <td class="col-lg-4 col-md-4 col-sm-4">{{ info.three_year_num }}套</td>
+                            </tr>
+                            <tr>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle">
+                                    <b>联系人</b></td>
+                                <td colspan="3">{{ info.contact_people }}</td>
+                            </tr>
+                            <tr>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>产品描述</b>
+                                </td>
+                                <td colspan="3">{{ info.introduction }}</td>
+                            </tr>
+                            <tr>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>目标行业</b>
+                                </td>
+                                <td colspan="3">{{ info.target_field }}</td>
+                            </tr>
+                            <tr>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>应用场景</b>
+                                </td>
+                                <td colspan="3">{{ info.apply_situation }}</td>
+                            </tr>
+                            <tr>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>市场案例</b>
+                                </td>
+                                <td colspan="3">{{ info.example }}</td>
+                            </tr>
+                            <tr>
+                                <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle">
+                                    <b>备注</b></td>
+                                <td colspan="3">{{ info.remark }}</td>
+                            </tr>
+
+                            <a type="button" class="btn green" style="height: 30px;width: 100px;margin-bottom: 10px"
+                               href="{{ download_path_excel }}" {% if info.real_name %}download="{{ info.real_name }}"{% else %}disabled{% endif %}><i
+                                    class="fa fa-arrow-down" id="download" ></i>附件下载</a>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    {#                        M结束#}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer_js %}
+    <!-- Morris.js charts -->
+    <script src="/static/js/raphael/raphael-min.js"></script>
+    <script src="/static/plugins/morris/morris.min.js"></script>
+    <script src="/static/plugins/jquery.blockui.min.js"></script>
+    <script src="/static/plugins/datatables/jquery.dataTables.js"></script>
+    <script src="/static/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="/static/js/metronic.js"></script>
+    <script src="/static/js/table-ext.js"></script>
+    <script src="/static/js/datatable.js"></script>
+    <script src="/static/js/jPages.js"></script>
+    <script>
+
+        function classDelete(text, id) {
+            $('#a_delete').attr('href', text)
+            $('#s_delete').html($('#attribute_id_' + id).html())
+        }
+    </script>
+
+{% endblock %}
