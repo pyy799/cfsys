@@ -55,38 +55,39 @@ var UpdateTable = function () {
                     {"mData": "technology_name", "sTitle": "技术形态"},
                     {"mData": "uploader", "sTitle": "申请人"},
                     {"mData": "apply_type_name", "sTitle": "申请类型"},
-                    {"mData":null,"sTitle":"操作", "sClass": "center",
+                    {
+                        "mData": null, "sTitle": "操作", "sClass": "center",
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
-                            var modify = $('<a href="/product_management/edit_product/'+oData["id"]+'/" class="btn btn-xs">修改</a>');
+                            var modify = $('<a href="/product_management/edit_product/' + oData["id"] + '/" class="btn btn-xs">修改</a>');
                             var invalid = $('<a href="javascript:;" class="btn btn-xs btn-warning">停用</a>');
                             var delete_p = $('<a href="javascript:;" class="btn btn-xs btn-danger">删除</a>');
                             element.append(modify);
                             element.append(invalid);
                             element.append(delete_p);
 
-                            invalid.on('click',function () {
+                            invalid.on('click', function () {
                                 var id = oData["id"];
                                 var con = confirm("确定停用吗?");
                                 if (con) {
                                     $.get("/product_management/update/invalid/" + id + "/", function (data) {
                                         if (data.success) {
                                             $.growlService("取消提交！", {type: "success"});
-                                            location.href = "/product_management/page_new_product/";
+                                            location.href = "/product_management/page_waitsubmit_product/";
                                         } else {
                                             $.growlService(data.error_messag, {type: "danger"});
                                         }
                                     })
                                 }
                             });
-                            delete_p.on('click',function () {
+                            delete_p.on('click', function () {
                                 var id = oData["id"];
                                 var con = confirm("确定删除吗?");
                                 if (con) {
                                     $.get("/product_management/update/delete/" + id + "/", function (data) {
                                         if (data.success) {
                                             $.growlService("提交成功！", {type: "success"});
-                                            location.href = "/product_management/page_new_product/";
+                                            location.href = "/product_management/page_waitsubmit_product/";
                                         } else {
                                             $.growlService(data.error_messag, {type: "danger"});
                                         }
@@ -146,13 +147,17 @@ var UpdateTable = function () {
                 var con = confirm("确定提交吗?");
                 if (con) {
                     // 选中全部通过
-                    for (var i=0; i < checkedBox.length; i++) {
-                        var data = $("#update_table").DataTable().row(i+1).data();
+                    for (var i = 0; i < checkedBox.length; i++) {
+                        var data = $("#update_table").DataTable().row(i + 1).data();
                         $.get("/product_management/update/invalid/" + data["id"] + "/", function (data) {
+                            if (data.success) {
+                                $.growlService("提交成功！", {type: "success"});
+                                location.href = "/product_management/page_waitsubmit_product/";
+                            } else {
+                                $.growlService(data.error_messag, {type: "danger"});
+                            }
                         })
                     }
-                    $.growlService("提交成功！", {type: "success"});
-                    window.location.reload(true);
                 }
             }
         });
@@ -166,13 +171,17 @@ var UpdateTable = function () {
                 // 选中全部不通过
                 var con = confirm("确定取消吗?");
                 if (con) {
-                    for (var i=0; i < checkedBox.length; i++) {
-                        var data = $("#update_table").DataTable().row(i+1).data();
+                    for (var i = 0; i < checkedBox.length; i++) {
+                        var data = $("#update_table").DataTable().row(i + 1).data();
                         $.get("/product_management/update/delete/" + data["id"] + "/", function (data) {
+                            if (data.success) {
+                                $.growlService("提交成功！", {type: "success"});
+                                location.href = "/product_management/page_waitsubmit_product/";
+                            } else {
+                                $.growlService(data.error_messag, {type: "danger"});
+                            }
                         })
                     }
-                    $.growlService("取消提交", {type: "danger"});
-                    window.location.reload(true);
                 }
             }
         });

@@ -31,15 +31,17 @@
             <div class="nav-tabs-custom">
             <!-- Tabs within a box -->
             <ul class="nav nav-tabs pull-left">
-                <li {% if request.path == '/product_management/page_new_product/' %}class="active" {% endif %}><a href="#new" data-toggle="tab">新建产品</a></li>
-                <li {% if request.path == '/product_management/page_update_product/' %}class="active" {% endif %}><a href="#update" data-toggle="tab">更新产品</a></li>
-                <li {% if request.path == '/product_management/page_waitsubmit_product/' %}class="active" {% endif %}><a href="#waitsubmit" data-toggle="tab">待提交</a></li>
-                <li {% if request.path == '/product_management/page_waitpass_product/' %}class="active" {% endif %}><a href="#waitpass" data-toggle="tab">待审核</a></li>
-                <li {% if request.path == '/product_management/page_passed_product/' %}class="active" {% endif %}><a href="#passed" data-toggle="tab">已审核</a></li>
+                <li {% if request.path == '/product_management/page_new_product/' %} class="active" {% endif %}><a href="#new" data-toggle="tab">新建产品</a></li>
+                <li {% if request.path == '/product_management/page_update_product/' %} class="active" {% endif %}><a href="#update" data-toggle="tab">更新产品</a></li>
+                <li {% if request.path == '/product_management/page_waitsubmit_product/' %} class="active" {% endif %}><a href="#waitsubmit" data-toggle="tab">待提交</a></li>
+                <li {% if request.path == '/product_management/page_waitpass_product/' %} class="active" {% endif %}><a href="#waitpass" data-toggle="tab">待审核</a></li>
+                <li {% if request.path == '/product_management/page_passed_product/' %} class="active" {% endif %}><a href="#passed" data-toggle="tab">已审核</a></li>
             </ul>
             <div style="clear:both"></div>
             <div class="tab-content">
-                <div class="table-container no-padding tab-pane active" id="new" style="padding:14px">
+                <div {% if request.path == '/product_management/page_new_product/' %}
+                class="active table-container no-padding tab-pane" {% endif %}
+                 class="table-container no-padding tab-pane" id="new" style="padding:14px">
                     <div class="table-actions-wrapper">
 
                         <a type="button" class="btn btn-default"  target="_blank"
@@ -99,7 +101,9 @@
                     </div>
                 </div>
 
-                <div class="table-container no-padding tab-pane" id="update" style="padding:14px">
+                <div {% if request.path == '/product_management/page_update_product/' %}
+                class="active table-container no-padding tab-pane" {% endif %}
+                 class="table-container no-padding tab-pane" id="update" style="padding:14px">
                     <div class="table-actions-wrapper">
                     <label>产品名称</label>
                         <input type="text" class="form-control input-inline input-middle input-sm form-filter"
@@ -183,7 +187,9 @@
                     </div>
                 </div>
 
-                <div class="table-container no-padding tab-pane" id="waitsubmit" style="padding:14px">
+                <div {% if request.path == '/product_management/page_waitsubmit_product/' %}
+                class="active table-container no-padding tab-pane" {% endif %}
+                 class="table-container no-padding tab-pane" id="waitsubmit" style="padding:14px">
                     <div class="table-actions-wrapper">
                     <label>产品名称</label>
                         <input type="text" class="form-control input-inline input-middle input-sm form-filter"
@@ -230,7 +236,9 @@
                     </div>
                 </div>
 
-                <div class="table-container no-padding tab-pane" id="waitpass" style="padding:14px">
+                <div {% if request.path == '/product_management/page_waitpass_product/' %}
+                class="active table-container no-padding tab-pane" {% endif %}
+                 class="table-container no-padding tab-pane" id="waitpass" style="padding:14px">
                     <div class="table-actions-wrapper">
                     <label>产品名称</label>
                         <input type="text" class="form-control input-inline input-middle input-sm form-filter"
@@ -261,7 +269,9 @@
                     </table>
                 </div>
 
-                <div class="table-container no-padding tab-pane" id="passed" style="padding:14px">
+                <div {% if request.path == '/product_management/page_passed_product/' %}
+                class="active table-container no-padding tab-pane" {% endif %}
+                 class="table-container no-padding tab-pane" id="passed" style="padding:14px">
                     <div class="table-actions-wrapper">
                     <label>产品名称</label>
                         <input type="text" class="form-control input-inline input-middle input-sm form-filter"
