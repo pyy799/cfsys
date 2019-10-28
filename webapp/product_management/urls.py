@@ -5,6 +5,8 @@ urlpatterns = [
     # 信息管理
     # 新建及更新-新建
     url(r'^page_new_product/$', views.page_new_product, {"template_name": "new_product.html"}, name="page_new_product"),
+    url(r'^page_update_product/$', views.page_new_product, {"template_name": "new_product.html"}, name="page_update_product"),
+
     url(r'^new_many/$', views.new_many, name="new_many"),
     url(r'^update_many/$', views.update_many, name="update_many"),
     # 更新

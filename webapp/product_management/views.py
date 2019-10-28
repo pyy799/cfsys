@@ -503,7 +503,11 @@ def edit_submit(request, pid):
     remark = request.POST.get("remark")
     upload_time = datetime.date.today()
     status = ProductStatus.WAIT_SUBMIT
-    attribute_num = maturity + independence + business + technology
+    maturity = Attribute.objects.get(id=maturity)
+    independence = Attribute.objects.get(id=independence)
+    business = Attribute.objects.get(id=business)
+    technology = Attribute.objects.get(id=technology)
+    attribute_num = maturity.first_class + independence.first_class + business.second_class + technology.second_class
     uploader = user
     is_vaild = True
 
@@ -545,14 +549,10 @@ def edit_submit(request, pid):
     product.remark = remark
     product.uploader = uploader
     product.upload_time = upload_time
-    if maturity:
-        product.maturity = Attribute.objects.get(first_class=maturity)
-    if independence:
-        product.independence = Attribute.objects.get(first_class=independence)
-    if technology:
-        product.technology = Attribute.objects.get(second_class=technology)
-    if business:
-        product.business = Attribute.objects.get(second_class=business)
+    product.maturity = maturity
+    product.independence = independence
+    product.technology = technology
+    product.business = business
     product.attribute_num = attribute_num
     product.status = status
     # product.apply_type = apply_type

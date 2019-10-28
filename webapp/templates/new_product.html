@@ -32,7 +32,7 @@
             <!-- Tabs within a box -->
             <ul class="nav nav-tabs pull-left">
                 <li {% if request.path == '/product_management/page_new_product/' %}class="active" {% endif %}><a href="#new" data-toggle="tab">新建产品</a></li>
-                <li><a href="#update" data-toggle="tab">更新产品</a></li>
+                <li {% if request.path == '/product_management/page_update_product/' %}class="active" {% endif %}><a href="#update" data-toggle="tab">更新产品</a></li>
                 <li {% if request.path == '/product_management/upload_many/' %}class="active" {% endif %}><a href="#waitsubmit" data-toggle="tab">待提交</a></li>
                 <li><a href="#waitpass" data-toggle="tab">待审核</a></li>
                 <li><a href="#passed" data-toggle="tab">已审核</a></li>
