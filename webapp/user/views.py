@@ -2,13 +2,14 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.csrf import csrf_exempt
-from webapp.models import UserProfile, Group
+from webapp.models import UserProfile, Group   # GroupCom
 from django.contrib.auth.models import Permission
-
+import json
 
 @login_required
 @permission_required('webapp.user_right_management_user')
 def jump_user(request, template_name):
+    # print(request.session['relate_company'])
     page = 1
     pageLimit = 2
     userCounts = UserProfile.objects.all().count()
@@ -66,9 +67,13 @@ def active_user(request):
 @login_required
 @permission_required('webapp.user_right_management_user')
 def modify_user(request):
+    # 判断数据库中是否已经存在该用户名称
+    userCount = UserProfile.objects.filter(username=request.POST.get("username").strip()).count()
+    if userCount > 1:
+        return JsonResponse({"status": -1})
     modify_id = request.POST.get("id")
     user = UserProfile.objects.get(id=modify_id)
-    user.username = request.POST.get("username")
+    user.username = request.POST.get("username").strip()
     user.gender = request.POST.get("gender")
     user.uCompany = request.POST.get("uCompany")
     user.department = request.POST.get("department")
@@ -90,7 +95,8 @@ def modify_user(request):
         "position": user.position,
         "group": group.name,
         "phone": user.phone,
-        "email": user.email
+        "email": user.email,
+        "status": 0
     }
     return JsonResponse(res)
 
@@ -171,7 +177,10 @@ def jump_role(request, template_name):
 @login_required
 @permission_required('webapp.user_right_management_role')
 def add_role(request):
-    group_name = request.POST.get("group_name")
+    group_name = request.POST.get("group_name").strip()
+    groupCount = Group.objects.filter(name=group_name).count()
+    if groupCount != 0:
+        return JsonResponse({"status": -1})
     group = Group()
     group.name = group_name
     group.save()
@@ -205,15 +214,24 @@ def add_role(request):
         perm_list.append("user_right_management_role")
         group.permissions.add(permission)
     group = Group.objects.get(name=group_name)
-    group_dic = {"id": group.id, "name": group.name, "perm_list": perm_list}
+    # groupCom = GroupCom()
+    # groupCom.id = int(group.id)
+    # groupCom.comStr = "0"
+    # groupCom.save()
+    group_dic = {"id": group.id, "name": group.name, "perm_list": perm_list, "status":0}
     return JsonResponse(group_dic)
+
 
 @login_required
 @permission_required('webapp.user_right_management_role')
 def modify_role(request):
+    group_name = request.POST.get("group_name").strip()
+    groupCount = Group.objects.filter(name=group_name).count()
+    if groupCount > 1:
+        return JsonResponse({"status": -1})
     group_id = request.POST.get("group_id")
     group = Group.objects.get(id=group_id)
-    group.name = request.POST.get("group_name")
+    group.name = group_name
     group.permissions.clear()
     group.save()
     perm_list = []
@@ -245,23 +263,23 @@ def modify_role(request):
         permission = Permission.objects.get(codename="user_right_management_role")
         perm_list.append("user_right_management_role")
         group.permissions.add(permission)
-    group_dic = {"id": group_id, "name": group.name, "perm_list": perm_list}
+    group_dic = {"id": group_id, "name": group.name, "perm_list": perm_list,"status": 0}
     return JsonResponse(group_dic)
 
 
 def delete_role(request):
     delete_id = request.GET.get("id")
-    print(delete_id)
     group = Group.objects.get(id=delete_id)
     group.permissions.clear()
     user_set = UserProfile.objects.filter(groups__id=delete_id)
     group_temp = Group.objects.get(name="无权限角色")
-    print(user_set.count())
     if user_set.count() != 0:
         for user in user_set:
             user.groups.remove(group)
             user.groups.add(group_temp)
     group.delete()
+    # groupCom = GroupCom.objects.get(id=int(delete_id))
+    # groupCom.delete()
     return JsonResponse({"status": 0})
 
 
@@ -272,3 +290,31 @@ def user_check(request):
         return JsonResponse({"status": -1})
     else:
         return JsonResponse({"status": 0})
+
+
+# @csrf_exempt
+# def send_group_company(request):
+#     gid = request.POST.get("id")
+#     strlist = json.loads(request.POST.get("list"))
+#     stri = ""
+#     for i in strlist:
+#         stri = i+stri
+#     # groupCom = GroupCom.objects.get(id=int(gid))
+#     # groupCom.comStr = stri
+#     # groupCom.save()
+#     if int(gid) == Group.objects.get(user=request.user).id:
+#         ucompany = str(request.user.userprofile.uCompany)
+#         if "0" in stri:
+#             if ucompany in stri:
+#                 stri = stri.replace("0", "")
+#             else:
+#                 stri = stri.replace("0", ucompany)
+#         request.session["relate_company"] = stri
+#     # return JsonResponse({"str": stri, "groupComStr": groupCom.comStr,"id":gid})
+#     return JsonResponse({"status": 0})
+
+
+# def get_group_company(request):
+#     gid = request.GET.get("id")
+#     groupCom = GroupCom.objects.get(id=int(gid))
+#     return JsonResponse({"comStr": groupCom.comStr})

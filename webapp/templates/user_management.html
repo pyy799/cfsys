@@ -290,7 +290,6 @@
                     $('#active_'+id).html("正在使用")
                     $('#change_'+id).html("停用")
                 }
-
             },
             error:function(res){}
         })
@@ -335,32 +334,37 @@
               'email': $('#modify_email').val(),
               'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
           }
-          if(data.username==="")
+          if($.trim(data.username)==="")
           {
               $('#err_message2').html("用户名不能为空!")
           }
           else
           {
               $.ajax({
-                    url:'modify/',
-                    type:'POST',
-                    data:data,
-                    async:true,
-                    success:function(res){
-                        console.log(res)
-                        $('#modify').modal('hide')
-                        var id = data.id
-                        $('#username_'+id).html(res.username)
-                        if(res.gender===1)
-                            $('#gender_'+id).html('男')
-                        else
-                            $('#gender_'+id).html('女')
-                        $('#company_'+id).html(res.Company)
-                        $('#department_'+id).html(res.department)
-                        $('#position_'+id).html(res.position)
-                        $('#group_'+id).html(res.group)
-                        $('#phone_'+id).html(res.phone)
-                        $('#email_'+id).html(res.email)
+                  url:'modify/',
+                  type:'POST',
+                  data:data,
+                  async:true,
+                  success:function(res){
+                      if(res.status===-1)
+                      {
+                          $('#err_message2').html("用户名已存在!")
+                      }
+                      else{
+                          $('#modify').modal('hide')
+                          var id = data.id
+                          $('#username_'+id).html(res.username)
+                          if(res.gender===1)
+                              $('#gender_'+id).html('男')
+                          else
+                              $('#gender_'+id).html('女')
+                          $('#company_'+id).html(res.Company)
+                          $('#department_'+id).html(res.department)
+                          $('#position_'+id).html(res.position)
+                          $('#group_'+id).html(res.group)
+                          $('#phone_'+id).html(res.phone)
+                          $('#email_'+id).html(res.email)
+                      }
                     },
                     error:function(){
                         console.log("出现错误!!")
@@ -390,7 +394,6 @@
                 $('#pageCounts').html(res.pageCounts)
                 $('#pageNum').html(page)
                res.users.forEach(function(value){
-                 
                    var deleteUrl ="/user/page_user_management/delete/"+value.id+"/"
 
                    var usernameString = '<td id="username_' + value.id + '">'+value.username+'</td>'
@@ -454,14 +457,13 @@
             search_it(previous_page)
             $('#pageError').html("")
         }
-
     }
     function goSubmit() {
         $('#err_message').html("")
     }
     function check_submit(){
         var username = $('#add_name').val()
-        if(username==="")
+        if($.trim(username)==="")
         {
             $('#err_message').html("用户名不能为空!")
             return false

@@ -1,0 +1,293 @@
+{% extends 'base1.html' %}
+
+{% block header_js %}
+    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/jpage.css">
+    <!-- Morris chart -->
+    <link rel="stylesheet" href="/static/plugins/morris/morris.css">
+{% endblock %}
+
+{% block content %}
+<div class="box box-solid" style="padding-left: 100px;">
+    <div>
+        <h3 class="box-header with-border" style="margin-top: 0;padding-top: 30px">
+            个人信息
+            <input type="button" class="btn btn-large btn-primary" data-toggle="modal" data-target="#modify_pd"
+                   value="修改密码" style="margin-left: 750px;font-size:18px" onclick="go_modify_pd()">
+        </h3>
+    </div>
+    <div class="box-body">
+        <div class="form-horizontal form-group" style="float:none">
+            <div class="col-sm-6">
+                <div class="col-sm-12">
+                    <label class="control-label" for="username">我的名字</label>
+                    <div class="form-control input-inline"  id="username" style="border: none">{{ username }}</div>
+                </div>
+                <div class="col-sm-12" >
+                    <label class="control-label" for="gender">我的性别</label>
+                    <div class="form-control input-inline" id="gender" style="border:none">
+                        {% if gender == 1 %}
+                            男
+                        {% else %}
+                            女
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <label class="control-label" for="company">所在公司</label>
+                    <div class="form-control input-inline" style="border: none" id="company">{{ company }}</div>
+                </div>
+                <div class="col-sm-12">
+                    <label class="control-label" for="department">所在部门</label>
+                    <div class="form-control input-inline" id="department" style="border: none" >{{ department }}</div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="col-sm-12">
+
+                    <label class="control-label" for="phone">我的电话</label>
+                    <div class="form-control input-inline" id="phone" style="border:none;width:175px">{{ phone }}</div>
+                    <button class="btn btn-info btn-sm" onclick="goModify(1)"
+                            data-toggle="modal" data-target="#modify" >修改</button>
+                </div>
+                <div class="col-sm-12">
+                    <label class="control-label" for="email" >我的邮箱</label>
+                    <div class="form-control input-inline" id="email" style="border:none;width:175px">{{ email }}</div>
+                    <button class="btn btn-info btn-sm" onclick="goModify(2)"
+                            data-toggle="modal" data-target="#modify">修改</button>
+                </div>
+
+                <div class="col-sm-12">
+                    <label class="control-label" for="position">我的职位</label>
+                    <div class="form-control input-inline" id="position" style="border: none">{{ position }}</div>
+                </div>
+                <div class="col-sm-12">
+                    <label class="control-label" for="role">我的角色</label>
+                    <div  class="form-control input-inline" id="role" style="border: none">{{ role }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modify" tabindex="-1"
+     role="dialog" aria-labelledby="modifyLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+                <h5 class="modal-title" id="modifyLabel" style="font-weight:bold"></h5>
+            </div>
+            <div style=";float:none" class="form-horizontal">
+                {% csrf_token %}
+                <input type="hidden" id="type">
+                <div class="modal-form" style="margin-top: 0" id="modify_phone_group">
+                    <label for="modify_phone" class="control-label" style="margin-left: 20px;font-weight: 400">请输入电话号码:</label>
+                    <input type="text" class="form-control input-inline" id="modify_phone" placeholder="电话号码" style="width:225px">
+                </div>
+                <div class="modal-form" style="margin-top: 0" id="modify_email_group">
+                    <label for="modify_email" class="control-label" style="margin-left:20px;font-weight:400">请输入邮箱地址:</label>
+                    <input type="text" class="form-control input-inline" id="modify_email" placeholder="邮箱地址" style="width:225px">
+                </div>
+                <div class="modal-footer" style="border-top:none">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="modify()">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modify_pd" tabindex="-1"
+     role="dialog" aria-labelledby="modify_pd_Label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+                <h5 class="modal-title" id="modify_pd_Label" style="font-weight:bold">修改密码</h5>
+            </div>
+            <div style=";float:none" class="form-horizontal" id="pre_test">
+                {% csrf_token %}
+                <div class="modal-form" style="margin-top:0">
+                    <label for="password" class="control-label" style="margin-left:20px;font-weight:400">请输入当前密码:</label>
+                    <input type="password" class="form-control input-inline" placeholder="当前密码" id="password" style="width:225px">
+                    <div id="err_msg" style="margin-left: 10px;font-weight: 400;border: none" class="form-control input-inline"></div>
+                </div>
+                <div class="modal-footer" style="border-top:none">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="check_pd()">确认</button>
+                </div>
+
+            </div>
+            <div style=";float:none" class="form-horizontal" hidden id="next_test">
+                {% csrf_token %}
+                <div class="modal-form" style="margin-top:0">
+                    <label for="newpassword" class="control-label" style="margin-left:20px;font-weight:400">请输入新密码:</label>
+                    <input type="password" class="form-control input-inline" placeholder="新密码" id="newpassword" style="width:225px">
+                </div>
+                <div class="modal-form" style="margin-top:5px">
+                    <label for="newpassword_confirm" class="control-label" style="margin-left:35px;font-weight:400;">确认新密码:</label>
+                    <input type="password" class="form-control input-inline" placeholder="确认新密码" id="newpassword_confirm" style="width:225px">
+                    <div id="err_msg2" class="form-control input-inline" style="margin-left:20px;font-weight:400;border:none"></div>
+                </div>
+                <div class="modal-footer" style="border-top:none">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="new_pd()">确认</button>
+                </div>
+            </div>
+            <div style=";float:none" class="form-horizontal" id="end_test" hidden>
+                <div class="modal-form" style="margin-top:0">
+                    <label class="control-label" style="margin-left:20px;font-weight:400">
+                        您已经成功修改了密码,点击确认关闭该窗口!
+                    </label>
+                </div>
+                <div class="modal-footer" style="border-top:none">
+                    <button type="button" class="btn btn-primary" onclick="close_it()">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .control-label{
+        font-weight:bold;
+    }
+</style>
+<script src="/static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<script>
+    function goModify(type){
+        $('#type').val(type)
+        if(type===1){
+            $('#modifyLabel').html("修改电话号码")
+            $('#modify_email_group').hide()
+            $('#modify_phone_group').show()
+            $('#modify_phone').val($.trim($('#phone').html()))
+        }
+        else{
+            $('#modifyLabel').html("修改邮箱地址")
+            $('#modify_phone_group').hide()
+            $('#modify_email_group').show()
+            $('#modify_email').val($.trim($('#email').html()))
+        }
+        $('#modify').show()
+
+    }
+    function modify(){
+        var type = $('#type').val()
+        var data={
+            "type":type,
+            "username":$.trim($('#username').html()),
+            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
+        }
+        if(type==="1"){
+            data["phone"] = $.trim($('#modify_phone').val())
+        }
+        else{
+            data["email"] = $.trim($('#modify_email').val())
+        }
+        console.log(data)
+        $.ajax({
+            url:'ones_modify/',
+            type:'POST',
+            data:data ,
+            success:function(res){
+                $("#modify").modal("hide")
+                if(res.status===0){
+                    if(type==="1"){
+                        $('#phone').html(data.phone)
+                    }
+                    else{
+                        $('#email').html(data.email)
+                    }
+                }
+            },
+            error:function(){}
+        })
+    }
+    function check_pd(){
+        var pd = $.trim($('#password').val())
+        var username = $.trim($('#username').html())
+        $.ajax({
+            url:'check_pd/',
+            type:'POST',
+            data:{
+                "pd":pd,
+                "username":username,
+                'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
+            },
+            success:function(res){
+                if(res.status===-1){
+                    console.log(res)
+                    $('#err_msg').html("密码错误!")
+                }
+                else{
+                    $('#err_msg').html("")
+                    $('#pre_test').hide()
+                    $('#next_test').show()
+                }
+            },
+            error:function(res){
+                $('#err_msg').html("服务器出错!")
+            }
+        })
+    }
+    function go_modify_pd(){
+        $('#password').val("")
+        $('#warnPlace').html("")
+    }
+    function new_pd(){
+        $("#err_msg2").html("")
+        var pd = $.trim($('#newpassword').val())
+        var pd_confirm = $.trim($('#newpassword_confirm').val())
+        if(pd===""){
+            $('#err_msg2').html("密码不能为空")
+        }
+        else if(pd!==pd_confirm){
+            $('#err_msg2').html("两次输入的密码不一致!")
+        }
+        else{
+            if(pd.length<6){
+                $('#err_msg2').html("密码长度太短!")
+            }
+            else{
+                $.ajax({
+                    url:'new_pd/',
+                    type:'POST',
+                    data:{
+                        "username":$.trim($('#username').html()),
+                        "password":pd,
+                        'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
+                    },
+                    success:function(res){
+                        if(res.status===0){
+                            $('#next_test').hide()
+                            $('#end_test').show()
+                        }
+                        else{
+                            $('#err_msg2').html("修改密码失败!")
+                        }
+                    },
+                    error:function(){
+                        $('#err_msg2').html("服务器出错!")
+                    }
+                })
+            }
+        }
+    }
+    function close_it(){
+        $('#modify_pd').modal("hide")
+    }
+</script>
+{% endblock %}
+
+{% block footer_js %}
+    <!-- Morris.js charts -->
+    <script src="/static/js/raphael/raphael-min.js"></script>
+    <script src="/static/plugins/morris/morris.min.js"></script>
+    <script src="/static/plugins/jquery.blockui.min.js"></script>
+    <script src="/static/plugins/datatables/jquery.dataTables.js"></script>
+    <script src="/static/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="/static/js/metronic.js"></script>
+    <script src="/static/js/table-ext.js"></script>
+    <script src="/static/js/datatable.js"></script>
+    <script src="/static/js/jPages.js"></script>
+{% endblock %}

@@ -15,6 +15,18 @@ COMPANY_CHOICE = (
 )
 
 
+class FindPassWord(models.Model):
+    username = models.CharField("用户名",max_length=32)
+    key = models.CharField("key",max_length=32)
+    token = models.CharField("找回密码的凭证", max_length=100)
+    email = models.EmailField("邮箱地址", max_length=32)
+
+
+# class GroupCom(models.Model):
+    # id = models.IntegerField("角色", primary_key=True)
+    # comStr = models.CharField("角色对应的公司字符序列", max_length=32)
+
+
 class UserProfileManager(models.Manager):
     def create_user(self, username, password, gender,
                     uCompany,department, position,role, phone,

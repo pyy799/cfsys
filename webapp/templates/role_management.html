@@ -15,7 +15,7 @@
         <h3 class="box-header with-border" style="margin-top: 0;padding-top: 30px">
             角色权限管理
             <input type="button" class="btn btn-large btn-primary" data-toggle="modal" data-target="#add"
-                   value="新增角色" style="margin-left: 750px;font-size:18px">
+                   value="新增角色" style="margin-left: 750px;font-size:18px" onclick="goAdd()">
         </h3>
     </div>
     <div class="box-body">
@@ -35,8 +35,8 @@
             </thead>
             <tbody id="role_info_table">
             {% for group in group_list %}
-                <tr id="{{ group.id }}">
-                    <td style="text-align: center">{{ group.name }}</td>
+                <tr id="{{ group.id }}" >
+                    <td style="text-align: center" onclick="get_group_company('{{ group.id }}')">{{ group.name }}</td>
                     <td style="text-align: center">
                         {% if "product_information_inquiry" in group.perm_list %}
                             <div class="glyphicon glyphicon-ok" style="margin: 0 auto"></div>
@@ -175,7 +175,7 @@
                         <input type="checkbox" id="modify_perm7" name="modify_perm7" class="checkbox input-inline">
                     </div>
                 </div>
-                <div class="col-sm-12"  style="height:30px;margin-top: 5px"></div>
+                <div class="col-sm-12"  style="height:30px;margin-top: 5px" id="err_message2"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                     <button type="button" class="btn btn-primary" onclick="modify()">确认</button>
@@ -204,11 +204,59 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
     </div>
+{#<div class="modal fade" id="modify_company" tabindex="-1"#}
+{#     role="dialog" aria-labelledby="modifyLabel" aria-hidden="true">#}
+{#    <div class="modal-dialog">#}
+{#        <div class="modal-content">#}
+{#            <div class="modal-header">#}
+{#                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>#}
+{#                <h5 class="modal-title" id="modifyLabel" style="font-weight:bold">#}
+{#                    查看/修改角色&nbsp;<span id="group_for_Com"></span>&nbsp;的关联公司</h5>#}
+{#            </div>#}
+{#            <form style=";float:none" class="form-horizontal">#}
+{#                {% csrf_token %}#}
+{#                <input type="hidden" id="modify_company_id">#}
+{#                <div class="modal-form" style="margin-top: 0">#}
+{#                    <div class="col-sm-12">#}
+{#                        <label for="c0" class="control-label" style="width:70px;text-align: right;">所属公司</label>#}
+{#                        <input type="checkbox" id="c0" name="com" class="checkbox input-inline" value="0">#}
+{#                        <label for="c1" class="control-label" style="width:70px;text-align: right;">股份</label>#}
+{#                        <input type="checkbox" id="c1" name="com" class="checkbox input-inline" value="1">#}
+{#                        <label for="c2" class="control-label" style="width:70px;text-align: right;">精一</label>#}
+{#                        <input type="checkbox" id="c2" name="com" class="checkbox input-inline" value="2">#}
+{#                        <label for="c3" class="control-label" style="width:70px;text-align: right;">科威</label>#}
+{#                        <input type="checkbox" id="c3" name="com" class="checkbox input-inline" value="3">#}
+{#                    </div>#}
+{#                    <div class="col-sm-12">#}
+{#                        <label for="c4" class="control-label" style="width:70px;text-align: right;">医疗</label>#}
+{#                        <input type="checkbox" id="c4" name="com" class="checkbox input-inline" value="4">#}
+{#                        <label for="c5" class="control-label" style="width:70px;text-align: right;">柏克</label>#}
+{#                        <input type="checkbox" id="c5" name="com" class="checkbox input-inline" value="5">#}
+{#                        <label for="c6" class="control-label" style="width:70px;text-align: right;">科技</label>#}
+{#                        <input type="checkbox" id="c6" name="com" class="checkbox input-inline" value="6">#}
+{#                        <label for="c7" class="control-label" style="width:70px;text-align: right;">浙子</label>#}
+{#                        <input type="checkbox" id="c7" name="com" class="checkbox input-inline" value="7">#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="modal-footer">#}
+{#                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>#}
+{#                    <button type="button" class="btn btn-primary" onclick="send_group_company()">确认</button>#}
+{#                </div>#}
+{#            </form>#}
+{#        </div><!-- /.modal-content -->#}
+{#    </div><!-- /.modal -->#}
+{#    </div>#}
 <script src="/static/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script>
     function add(){
-        var data={
-            "group_name":$('#add_name').val(),
+        var group_name = $('#add_name').val()
+        if($.trim(group_name)==="")
+        {
+            $('#err_message').html("角色名称不能为空!")
+        }
+        else{
+            var data={
+            "group_name":group_name,
             "perm1":$('#add_perm1').is(":checked"),
             "perm2":$('#add_perm2').is(":checked"),
             "perm3":$('#add_perm3').is(":checked"),
@@ -218,38 +266,45 @@
             "perm7":$('#add_perm7').is(":checked"),
             'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
         }
-        $('#add').modal('hide')
-        console.log(data)
-        $.ajax({
+
+            $.ajax({
             url:'add_role/',
             type:"POST",
             data:data,
             success:function(res){
-                console.log(res)
-                var symbolString ='<td style="text-align: center"><div class="glyphicon glyphicon-ok" style="margin: 0 auto"></div></td>'
-                var noString ='<td style="text-align: center"></td>'
-                var groupnameS = '<td style="text-align: center">' + res.name + '</td>'
-                var perm1S,perm2S,perm3S,perm4S,perm5S,perm6S,perm7S
-                perm1S = res.perm_list.indexOf("product_information_inquiry")>-1?symbolString:noString
-                perm2S = res.perm_list.indexOf("product_information_manage_new")>-1?symbolString:noString
-                perm3S = res.perm_list.indexOf("product_information_manage_update")>-1?symbolString:noString
-                perm4S = res.perm_list.indexOf("product_information_manege_check")>-1?symbolString:noString
-                perm5S = res.perm_list.indexOf("product_attribute_management")>-1?symbolString:noString
-                perm6S = res.perm_list.indexOf("user_right_management_user")>-1?symbolString:noString
-                perm7S = res.perm_list.indexOf("user_right_management_role")>-1?symbolString:noString
-                var operationS ='<td>' +
+                if(res.status === -1) {
+                    $('#err_message').html("角色名称已存在!")
+                }
+                else{
+                   $('#add').modal('hide')
+                    var symbolString ='<td style="text-align: center"><div class="glyphicon glyphicon-ok" style="margin: 0 auto"></div></td>'
+                    var noString ='<td style="text-align: center"></td>'
+                    var groupnameS = '<td style="text-align: center" onclick="get_group_company('+res.id+')">' + res.name + '</td>'
+                    var perm1S,perm2S,perm3S,perm4S,perm5S,perm6S,perm7S
+                    perm1S = res.perm_list.indexOf("product_information_inquiry")>-1?symbolString:noString
+                    perm2S = res.perm_list.indexOf("product_information_manage_new")>-1?symbolString:noString
+                    perm3S = res.perm_list.indexOf("product_information_manage_update")>-1?symbolString:noString
+                    perm4S = res.perm_list.indexOf("product_information_manege_check")>-1?symbolString:noString
+                    perm5S = res.perm_list.indexOf("product_attribute_management")>-1?symbolString:noString
+                    perm6S = res.perm_list.indexOf("user_right_management_user")>-1?symbolString:noString
+                    perm7S = res.perm_list.indexOf("user_right_management_role")>-1?symbolString:noString
+                    var operationS ='<td>' +
                     '<button type="button" class="btn btn-success btn-sm"  ' +
                     'data-toggle="modal" data-target="#modify" onclick="goModify('+res.id+')">修改</button>' +
                     '<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" ' +
                     'data-target="#delete" style="margin-left:9px" onclick="goDelete('+res.id+')">删除</button>' +
                     '</td>'
-                var htmlS = '<tr id="'+res.id+'">'+groupnameS+perm1S+perm2S+perm3S+perm4S+perm5S+perm6S+perm7S+operationS+'</tr>'
-                $('#role_info_table').append(htmlS)
+                    var htmlS = '<tr id="'+res.id+'">'+groupnameS+perm1S+perm2S+perm3S+perm4S+perm5S+perm6S+perm7S+operationS+'</tr>'
+                    $('#role_info_table').append(htmlS)
+                }
             },
             error:function(res){}
         })
+        }
     }
     function goModify(id){
+        $("#err_message2").html("")
+        $('#modify_company_id').val(id)
         $('#modify_id').val(id)
         for(var i=0;i<document.getElementById(id).children.length-1;i++){
             var dom = document.getElementById(id).children.item(i)
@@ -259,7 +314,6 @@
             else{
                 console.log(dom.children.length)
                 if(dom.children.length!==0){
-
                     $('#modify_perm'+i).prop("checked",true)
                 }else{
                     $('#modify_perm'+i).prop("checked",false)
@@ -268,10 +322,16 @@
         }
     }
     function modify(){
-
-        var data = {
+        var group_name = $('#modify_name').val()
+        if($.trim(group_name)==="")
+        {
+            $('#err_message2').html("角色名称不能为空!")
+        }
+        else
+        {
+            var data = {
             "group_id":$('#modify_id').val(),
-            "group_name":$('#modify_name').val(),
+            "group_name":group_name,
             "perm1":$('#modify_perm1').is(":checked"),
             "perm2":$('#modify_perm2').is(":checked"),
             "perm3":$('#modify_perm3').is(":checked"),
@@ -281,35 +341,43 @@
             "perm7":$('#modify_perm7').is(":checked"),
             'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
         }
-        $('#modify').modal('hide')
-        $.ajax({
+            $.ajax({
             url:'modify/',
             type:'POST',
             data:data,
             success:function(res){
-                console.log(res)
-                var symString = '<div class="glyphicon glyphicon-ok" style="margin: 0 auto">'
-                var perm_arry = new Array()
-                perm_arry.push("product_information_inquiry")
-                perm_arry.push("product_information_manage_new")
-                perm_arry.push("product_information_manage_update")
-                perm_arry.push("product_information_manege_check")
-                perm_arry.push("product_attribute_management")
-                perm_arry.push("user_right_management_user")
-                perm_arry.push("user_right_management_role")
-                console.log(perm_arry)
-                for(var i=0;i<7;i++){
-                    var dom = document.getElementById(res.id).children.item(i+1)
-                    if(res.perm_list.indexOf(perm_arry[i])>-1){
-                        dom.innerHTML = symString
-                    }
-                    else{
-                       dom.innerHTML = ''
+                if(res.status===-1)
+                {
+                    $('#err_message2').html("角色名称已存在!")
+                }
+                else
+                {
+                    $('#modify').modal('hide')
+                    var symString = '<div class="glyphicon glyphicon-ok" style="margin: 0 auto">'
+                    var perm_arry = new Array()
+                    perm_arry.push("product_information_inquiry")
+                    perm_arry.push("product_information_manage_new")
+                    perm_arry.push("product_information_manage_update")
+                    perm_arry.push("product_information_manege_check")
+                    perm_arry.push("product_attribute_management")
+                    perm_arry.push("user_right_management_user")
+                    perm_arry.push("user_right_management_role")
+                    document.getElementById(res.id).children.item(0).innerHTML=res.name
+                    for(var i=0;i<7;i++){
+                        var dom = document.getElementById(res.id).children.item(i+1)
+                        if(res.perm_list.indexOf(perm_arry[i])>-1){
+                            dom.innerHTML = symString
+                        }
+                        else{
+                        dom.innerHTML = ''
+                        }
                     }
                 }
             },
             error:function(){}
         })
+        }
+
     }
     function goDelete(id){
        var name = document.getElementById(id).children.item(0).innerHTML
@@ -333,6 +401,62 @@
             error:function(){}
         })
     }
+    function goAdd(){
+        $('#err_message').html("")
+        $('#add_name').html("")
+        for(var i=1;i<=7;i++){
+            $('#add_perm'+i).attr("checked",false)
+        }
+    }
+    function get_group_company(id) {
+        {#var name = document.getElementById(id).children.item(0).innerHTML#}
+        {#$('#group_for_Com').html(name)#}
+        {#$('#modify_company_id').val(id)#}
+        {#$.ajax({#}
+        {#    url:'get_group_company',#}
+        {#    type:'get',#}
+        {#    data:{"id":id},#}
+        {#    success:function(res) {#}
+        {#        $("[name='com']").each(function(){#}
+        {#           var q= res.comStr.indexOf($(this).val())>-1#}
+        {#            if(q===true) {#}
+        {#                $(this).prop("checked",true)#}
+        {#            }#}
+        {#            else{#}
+        {#                $(this).prop("checked",false)#}
+        {#            }#}
+        {#        })#}
+        {#        $('#modify_company').modal("show")#}
+        {#    },#}
+        {#    error:function(res){}#}
+        //})
+
+    }
+    {#function send_group_company(){#}
+    {#    var id = $('#modify_company_id').val()#}
+    {#    var list = [] // 保存角色所属的公司信息#}
+    {#    $("[name='com']").each(function(){  //可以获得所有的参数列表#}
+    {#        if($(this).is(":checked")){#}
+    {#            list.push($(this).val())#}
+    {#        }#}
+    {#    })#}
+    {#    console.log(list)#}
+    {#    $.ajax({#}
+    {#        url:'send_group_company/',#}
+    {#        type:'POST',#}
+    {#        traditional:true,#}
+    {#        data:{#}
+    {#            "id":id,#}
+    {#            "list":JSON.stringify(list),#}
+    {#            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()#}
+    {#        },#}
+    {#        success:function(res) {#}
+    {#            console.log(res)#}
+    {#            $('#modify_company').modal("hide")#}
+    {#        },#}
+    {#        error:function(res) {}#}
+    {#    })#}
+    //}
 </script>
 {% endblock %}
 
