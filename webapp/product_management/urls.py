@@ -15,7 +15,7 @@ urlpatterns = [
 
     url(r'^new_many/$', views.new_many, name="new_many"),
     url(r'^update_many/$', views.update_many, name="update_many"),
-    url(r'^update/', views.page_new_product, {"template_name": "new_product.html"}, name="update"),
+
     # 更新
     url(r'^update/data/$', views.update_data, name="update_data"),
     url(r'^update/invalid/(?P<pid>\d+)/$', views.update_invalid, name="update_invalid"),
