@@ -107,7 +107,8 @@
                             </tr>
 
                             <a type="button" class="btn green" style="height: 30px;width: 100px;margin-bottom: 10px"
-                               href="{{ download_path_excel }}" download="{{ info.real_name }}"><i class="fa fa-arrow-down"></i>附件下载</a>
+                               href="{{ download_path_excel }}" {% if info.real_name %}download="{{ info.real_name }}"{% else %}disabled{% endif %}><i
+                                    class="fa fa-arrow-down" id="download" ></i>附件下载</a>
 
                             </tbody>
                         </table>
@@ -131,6 +132,7 @@
     <script src="/static/js/datatable.js"></script>
     <script src="/static/js/jPages.js"></script>
     <script>
+
         function classDelete(text, id) {
             $('#a_delete').attr('href', text)
             $('#s_delete').html($('#attribute_id_' + id).html())

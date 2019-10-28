@@ -12,6 +12,9 @@ urlpatterns = [
     url(r'^page_show_product/$', views.show, {"template_name": "show_product.html"}, name="page_show_product"),
     # 能力展示页查询
     url(r'^page_show_product/search/$', views.search_show, {"template_name": "show_product.html"}, name="page_show_product_search"),
+    # 能力展示页查询列表页
+    url(r'^page_show_product/result/(?P<bid>\d+)/$', views.result, {"template_name": "show_product_result.html"},
+        name="result"),
     # 查询
     url(r'^search/data/$', views.search, name="search"),
     # 产品详情
