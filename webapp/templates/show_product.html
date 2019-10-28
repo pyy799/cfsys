@@ -73,11 +73,11 @@
                         <select class="form-control input-inline input-small input-sm form-filter select "
                                 name="maturity__first_class" data-placeholder='成熟度' style="width: 145px">
                             <option value=''></option>
-                            {% for s in maturity %}
+                            {% for s in maturity1 %}
                                 {% if maturity_choice == s.first_class %}
-                                    <option value="{{ s.first_class }}" selected>{{ s.meaning }}</option>
+                                    <option value="{{ s.first_class }}" selected>{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% else %}
-                                    <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                                    <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% endif %}
 
                             {% endfor %}
@@ -87,11 +87,11 @@
                         <select class="form-control input-inline input-small input-sm form-filter select"
                                 name="independence__first_class" data-placeholder='自主度' style="width: 145px">
                             <option value=''></option>
-                            {% for s in independence %}
+                            {% for s in independence1 %}
                                 {% if independence_choice == s.first_class %}
-                                    <option value="{{ s.first_class }}" selected>{{ s.meaning }}</option>
+                                    <option value="{{ s.first_class }}" selected>{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% else %}
-                                    <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                                    <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% endif %}
 
                             {% endfor %}
@@ -103,9 +103,9 @@
                             <option value=''></option>
                             {% for s in business %}
                                 {% if business_choice == s.first_class %}
-                                    <option value="{{ s.first_class }}" selected>{{ s.meaning }}</option>
+                                    <option value="{{ s.first_class }}" selected>{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% else %}
-                                    <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                                    <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>
@@ -116,9 +116,9 @@
                             <option value=''></option>
                             {% for s in technology %}
                                 {% if technology_choice == s.first_class %}
-                                    <option value="{{ s.first_class }}" selected>{{ s.meaning }}</option>
+                                    <option value="{{ s.first_class }}" selected>{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% else %}
-                                    <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                                    <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>
