@@ -6,6 +6,12 @@ urlpatterns = [
     # 新建及更新-新建
     url(r'^page_new_product/$', views.page_new_product, {"template_name": "new_product.html"}, name="page_new_product"),
     url(r'^page_update_product/$', views.page_new_product, {"template_name": "new_product.html"}, name="page_update_product"),
+    url(r'^page_waitsubmit_product/$', views.page_new_product, {"template_name": "new_product.html"},
+        name="page_waitsubmit_product"),
+    url(r'^page_waitpass_product/$', views.page_new_product, {"template_name": "new_product.html"},
+        name="page_waitpass_product"),
+    url(r'^page_passed_product/$', views.page_new_product, {"template_name": "new_product.html"},
+        name="page_passed_product"),
 
     url(r'^new_many/$', views.new_many, name="new_many"),
     url(r'^update_many/$', views.update_many, name="update_many"),
