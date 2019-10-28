@@ -575,7 +575,7 @@ def edit_submit(request, pid):
                 product.save_name = file
                 product.save()
 
-    return HttpResponseRedirect("/product_management/page_new_product/")
+    return HttpResponseRedirect("/product_management/page_waitsubmit_product/")
 
 
 # 取消提交操作

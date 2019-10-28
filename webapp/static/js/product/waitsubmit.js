@@ -31,10 +31,9 @@ var WaitSubmitTable = function () {
                 "aoColumns": [ //这个属性下的设置会应用到所有列，按顺序没有是空,bVisible是否可见
                     {
                         "mData": null,
-                        // "sTitle": '<input id="checkall" name="" type="checkbox" value="">',
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
-                            var input = '<input id='+oData["id"]+' type="checkbox" name="checkList" />';
+                            var input = '<input id='+oData["id"]+' type="checkbox" name="checkList" class="check"/>';
                             element.append(input);
                         }
                     },
@@ -73,7 +72,7 @@ var WaitSubmitTable = function () {
                                     $.get("/product_management/wait_submit/cancel/" + id + "/", function (data) {
                                         if (data.success) {
                                             $.growlService("取消提交！", {type: "success"});
-                                            location.href = "/product_management/page_new_product/";
+                                            location.href = "/product_management/page_waitsubmit_product/";
                                         } else {
                                             $.growlService(data.error_messag, {type: "danger"});
                                         }
@@ -87,7 +86,7 @@ var WaitSubmitTable = function () {
                                     $.get("/product_management/wait_submit/submit/" + id + "/", function (data) {
                                         if (data.success) {
                                             $.growlService("提交成功！", {type: "success"});
-                                            location.href = "/product_management/page_new_product/";
+                                            location.href = "/product_management/page_waitpass_product/";
                                         } else {
                                             $.growlService(data.error_messag, {type: "danger"});
                                         }
@@ -148,15 +147,21 @@ var WaitSubmitTable = function () {
                 var con = confirm("确定提交吗?");
                 if (con) {
                     // 选中全部通过
-                    var checkedBox_all = $("input[type='checkbox']");
+                    var checkedBox_all = $("input[class='check']");
                     for (var i=0; i < checkedBox_all.length; i++){
                         if (checkedBox_all[i].checked) {
                             var data = $("#waitsubmit_table").DataTable().row(i).data();
-                            $.get("/product_management/wait_submit/submit/" + data["id"] + "/", function (data) {})
+                            $.get("/product_management/wait_submit/submit/" + data["id"] + "/", function (data) {
+                                if (data.success) {
+                                            $.growlService("提交成功！", {type: "success"});
+                                            location.href = "/product_management/page_waitpass_product/";
+                                        } else {
+                                            $.growlService(data.error_messag, {type: "danger"});
+                                        }
+                            })
                         }
                     }
-                    $.growlService("提交成功！", {type: "success"});
-                    window.location.reload(true);
+
                 }
             }
         });
@@ -170,15 +175,20 @@ var WaitSubmitTable = function () {
                 // 选中全部不通过
                 var con = confirm("确定取消吗?");
                 if (con) {
-                    var checkedBox_all = $("input[type='checkbox']");
+                    var checkedBox_all = $("input[class='check']");
                     for (var i=0; i < checkedBox_all.length; i++) {
                         if (checkedBox_all[i].checked) {
                             var data = $("#waitsubmit_table").DataTable().row(i).data();
-                            $.get("/product_management/wait_submit/cancel/" + data["id"] + "/", function (data) {})
+                            $.get("/product_management/wait_submit/cancel/" + data["id"] + "/", function (data) {
+                                if (data.success) {
+                                            $.growlService("提交成功！", {type: "success"});
+                                            location.href = "/product_management/page_waitsubmit_product/";
+                                        } else {
+                                            $.growlService(data.error_messag, {type: "danger"});
+                                        }
+                            })
                         }
                     }
-                    $.growlService("取消提交成功！", {type: "danger"});
-                    window.location.reload(true);
                 }
             }
         });
