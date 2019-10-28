@@ -51,7 +51,7 @@
                             name="maturity__first_class" data-placeholder='成熟度' style="width: 145px">
                         <option value=''></option>
                         {% for s in maturity %}
-                            <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                            <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
                         {% endfor %}
                     </select>
 
@@ -60,7 +60,7 @@
                             name="independence__first_class" data-placeholder='自主度' style="width: 145px">
                         <option value=''></option>
                         {% for s in independence %}
-                            <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                            <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
                         {% endfor %}
                     </select>
 
@@ -69,7 +69,7 @@
                             name="business__first_class" data-placeholder='业务领域' style="width: 145px">
                         <option value=''></option>
                         {% for s in business %}
-                            <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                            <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
                         {% endfor %}
                     </select>
 
@@ -78,7 +78,7 @@
                             name="technology__first_class" data-placeholder='技术形态' style="width: 145px">
                         <option value=''></option>
                         {% for s in technology %}
-                            <option value="{{ s.first_class }}">{{ s.meaning }}</option>
+                            <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
                         {% endfor %}
                     </select>
                     <button class="btn btn-sm yellow filter-submit" style="margin-left: 200px"><i

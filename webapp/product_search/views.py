@@ -17,13 +17,13 @@ def index(request, template_name):
     page_dict = {}
     pCompany = COMPANY_CHOICE
     fil1 = {"ACT": 'c', "attribute": 'M'}
-    maturity = Attribute.objects.filter(**fil1)
+    maturity = Attribute.objects.filter(**fil1).order_by('first_class')
     fil2 = {"ACT": 'c', "attribute": 'I'}
-    independence = Attribute.objects.filter(**fil2)
+    independence = Attribute.objects.filter(**fil2).order_by('first_class')
     fil3 = {"ACT": 'c', "attribute": 'B'}
-    business = Attribute.objects.filter(**fil3)
+    business = Attribute.objects.filter(**fil3).order_by('first_class')
     fil4 = {"ACT": 'c', "attribute": 'T'}
-    technology = Attribute.objects.filter(**fil4)
+    technology = Attribute.objects.filter(**fil4).order_by('first_class')
 
     page_dict.update({"pCompany": pCompany, "maturity": maturity,
                       "independence": independence, "business": business, "technology": technology})
@@ -69,8 +69,10 @@ def show(request, template_name):
     # 属性大类查询
     fil1 = {"ACT": 'c', "attribute": 'M'}
     maturity = Attribute.objects.filter(**fil1).order_by('-first_class')
+    maturity1 = Attribute.objects.filter(**fil1).order_by('first_class')
     fil2 = {"ACT": 'c', "attribute": 'I'}
     independence = Attribute.objects.filter(**fil2).order_by('-first_class')
+    independence1 = Attribute.objects.filter(**fil2).order_by('first_class')
     fil3 = {"ACT": 'c', "attribute": 'B'}
     business = Attribute.objects.filter(**fil3).order_by('first_class')
     fil4 = {"ACT": 'c', "attribute": 'T'}
@@ -84,6 +86,8 @@ def show(request, template_name):
     maturity_list1 = []
     independence_list1 = []
     business_list1 = []
+    maturity_list2 = []
+    independence_list2 = []
     #echarts 提示框所需产品数据
     maturity_product = []
     independence_product = []
@@ -124,7 +128,7 @@ def show(request, template_name):
     p1 = re.compile(r'[(or（](.*?)[)or）]', re.S)  # 取（）内文字
     # 成熟度
     if maturity_choice:
-        for i in maturity:
+        for i in maturity1:
             str = ""
             bpl = []
             if maturity_choice == i.first_class:
@@ -146,7 +150,7 @@ def show(request, template_name):
             maturity_product_list.append(bpl)
             maturity_product1.append({"name": i.meaning, "value": num})
     else:
-        for i in maturity:
+        for i in maturity1:
             maturity_search_dict.update({"maturity__first_class": i.first_class})
             product_list = Product.objects.filter(**maturity_search_dict)
             num = len(product_list)
@@ -166,10 +170,11 @@ def show(request, template_name):
             maturity_product_list.append(bpl)
             maturity_product1.append({"name": i.meaning, "value": num})
             # print(maturity_search_dict)
+    maturity_list2=maturity_list1.reverse()
 
     # 自主度
     if independence_choice:
-        for i in independence:
+        for i in independence1:
             str = ""
             bpl = []
             if independence_choice == i.first_class:
@@ -191,7 +196,7 @@ def show(request, template_name):
             independence_product_list.append(bpl)
             independence_product1.append({"name": i.meaning, "value": num})
     else:
-        for i in independence:
+        for i in independence1:
             independence_search_dict.update({"independence__first_class": i.first_class})
             product_list = Product.objects.filter(**independence_search_dict)
             num = len(product_list)
@@ -210,6 +215,7 @@ def show(request, template_name):
             independence_product.append([str])
             independence_product_list.append(bpl)
             independence_product1.append({"name": i.meaning, "value": num})
+    independence_list2=independence_list1.reverse()
 
     # 业务领域
     if business_choice:
@@ -280,6 +286,7 @@ def show(request, template_name):
             technology_product.append([str])
             technology_product_list.append(bpl)
             technology_product1.append({"name": i.meaning, "value": num})
+
 
     # 成熟度-自主度
     num1 = 0
@@ -493,13 +500,18 @@ def show(request, template_name):
             num2 = 0
     # print(type(maturity_choice))
     # 前端返回值
-    page_dict.update({"pCompany": pCompany, "maturity": maturity,
-                      "independence": independence, "business": business, "technology": technology,
+    page_dict.update({"pCompany": pCompany,
+                      "maturity": maturity,
+                      "independence": independence,
+                      "business": business, "technology": technology,
+                      "maturity1": maturity1,
+                      "independence1": independence1,
 
                       "maturity_list": maturity_list, "independence_list": independence_list,
                       "business_list": business_list, "technology_list": technology_list,
                       "maturity_list1": maturity_list1, "independence_list1": independence_list1,
                       "business_list1": business_list1,
+                      "maturity_list2": maturity_list2, "independence_list2": independence_list2,
 
                       "maturity_product1": maturity_product1,
                       "independence_product1": independence_product1,
