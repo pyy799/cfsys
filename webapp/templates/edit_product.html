@@ -116,7 +116,7 @@
                                         <option class="defaultval" selected
                                                 value="{{ product.maturity }}">{{ product.maturity_name }}</option>
                                         {% for s in m_choice %}
-                                            <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
+                                            <option value="{{ s.id }}">{{ s.first_class }}-{{ s.meaning }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -127,7 +127,7 @@
                                         <option selected
                                                 value="{{ product.independence }}">{{ product.independence_name }}</option>
                                         {% for s in i_choice %}
-                                            <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
+                                            <option value="{{ s.id }}">{{ s.first_class }}-{{ s.meaning }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -140,7 +140,7 @@
                                         <option value="{{ product.business }}"
                                                 selected>{{ product.business_name }}</option>
                                         {% for s in b_choice %}
-                                            <option value="{{ s.second_class }}">{{ s.first_class }}-{{ s.second_class }}-{{ s.meaning }}</option>
+                                            <option value="{{ s.id }}">{{ s.first_class }}-{{ s.second_class }}-{{ s.meaning }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -152,7 +152,7 @@
                                         <option value="{{ product.technology }}"
                                                 selected>{{ product.technology_name }}</option>
                                         {% for s in t_choice %}
-                                            <option value="{{ s.second_class }}">{{ s.first_class }}-{{ s.second_class }}-{{ s.meaning }}</option>
+                                            <option value="{{ s.id }}">{{ s.first_class }}-{{ s.second_class }}-{{ s.meaning }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
