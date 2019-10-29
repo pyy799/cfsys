@@ -47,34 +47,52 @@ def add_attribute(request):
     second_class = request.POST.get("second_class_add", None)
     meaning = request.POST.get("meaning_add")
     information = request.POST.get("information_add", None)
+
+    # first_class=first_class.strip()
+    # second_class=second_class.strip()
+    # meaning=meaning.strip()
+    # information=information.strip()
+
+    first_class=first_class.replace(' ','')
+    second_class=second_class.replace(' ','')
+    meaning=meaning.replace(' ','')
+    information=information.replace(' ','')
+
     check_meaning = Attribute.objects.filter(meaning=meaning)
     if len(check_meaning) == 0:
-        if second_class:
-            act = 't'
-            # all_first = Attribute.objects.filter(Q(first_class=first_class),Q(ACT='c'))
-            check_first = Attribute.objects.filter(Q(first_class=first_class), Q(attribute=attribute),Q(ACT='c'))
-            check_second = Attribute.objects.filter(Q(second_class=second_class),Q(ACT='t'))
-            if check_first:
-                if len(check_second) == 0:
-                    attr = Attribute.objects.create(ACT=act, attribute=attribute, first_class=first_class,
-                                                    second_class=second_class, meaning=meaning, information=information)
-                    attr.save()
-                    messages.success(request, "增加成功")
-                else:
-                    messages.success(request, "已有此小类，请重新输入！")
-            else:
-                messages.success(request, "此属性中无此大类，请重新输入或先增加此大类！")
+        if meaning:
+            if first_class:
+                if second_class:
+                    act = 't'
+                    # all_first = Attribute.objects.filter(Q(first_class=first_class),Q(ACT='c'))
+                    check_first = Attribute.objects.filter(Q(first_class=first_class), Q(attribute=attribute),Q(ACT='c'))
+                    check_second = Attribute.objects.filter(Q(second_class=second_class),Q(ACT='t'))
+                    if check_first:
+                        if len(check_second) == 0:
+                            attr = Attribute.objects.create(ACT=act, attribute=attribute, first_class=first_class,
+                                                            second_class=second_class, meaning=meaning, information=information)
+                            attr.save()
+                            messages.success(request, "增加成功")
+                        else:
+                            messages.success(request, "已有此小类，请重新输入！")
+                    else:
+                        messages.success(request, "此属性中无此大类，请重新输入或先增加此大类！")
 
-        else:
-            act = 'c'
-            check_first = Attribute.objects.filter(Q(first_class=first_class),Q(ACT='c'))
-            if len(check_first) == 0:
-                attr = Attribute.objects.create(ACT=act, attribute=attribute, first_class=first_class,
-                                                second_class=second_class, meaning=meaning, information=information)
-                attr.save()
-                messages.success(request, "增加成功")
+                else:
+                    act = 'c'
+                    check_first = Attribute.objects.filter(Q(first_class=first_class),Q(ACT='c'))
+                    if len(check_first) == 0:
+                        attr = Attribute.objects.create(ACT=act, attribute=attribute, first_class=first_class,
+                                                        second_class=second_class, meaning=meaning, information=information)
+                        attr.save()
+                        messages.success(request, "增加成功")
+                    else:
+                        messages.success(request, "已有此大类，请重新输入！")
             else:
-                messages.success(request, "已有此大类，请重新输入！")
+                messages.success(request, "大类不能为空，请重新输入！")
+        else:
+            messages.success(request, "含义不能为空，请重新输入！")
+
     else:
         messages.success(request, "已有此含义，请重新输入！")
 
@@ -92,6 +110,7 @@ def jump(request,template_name):
 def attribute_edit(request):
     attribute_id = request.POST.get("attribute_id")
     information =request.POST.get("information_edit")
+    information=information.strip()
     # print(attribute_id)
     attribute = Attribute.objects.filter(id=attribute_id).first()
     if attribute:
@@ -138,6 +157,11 @@ def class_edit(request):
     second_class_edit = request.POST.get("second_class_edit")
     class_meaning = request.POST.get("class_meaning")
     class_information =request.POST.get("class_information")
+
+    # first_class_edit=first_class_edit.strip()
+    # second_class_edit=second_class_edit.strip()
+    # class_meaning=class_meaning.strip()
+    # class_information=class_information.strip()
 
     attr_class = Attribute.objects.filter(Q(id=class_id), Q(ACT=class_act)).first()
     ex_first = attr_class.first_class
@@ -200,9 +224,10 @@ def delete_class(request):
     first_class = request.GET.get("first_class")
     count=0
     id_s=[]
+    id_s.append(id)
     #判断大小类
     if act == 'c':
-        attr_s = Attribute.objects.filter(first_class=first_class)
+        attr_s = Attribute.objects.filter( Q(first_class=first_class),Q(ACT='t'))
         for attr in attr_s:
             id_s.append(attr.id)
         for id in id_s:
@@ -211,7 +236,6 @@ def delete_class(request):
             count = count+len(p)
     # print(p)
     elif act == 't':
-        id_s.append(id)
         p=Product.objects.filter(
             Q(maturity__id=id) | Q(business__id=id) | Q(independence__id=id) | Q(technology__id=id))
         count = count+len(p)

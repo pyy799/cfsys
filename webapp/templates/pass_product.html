@@ -22,13 +22,13 @@
             <ul class="nav nav-tabs pull-left">
 {#                <li ><a href="#waitcheck" data-toggle="tab">待审核</a></li>#}
                 <li {% if request.path == '/product_management/page_pass_product/' %}class="active" {% endif %}><a href="#waitcheck" data-toggle="tab">待审核</a></li>
-                <li><a href="#checked" data-toggle="tab">已审核</a></li>
+                <li {% if request.path == '/product_management/page_checked_product/' %}class="active" {% endif %}><a href="#checked" data-toggle="tab">已审核</a></li>
             </ul>
             <div style="clear:both"></div>
 
             <div class="tab-content">
 
-                <div class="table-container no-padding tab-pane active" id="waitcheck" style="padding:14px">
+                <div {% if request.path == '/product_management/page_pass_product/' %} class="active table-container no-padding tab-pane" {% endif %} class="table-container no-padding tab-pane" id="waitcheck" style="padding:14px">
                     <button class="btn btn-sm green checkall" id="checkall"><i class="fa fa-check"></i> 全选/反选</button>
                     <table class="table table-striped table-bordered table-hover dataTable no-footer"
                         id="waitcheck_table" style="word-break: keep-all">
@@ -41,7 +41,7 @@
                     </div>
                 </div>
 
-                <div class="table-container no-padding tab-pane" id="checked" style="padding:14px">
+                <div {% if request.path == '/product_management/page_checked_product/' %} class="active table-container no-padding tab-pane" {% endif %} class="table-container no-padding tab-pane" id="checked" style="padding:14px">
                     <table class="table table-striped table-bordered table-hover dataTable no-footer"
                         id="checked_table" style="word-break: keep-all">
                         <thead></thead>

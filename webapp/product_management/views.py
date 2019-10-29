@@ -764,11 +764,13 @@ def checked(request):
 @permission_required('webapp.product_information_manege_check')
 def cancel_check_product(request):
     pid = request.POST.get('id')
+    # reson=request.POST.get('reason')
     try:
         product = Product.objects.get(id=pid)
     except Exception as e:
         return ajax_error("不通过失败!"+str(e))
     product.status = ProductStatus.FAIL
+    product.pass_time = datetime.date.today()
     product.reason=request.POST.get('reason')
     # a=product.reason
     # b=product.status

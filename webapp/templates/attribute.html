@@ -29,11 +29,16 @@
 
                 <div class="table-container no-padding tab-pane active" id="M" style="padding:14px">
                     <div class="table-actions-wrapper">
-
+                        <div class="box box-solid" style=" ">
                         <div class="box-header with-border">
                             <h3 class="box-title">基本信息</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                        class="fa fa-minus"></i></button>
+                            </div>
                         </div>
-                         <table border="1"id='attribute'class="table table-bordered table-hover" style="text-align: left">
+                    <div class="box-body" style="width: 100%">
+                          <table border="1"id='attribute'class="table table-bordered table-hover" style="text-align: left">
                                     <tbody>
                                     {% for attr in maturity %}
                                         {% if attr.ACT == 'a'%}
@@ -56,11 +61,18 @@
                                     {% endfor %}
                                     </tbody>
                                 </table>
-
+                    </div>
+                        </div>
                         <hr style="height: 5px;border-top: 5px double skyblue"/>
+                    <div class="box box-solid" style=" ">
                         <div class="box-header with-border">
                                 <h3 class="box-title">属性分类</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                        class="fa fa-minus"></i></button>
+                            </div>
                         </div>
+                     <div class="box-body" style="width: 100%">
                         <table border="1"id='attrclass'class="table table-bordered table-hover" style="text-align: center">
                                     <thead>
                                     <tr>
@@ -91,19 +103,26 @@
                                         {% endif %}
                                     {% endfor %}
                                     <button class="btn btn-sm pull-right blue" style="height: 30px" data-toggle="modal" data-target="#class-add" onclick="addClass('M')"><i class="fa fa-plus"></i> 增加分类</button>
+{#                                    <button class="btn btn-sm pull-right yellow" style="height: 30px" data-toggle="modal" data-target="#class2-add" onclick="addClass2('M')"><i class="fa fa-plus"></i> 增加小类</button>#}
 
                                     </tbody>
                                 </table>
+                     </div>
+                    </div>
                     </div>
                 </div>{#                        M结束#}
 
                 <div class="table-container no-padding tab-pane" id="I" style="padding:14px">
                     <div class="table-actions-wrapper">
-
-
+                        <div class="box box-solid" style=" ">
                          <div class="box-header with-border">
                             <h3 class="box-title">基本信息</h3>
+                             <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                        class="fa fa-minus"></i></button>
+                            </div>
                          </div>
+                        <div class="box-body" style="width: 100%">
                         <table border="1"id='attribute'class="table table-bordered table-hover" style="text-align: left">
                                     <tbody>
                                     {% for attr in independence %}
@@ -127,12 +146,20 @@
                                     {% endfor %}
                                     </tbody>
                                 </table>
+                        </div>
+                        </div>
 
 
                         <hr style="height: 5px;border: none;border-top: 5px double skyblue"/>
+                    <div class="box box-solid" style=" ">
                         <div class="box-header with-border">
                                 <h3 class="box-title">属性分类</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                        class="fa fa-minus"></i></button>
+                            </div>
                         </div>
+                    <div class="box-body" style="width: 100%">
                     <table border="1"id='attrclass'class="table table-bordered table-hover" style="text-align: center">
                                     <thead>
                                     <tr>
@@ -167,14 +194,21 @@
                                     </tbody>
                                 </table>
                     </div>
+                    </div>
+                    </div>
                 </div>
 
                 <div class="table-container no-padding tab-pane" id="B" style="padding:14px">
                     <div class="table-actions-wrapper">
-
+                    <div class="box box-solid" style=" ">
                          <div class="box-header with-border">
                             <h3 class="box-title">基本信息</h3>
+                             <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                        class="fa fa-minus"></i></button>
+                            </div>
                          </div>
+                    <div class="box-body" style="width: 100%">
                          <table border="1"id='attribute'class="table table-bordered table-hover" style="text-align: left">
                                     <tbody>
                                     {% for attr in business %}
@@ -198,13 +232,19 @@
                                     {% endfor %}
                                     </tbody>
                                 </table>
+                    </div>
+                    </div>
 
                         <hr style="height: 5px;border: none;border-top: 5px double skyblue"/>
+                    <div class="box box-solid" style=" ">
                         <div class="box-header with-border">
                                 <h3 class="box-title">属性分类</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                        class="fa fa-minus"></i></button>
+                            </div>
                         </div>
-
-
+                    <div class="box-body" style="width: 100%">
                     <table border="1"id='attrclass'class="table table-bordered table-hover" style="text-align: center">
                                     <thead>
                                     <tr>
@@ -239,14 +279,21 @@
                                     </tbody>
                                 </table>
                     </div>
+                    </div>
+                    </div>
                 </div>
 
                 <div class="table-container no-padding tab-pane" id="T" style="padding:14px">
                     <div class="table-actions-wrapper">
-
+                    <div class="box box-solid" style=" ">
                          <div class="box-header with-border">
                             <h3 class="box-title">基本信息</h3>
+                             <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                        class="fa fa-minus"></i></button>
+                            </div>
                          </div>
+                    <div class="box-body" style="width: 100%">
                          <table border="1"id='attribute'class="table table-bordered table-hover" style="text-align: left">
                                     <tbody>
                                     {% for attr in technology %}
@@ -270,15 +317,20 @@
                                     {% endfor %}
                                     </tbody>
                                 </table>
+                    </div>
+                    </div>
 
                         <hr style="height: 5px;border: none;border-top: 5px double skyblue"/>
+                    <div class="box box-solid" style=" ">
                         <div class="box-header with-border">
                                 <h3 class="box-title">属性分类</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                        class="fa fa-minus"></i></button>
+                            </div>
                         </div>
-
-
-
-                 <table border="1"id='attrclass'class="table table-bordered table-hover" style="text-align: center">
+                    <div class="box-body" style="width: 100%">
+                        <table border="1"id='attrclass'class="table table-bordered table-hover" style="text-align: center">
                                     <thead>
                                     <tr>
                                         <th style="text-align: center;width: 150px">属性</th>
@@ -311,6 +363,8 @@
 
                                     </tbody>
                                 </table>
+                    </div>
+                    </div>
                         {#                        T结束#}
                     </div>
                 </div>
@@ -595,6 +649,10 @@
         $("#attribute_add").val(a)
         console.log(a)
     }
+{#    function addClass2(a) {#}
+{#        $("#attribute_add").val(a)#}
+{#        console.log(a)#}
+{#    }#}
     function attributeedit(id,attr,mean,infor) {
         $("#attribute_id").val(id)
         $("#attribute-e").val(attr)
@@ -654,10 +712,10 @@
             "class_id":$("#class_id").val(),
             "class_act":$("#class_act").val(),
             "class_attribute":$("#class_attribute").val(),
-            "first_class_edit":$("#first_class_edit").val(),
-            "second_class_edit": $("#second_class_edit").val(),
-            "class_meaning": $("#class_meaning").val(),
-            "class_information": $("#class_information").val()
+            "first_class_edit":$("#first_class_edit").val().trim(),
+            "second_class_edit": $("#second_class_edit").val().trim(),
+            "class_meaning": $("#class_meaning").val().trim(),
+            "class_information": $("#class_information").val().trim()
         }
         $.ajax({
             url:'class_edit/',
@@ -671,9 +729,11 @@
                     location.reload();
                 }else if (res.status0===1 && res.status1===0){
                     alert("请填写必填项！");
+{#                    $.growlService("请填写必填项！", {type: "danger"});#}
                     location.reload();
                 }else if (res.status0===0 && res.status1===1){
                     alert("已有此分类，请重新输入！");
+{#                    $.growlService("已有此分类，请重新输入！", {type: "danger"});#}
                     location.reload();
                 }
             },
