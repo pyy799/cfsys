@@ -60,7 +60,7 @@ def update_invalid(request, pid):
     try:
         product = Product.objects.get(id=pid)
     except Exception as e:
-        return ajax_error("停用失败!")
+        return ajax_error("停用失败!"+str(e))
     product.apply_type = ApplyStatus.INVALID
     product.status = ProductStatus.WAIT_SUBMIT
     product.save()
@@ -74,7 +74,7 @@ def update_delete(request, pid):
     try:
         product = Product.objects.get(id=pid)
     except Exception as e:
-        return ajax_error("取消失败!")
+        return ajax_error("取消失败!"+str(e))
     product.apply_type = ApplyStatus.DELETE
     product.status = ProductStatus.WAIT_SUBMIT
     product.save()
@@ -142,7 +142,7 @@ def new_many(request):
                 os.remove(os.path.join(PRODUCT_TEMP_EXCEL_PATH, excel_file_name))
                 return ajax_error("产品名称重复！")
             old_product_name = str(row[1]).strip()
-            if old_product_name == 'N.A.':
+            if old_product_name == 'N.A.' or not old_product_name:
                 old_product_name = None
             introduction = str(row[2]).strip()
             overlap = str(row[3]).strip()
@@ -153,9 +153,9 @@ def new_many(request):
             target_field = str(row[4]).strip()
             apply_situation = str(row[5]).strip()
             example = str(row[6]).strip()
-            one_year_money = float(row[7])
+            one_year_money = float(row[7].strip())
             one_year_num = int(re.findall(r"\d+", row[8].strip())[0])
-            three_year_money = float(row[9])
+            three_year_money = float(row[9].strip())
             three_year_num = int(re.findall(r"\d+", row[10].strip())[0])
             pCompany = str(row[11]).strip()
             pCompany = int(get_key(dict(COMPANY_CHOICE),pCompany)[0])
@@ -211,7 +211,7 @@ def new_many(request):
             product.delete()
         os.remove(os.path.join(PRODUCT_TEMP_ZIP_PATH, zip_file_name))
         os.remove(os.path.join(PRODUCT_TEMP_EXCEL_PATH, excel_file_name))
-        return ajax_error("产品内容有误!")
+        return ajax_error("产品内容有误!"+str(e))
 
     # '产品名称', '旧产品名称', '产品描述', '是否重叠', '目标行业', '应用场景', '市场案例', '过去一年销售额（万元）',
     # '过去一年销售数量（套/件/组）', '过去三年销售数量（万元）', '过去三年销售数量（套/件/组）', '公司', 'M\n（成熟度）',
@@ -259,7 +259,7 @@ def update_many(request):
             row = sheet.row_values(i)
             product_name = str(row[0]).strip()
             old_product_name = str(row[1]).strip()
-            if old_product_name == 'N.A.':
+            if old_product_name == 'N.A.' or not old_product_name:
                 old_product_name = None
             introduction = str(row[2]).strip()
             overlap = str(row[3]).strip()
@@ -270,9 +270,9 @@ def update_many(request):
             target_field = str(row[4]).strip()
             apply_situation = str(row[5]).strip()
             example = str(row[6]).strip()
-            one_year_money = float(row[7])
+            one_year_money = float(row[7].strip())
             one_year_num = int(re.findall(r"\d+", row[8].strip())[0])
-            three_year_money = float(row[9])
+            three_year_money = float(row[9].strip())
             three_year_num = int(re.findall(r"\d+", row[10].strip())[0])
             pCompany = str(row[11]).strip()
             pCompany = int(get_key(dict(COMPANY_CHOICE), pCompany)[0])
@@ -355,8 +355,7 @@ def update_many(request):
             product.delete()
         os.remove(os.path.join(PRODUCT_TEMP_ZIP_PATH, zip_file_name))
         os.remove(os.path.join(PRODUCT_TEMP_EXCEL_PATH, excel_file_name))
-        print(e)
-        return ajax_error("产品内容有误!")
+        return ajax_error("产品内容有误!"+str(e))
 
     # '产品名称', '旧产品名称', '产品描述', '是否重叠', '目标行业', '应用场景', '市场案例', '过去一年销售额（万元）',
     # '过去一年销售数量（套/件/组）', '过去三年销售数量（万元）', '过去三年销售数量（套/件/组）', '公司', 'M\n（成熟度）',
@@ -387,9 +386,10 @@ def edit_product(request, pid, template_name):
             product = Product.objects.get(id=pid)
             product_value = product.pack_data()
             real_name = product.real_name
-            file_name = real_name   # 如果是修改或更新，则原文件在temp路径
+            if product.status != ProductStatus.PASS:# 如果是修改，则原文件在temp路径；如果是更新，则不显示原文件
+                file_name = real_name
         except Exception as e:
-            return ajax_error("产品不存在!")
+            return ajax_error("产品不存在!"+str(e))
 
     else:  # 新建
         path = os.path.join(TEMP_FILES_PATH, user.username)   # 如果是新建，则原文件在temp/user路径
@@ -464,7 +464,7 @@ def edit_delete_file(request, pid):
             product.real_name = None
             product.save()
         except Exception as e:
-            return ajax_error("找不到产品!")
+            return ajax_error("找不到产品!"+str(e))
     else:  # 新建-编辑-删文件
         path = os.path.join(TEMP_FILES_PATH, user.username)
         if os.path.exists(path):
@@ -479,28 +479,30 @@ def edit_delete_file(request, pid):
 def edit_submit(request, pid):
     user = request.user.userprofile
     pid = int(pid)
-    product_name = request.POST.get("product_name")
+    product_name = request.POST.get("product_name").strip()
     product_list = Product.objects.filter(product_name=product_name, is_vaild=True)
     count = len(product_list)
     if count > 0 and pid == 0:
         return HttpResponse("产品名称已存在!")
-    old_product_name = request.POST.get("old_product_name")
-    pCompany = request.POST.get("pCompany")
-    is_overlap = request.POST.get("is_overlap")
-    maturity = request.POST.get("maturity") or ''
-    independence = request.POST.get("independence") or ''
-    business = request.POST.get("business") or ''
-    technology = request.POST.get("technology") or ''
-    one_year_money= float(request.POST.get("one_year_money") or 0)
-    one_year_num= int(request.POST.get("one_year_num") or 0)
-    three_year_money = float(request.POST.get("three_year_money") or 0)
-    three_year_num= int(request.POST.get("three_year_num") or 0)
-    contact_people= request.POST.get("contact_people")
-    introduction= request.POST.get("introduction")
-    target_field = request.POST.get("target_field")
-    apply_situation = request.POST.get("apply_situation")
-    example= request.POST.get("example")
-    remark = request.POST.get("remark")
+    old_product_name = request.POST.get("old_product_name").strip()
+    if old_product_name == 'N.A.' or not old_product_name:
+        old_product_name = None
+    pCompany = request.POST.get("pCompany").strip()
+    is_overlap = request.POST.get("is_overlap").strip()
+    maturity = request.POST.get("maturity").strip() or ''
+    independence = request.POST.get("independence").strip() or ''
+    business = request.POST.get("business").strip() or ''
+    technology = request.POST.get("technology").strip() or ''
+    one_year_money= float(request.POST.get("one_year_money").strip() or 0)
+    one_year_num= int(request.POST.get("one_year_num").strip() or 0)
+    three_year_money = float(request.POST.get("three_year_money").strip() or 0)
+    three_year_num= int(request.POST.get("three_year_num").strip() or 0)
+    contact_people= request.POST.get("contact_people").strip()
+    introduction= request.POST.get("introduction").strip()
+    target_field = request.POST.get("target_field").strip()
+    apply_situation = request.POST.get("apply_situation").strip()
+    example= request.POST.get("example").strip()
+    remark = request.POST.get("remark").strip()
     upload_time = datetime.date.today()
     status = ProductStatus.WAIT_SUBMIT
     maturity = Attribute.objects.get(id=maturity)
@@ -585,7 +587,7 @@ def cancel_submit_product(request, pid):
     try:
         product = Product.objects.get(id=pid)
     except Exception as e:
-        return ajax_error("取消失败!")
+        return ajax_error("取消失败!"+str(e))
     # 取消更新/新建
     if product.apply_type == ApplyStatus.NEW or product.apply_type == ApplyStatus.ALTER:
         file = product.save_name
@@ -617,7 +619,7 @@ def submit_product(request, pid):
     try:
         product = Product.objects.get(id=pid)
     except Exception as e:
-        return ajax_error("提交失败!")
+        return ajax_error("提交失败!"+str(e))
     print(product.product_name)
     product.status=ProductStatus.WAIT_PASS
     product.save()
@@ -724,7 +726,7 @@ def check_product(request, pid):
     try:
         product = Product.objects.get(id=pid)
     except Exception as e:
-        return ajax_error("审核失败!")
+        return ajax_error("审核失败!"+str(e))
     print(product.product_name)
     product.status=ProductStatus.PASS
     product.pass_time = datetime.date.today()
@@ -765,7 +767,7 @@ def cancel_check_product(request):
     try:
         product = Product.objects.get(id=pid)
     except Exception as e:
-        return ajax_error("不通过失败!")
+        return ajax_error("不通过失败!"+str(e))
     product.status = ProductStatus.FAIL
     product.reason=request.POST.get('reason')
     # a=product.reason
