@@ -5,6 +5,9 @@ from webapp.attribute import views
 urlpatterns = [
     # 属性管理
     url(r'^page_attribute/$', views.index, {"template_name": "attribute.html"}, name="page_attribute"),
+    # url(r'^page_I/$', views.index, {"template_name": "attribute.html"}, name="page_I"),
+    # url(r'^page_B/$', views.index, {"template_name": "attribute.html"}, name="page_B"),
+    # url(r'^page_T/$', views.index, {"template_name": "attribute.html"}, name="page_T"),
     #修改属性
     url(r'^page_attribute/attribute_edit/$', views.attribute_edit, name="attribute_edit"),
     #增加分类
