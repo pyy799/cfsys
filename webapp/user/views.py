@@ -11,7 +11,7 @@ import json
 def jump_user(request, template_name):
     # print(request.session['relate_company'])
     page = 1
-    pageLimit = 2
+    pageLimit = 10
     userCounts = UserProfile.objects.all().count()
     if userCounts % pageLimit != 0:
         pageCounts = int(userCounts/pageLimit)+1
@@ -107,7 +107,7 @@ def modify_user(request):
 def search_user(request):
     # 获得页数
     page = int(request.POST.get("page"))
-    pageLimit = 2
+    pageLimit = 10
     # 获得查询条件
     username = request.POST.get("username")
     uCompany = request.POST.get("uCompany")
