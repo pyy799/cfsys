@@ -1,3 +1,5 @@
+// charset="utf-8"
+
 var WaitCheckTable = function () {
 // 等待审核列表
     var handleRecords = function () {
@@ -24,7 +26,7 @@ var WaitCheckTable = function () {
                 "ordering": true,
                 // "bProcessing": true, //开启读取服务器数据时显示正在加载中……特别是大数据量的时候，开启此功能比较好
                 ajax: {
-                    url: "/product_management/wait_pass/data/"
+                    url: "/product_management/wait_check/data/"
                 },
                 //"bServerSide": true, //开启服务器模式，使用服务器端处理配置datatable。注意：sAjaxSource参数也必须被给予为了给datatable源代码来获取所需的数据对于每个画。 这个翻译有点别扭。开启此模式后，你对datatables的每个操作 每页显示多少条记录、下一页、上一页、排序（表头）、搜索，这些都会传给服务器相应的值。
                 //"sAjaxSource": "{{rootUrl}}", //给服务器发请求的url
@@ -57,7 +59,8 @@ var WaitCheckTable = function () {
                     {"mData": "", "sTitle": "下载相关文件",
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
-                            var download =$('<a href="files/formal/zip/' + oData["save_name"] + '"  download="">' + oData["real_name"] + '</a>');
+
+                            var download =$('<a href="/files/formal/zip/' + oData["save_name"] + '"  download="">' + oData["real_name"] + '</a>');
                             element.append(download);
 
                             // download.click(function () {

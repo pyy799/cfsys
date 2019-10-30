@@ -98,6 +98,8 @@ def add_attribute(request):
 
     return HttpResponseRedirect("/attribute/page_attribute/")
 
+        # return HttpResponseRedirect("/attribute/page_attribute/"+attribute)
+
 
 
 def jump(request,template_name):
@@ -135,24 +137,10 @@ def attribute_edit(request):
 @login_required
 @permission_required('webapp.product_attribute_management')
 def class_edit(request):
-    # attr_class = Attribute.objects.filter(Q(id=class_id), Q(ACT=class_act)).first()
-    # ex_first = attr_class.first_class
-    # attr_class.first_class = first_class_edit
-    # attr_class.second_class = second_class_edit
-    # attr_class.meaning = class_meaning
-    # attr_class.information = class_information
-    # attr_class.save()
-    # if class_act == 'c':
-    #     attr_c = Attribute.objects.filter(Q(first_class=ex_first), Q(ACT='t'))
-    #     for attr in attr_c:
-    #         attr.first_class=first_class_edit
-    #         attr.save()
-    # # return JsonResponse({"first": first_class_edit})
-    # return JsonResponse({"status": 0})
 
     class_id = request.POST.get("class_id")
     class_act = request.POST.get("class_act")
-    # class_attribute =request.POST.get("class_attribute")
+    class_attribute =request.POST.get("class_attribute")
     first_class_edit = request.POST.get("first_class_edit")
     second_class_edit = request.POST.get("second_class_edit")
     class_meaning = request.POST.get("class_meaning")
@@ -163,55 +151,79 @@ def class_edit(request):
     # class_meaning=class_meaning.strip()
     # class_information=class_information.strip()
 
-    attr_class = Attribute.objects.filter(Q(id=class_id), Q(ACT=class_act)).first()
+    attr_class = Attribute.objects.filter(Q(id=class_id), Q(ACT=class_act), Q(attribute=class_attribute)).first()
     ex_first = attr_class.first_class
+    ex_second=attr_class.second_class
+    ex_meaning=attr_class.meaning
+    ex_information=attr_class.information
     attr_class.information = class_information
+    if ex_first==first_class_edit and ex_second==second_class_edit and ex_meaning==class_meaning and ex_information==class_information:
+        status0=3
+        return JsonResponse({"status0": status0})
+    else:
+        if first_class_edit:
+            if class_meaning:
+                # all_meaning = Attribute.objects.filter(Q(meaning=class_meaning), ~Q(id=class_id))
+                if class_act == 't':
+                    if second_class_edit:
+                        all_meaning = Attribute.objects.filter(Q(meaning=class_meaning), ~Q(id=class_id), Q(ACT='t'), Q(attribute=class_attribute), Q(first_class=first_class_edit))
+                        all_second = Attribute.objects.filter(Q(second_class=second_class_edit), Q(ACT='t'), Q(attribute=class_attribute), Q(first_class=first_class_edit), ~Q(id=class_id))
+                        if len(all_meaning)==0 and len(all_second)==0:
+                            status0 = 0
+                            status1 = 0
+                            attr_class.second_class = second_class_edit
+                            attr_class.meaning = class_meaning
+                            attr_class.save()
+                            return JsonResponse({"status0": status0})
+                            # return JsonResponse({"status0": status0, "status1": status1})
+                            # return JsonResponse({"status0": status0, "status1": status1, "status2": 0})
 
-    if first_class_edit:
-        if class_meaning:
-            all_meaning = Attribute.objects.filter(Q(meaning=class_meaning), ~Q(id=class_id))
-            if class_act == 't':
-                if second_class_edit:
-                    all_second = Attribute.objects.filter(Q(second_class=second_class_edit), Q(ACT='t'), ~Q(id=class_id))
-                    if len(all_meaning)==0 and len(all_second)==0:
+                        else:
+                            status0 = 1
+                            status1 = 1
+                            return JsonResponse({"status0": status0})
+                            # return JsonResponse({"status0": status0, "status1": status1})
+                            # return JsonResponse({"status0": status0, "status1": status1, "status2": 0})
+                    else:
+                        status0 = 2
+                        status1 = 0
+                        return JsonResponse({"status0": status0})
+                        # return JsonResponse({"status0": status0, "status1": status1})
+                        # return JsonResponse({"status0": status0, "status1": status1, "status2": 0})
+                elif class_act == 'c':
+                    all_meaning = Attribute.objects.filter(Q(meaning=class_meaning), ~Q(id=class_id), Q(ACT='c'), Q(attribute=class_attribute))
+                    all_first = Attribute.objects.filter(Q(first_class=first_class_edit), Q(ACT='c'), Q(attribute=class_attribute), ~Q(id=class_id))
+                    if len(all_first) == 0 and len(all_meaning) == 0:
                         status0 = 0
                         status1 = 0
-                        attr_class.second_class = second_class_edit
+                        attr_class.first_class = first_class_edit
                         attr_class.meaning = class_meaning
+                        attr_c = Attribute.objects.filter(Q(first_class=ex_first), Q(ACT='t'))
+                        for attr in attr_c:
+                            attr.first_class = first_class_edit
+                            attr.save()
                         attr_class.save()
+                        return JsonResponse({"status0": status0})
+                        # return JsonResponse({"status0": status0, "status1": status1})
+                        # return JsonResponse({"status0": status0, "status1": status1, "status2": 0})
                     else:
-                        status0 = 0
+                        status0 = 1
                         status1 = 1
-                        return JsonResponse({"status0": status0, "status1": status1})
-                else:
-                    status0 = 1
-                    status1 = 0
-                    return JsonResponse({"status0": status0, "status1": status1})
-            elif class_act == 'c':
-                all_first = Attribute.objects.filter(Q(first_class=first_class_edit), Q(ACT='c'), ~Q(id=class_id))
-                if len(all_first)==0 and len(all_meaning)==0:
-                    status0 = 0
-                    status1 = 0
-                    attr_class.first_class = first_class_edit
-                    attr_class.meaning = class_meaning
-                    attr_c = Attribute.objects.filter(Q(first_class=ex_first), Q(ACT='t'))
-                    for attr in attr_c:
-                        attr.first_class = first_class_edit
-                        attr.save()
-                    attr_class.save()
-                else:
-                    status0 = 0
-                    status1 = 1
-                    return JsonResponse({"status0": status0, "status1": status1})
+                        return JsonResponse({"status0": status0})
+                        # return JsonResponse({"status0": status0, "status1": status1})
+                        # return JsonResponse({"status0": status0, "status1": status1, "status2": 0})
+            else:
+                status0 = 2
+                status1 = 0
+                return JsonResponse({"status0": status0})
+                # return JsonResponse({"status0": status0, "status1": status1})
+                # return JsonResponse({"status0": status0, "status1": status1, "status2": 0})
         else:
-            status0 = 1
+            status0 = 2
             status1 = 0
-            return JsonResponse({"status0": status0, "status1": status1})
-    else:
-        status0 = 1
-        status1 = 0
-        return JsonResponse({"status0": status0, "status1": status1})
-    return JsonResponse({"status0": status0, "status1": status1})
+            return JsonResponse({"status0": status0})
+            # return JsonResponse({"status0": status0, "status1": status1})
+            # return JsonResponse({"status0": status0, "status1": status1, "status2": 0})
 
 
 # 删除大小类(查询产品)

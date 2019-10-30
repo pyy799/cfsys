@@ -495,7 +495,7 @@
                                 </div>
 
                                 <div class="modal-footer" style="text-align: center">
-                                    <button type="submit" class="btn btn-primary" onclick="goClassEdit()">确认</button>
+                                    <button type="button" class="btn btn-primary" onclick="goClassEdit()">确认</button>
                                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                                 </div>
 
@@ -723,19 +723,41 @@
             data:data,
             success:function (res) {
                 console.log(res)
-                if (res.status0===0 && res.status1===0) {
+                if (res.status0===0) {
                     console.log('0')
                     alert("修改成功！相关产品的属性信息已同步！");
                     location.reload();
-                }else if (res.status0===1 && res.status1===0){
+                }else if (res.status0===2){
                     alert("请填写必填项！");
 {#                    $.growlService("请填写必填项！", {type: "danger"});#}
                     location.reload();
-                }else if (res.status0===0 && res.status1===1){
+                }else if (res.status0===1){
                     alert("已有此分类，请重新输入！");
 {#                    $.growlService("已有此分类，请重新输入！", {type: "danger"});#}
                     location.reload();
+                }else if (res.status0===3){
+                    alert("输入内容与修改前相同，请重新输入！");
+{#                    $.growlService("已有此分类，请重新输入！", {type: "danger"});#}
+                    location.reload();
                 }
+
+{#                if (res.status0===0 && res.status1===0 && res.status2==0) {#}
+{#                    console.log('0')#}
+{#                    alert("修改成功！相关产品的属性信息已同步！");#}
+{#                    location.reload();#}
+{#                }else if (res.status0===1 && res.status1===0 && res.status2==0){#}
+{#                    alert("请填写必填项！");#}
+{#                    $.growlService("请填写必填项！", {type: "danger"});#}
+{#                    location.reload();#}
+{#                }else if (res.status0===0 && res.status1===1 && res.status2==0){#}
+{#                    alert("已有此分类，请重新输入！");#}
+{#                    $.growlService("已有此分类，请重新输入！", {type: "danger"});#}
+{#                    location.reload();#}
+{#                }#}
+{#                else if (res.status0===1 && res.status1===1 && res.status2==1){#}
+{#                    alert("输入内容与修改前相同，请重新输入");#}
+{#                    location.reload();#}
+{#                }#}
             },
             error:function () {
             }
