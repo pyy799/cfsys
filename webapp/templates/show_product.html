@@ -75,7 +75,8 @@
                             <option value=''></option>
                             {% for s in maturity1 %}
                                 {% if maturity_choice == s.first_class %}
-                                    <option value="{{ s.first_class }}" selected>{{ s.first_class }}-{{ s.meaning }}</option>
+                                    <option value="{{ s.first_class }}"
+                                            selected>{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% else %}
                                     <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% endif %}
@@ -89,7 +90,8 @@
                             <option value=''></option>
                             {% for s in independence1 %}
                                 {% if independence_choice == s.first_class %}
-                                    <option value="{{ s.first_class }}" selected>{{ s.first_class }}-{{ s.meaning }}</option>
+                                    <option value="{{ s.first_class }}"
+                                            selected>{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% else %}
                                     <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% endif %}
@@ -103,7 +105,8 @@
                             <option value=''></option>
                             {% for s in business %}
                                 {% if business_choice == s.first_class %}
-                                    <option value="{{ s.first_class }}" selected>{{ s.first_class }}-{{ s.meaning }}</option>
+                                    <option value="{{ s.first_class }}"
+                                            selected>{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% else %}
                                     <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% endif %}
@@ -116,7 +119,8 @@
                             <option value=''></option>
                             {% for s in technology %}
                                 {% if technology_choice == s.first_class %}
-                                    <option value="{{ s.first_class }}" selected>{{ s.first_class }}-{{ s.meaning }}</option>
+                                    <option value="{{ s.first_class }}"
+                                            selected>{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% else %}
                                     <option value="{{ s.first_class }}">{{ s.first_class }}-{{ s.meaning }}</option>
                                 {% endif %}
@@ -239,14 +243,8 @@
 
                                         var data = {
                                             'product_list': JSON.stringify(maturity_independence_product_list[param.value[1]][param.value[0]]),
-                                            'check_box_list': JSON.stringify(chk_value),
-                                            'maturity_choice': $('select[name="maturity__first_class"]').val(),
-                                            'independence_choice': $('select[name="independence__first_class"]').val(),
-                                            'business_choice': $('select[name="business__first_class"]').val(),
-                                            'technology_choice': $('select[name="technology__first_class"]').val(),
                                             'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
                                         };
-
                                         $.ajax({
                                             url: "/product_search/page_chart_product_list/",
 
@@ -258,9 +256,9 @@
                                                 document.write(result)
                                             },
                                             fail: function (result) {
+                                                alert("异常！");
                                             }
                                         });
-                                        {#window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));#}
                                     })
                                 </script>
                                 <span>产品的成熟度和自主程度是衡量产品效益的重要参考因素，因此产品能力的成熟度-自主度的（M-I）交叉矩阵所代表的是两个维度上不同级别的产品能力，便于公司内部评估分层管理。</span>
@@ -368,17 +366,10 @@
                                     });
                                     // 处理点击事件并且跳转到相应的搜索页面
                                     myChart.on('click', function (param) {
-                                        {#console.log(param)#}
                                         business_technology_product_list ={{ business_technology_product_list|safe }};
-                                        {#alert("查看产品列表");#}
 
                                         var data = {
                                             'product_list': JSON.stringify(business_technology_product_list[param.value[1]][param.value[0]]),
-                                            'check_box_list': JSON.stringify(chk_value),
-                                            'maturity_choice': $('select[name="maturity__first_class"]').val(),
-                                            'independence_choice': $('select[name="independence__first_class"]').val(),
-                                            'business_choice': $('select[name="business__first_class"]').val(),
-                                            'technology_choice': $('select[name="technology__first_class"]').val(),
                                             'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
                                         };
 
@@ -393,9 +384,9 @@
                                                 document.write(result)
                                             },
                                             fail: function (result) {
+                                                alert("异常！");
                                             }
                                         });
-                                        {#window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));#}
                                     })
                                 </script>
                                 <span>产品的业务领域和技术形态是产品应用方向的重要参考因素，因此产品能力的业务领域-技术形态的（B-T）交叉矩阵所代表的是各个细分行业领域所适用的产品能力，便于公司外部应用评估。</span>
@@ -490,17 +481,10 @@
                                     });
                                     // 处理点击事件并且跳转到相应的搜索页面
                                     myChart.on('click', function (param) {
-                                        {#console.log(param)#}
                                         business_product_list ={{ business_product_list|safe }};
-                                        {#alert("查看产品列表");#}
 
                                         var data = {
                                             'product_list': JSON.stringify(business_product_list[param.dataIndex]),
-                                            'check_box_list': JSON.stringify(chk_value),
-                                            'maturity_choice': $('select[name="maturity__first_class"]').val(),
-                                            'independence_choice': $('select[name="independence__first_class"]').val(),
-                                            'business_choice': $('select[name="business__first_class"]').val(),
-                                            'technology_choice': $('select[name="technology__first_class"]').val(),
                                             'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
                                         };
 
@@ -515,9 +499,9 @@
                                                 document.write(result)
                                             },
                                             fail: function (result) {
+                                                alert("异常！");
                                             }
                                         });
-                                        {#window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));#}
                                     })
                                 </script>
                             </div>
@@ -602,17 +586,10 @@
                                     });
                                     // 处理点击事件并且跳转到相应的搜索页面
                                     myChart.on('click', function (param) {
-                                        {#console.log(param)#}
                                         technology_product_list ={{ technology_product_list|safe }};
-                                        {#alert("查看产品列表");#}
 
                                         var data = {
                                             'product_list': JSON.stringify(technology_product_list[param.dataIndex]),
-                                            'check_box_list': JSON.stringify(chk_value),
-                                            'maturity_choice': $('select[name="maturity__first_class"]').val(),
-                                            'independence_choice': $('select[name="independence__first_class"]').val(),
-                                            'business_choice': $('select[name="business__first_class"]').val(),
-                                            'technology_choice': $('select[name="technology__first_class"]').val(),
                                             'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
                                         };
 
@@ -627,9 +604,9 @@
                                                 document.write(result)
                                             },
                                             fail: function (result) {
+                                                alert("异常！");
                                             }
                                         });
-                                        {#window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));#}
                                     })
                                 </script>
                             </div>
@@ -653,7 +630,6 @@
                                     var myChart = echarts.init(dom);
                                     var app = {};
                                     var maturity_product = {{ maturity_product|safe }};
-                                    {#console.log(maturity_product)#}
                                     option = null;
 
                                     option = {
@@ -713,17 +689,10 @@
                                     });
                                     // 处理点击事件并且跳转到相应的搜索页面
                                     myChart.on('click', function (param) {
-                                        {#console.log(param)#}
                                         maturity_product_list ={{ maturity_product_list|safe }};
-                                        {#alert("查看产品列表");#}
 
                                         var data = {
                                             'product_list': JSON.stringify(maturity_product_list[param.dataIndex]),
-                                            'check_box_list': JSON.stringify(chk_value),
-                                            'maturity_choice': $('select[name="maturity__first_class"]').val(),
-                                            'independence_choice': $('select[name="independence__first_class"]').val(),
-                                            'business_choice': $('select[name="business__first_class"]').val(),
-                                            'technology_choice': $('select[name="technology__first_class"]').val(),
                                             'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
                                         };
 
@@ -735,12 +704,12 @@
                                             type: "POST",
                                             traditional: true,
                                             success: function (result) {
-                                                document.write(result)
+                                                document.write(result);
                                             },
                                             fail: function (result) {
+                                                alert("异常！");
                                             }
                                         });
-                                        {#window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));#}
                                     })
                                 </script>
                             </div>
@@ -829,11 +798,11 @@
 
                                         var data = {
                                             'product_list': JSON.stringify(independence_product_list[param.dataIndex]),
-                                            'check_box_list': JSON.stringify(chk_value),
-                                            'maturity_choice': $('select[name="maturity__first_class"]').val(),
-                                            'independence_choice': $('select[name="independence__first_class"]').val(),
-                                            'business_choice': $('select[name="business__first_class"]').val(),
-                                            'technology_choice': $('select[name="technology__first_class"]').val(),
+                                            {#'check_box_list': JSON.stringify(chk_value),#}
+                                            {#'maturity_choice': $('select[name="maturity__first_class"]').val(),#}
+                                            {#'independence_choice': $('select[name="independence__first_class"]').val(),#}
+                                            {#'business_choice': $('select[name="business__first_class"]').val(),#}
+                                            {#'technology_choice': $('select[name="technology__first_class"]').val(),#}
                                             'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
                                         };
 
@@ -845,9 +814,12 @@
                                             type: "POST",
                                             traditional: true,
                                             success: function (result) {
+                                                {#$('#chart_product_list').modal();#}
+                                                {#localStorage.setItem("body", document.body.innerHTML);#}
                                                 document.write(result)
                                             },
                                             fail: function (result) {
+                                                alert("异常！");
                                             }
                                         });
                                         {#window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));#}
@@ -855,6 +827,82 @@
                                 </script>
                             </div>
                         </div>
+                        <!-- 产品列表弹框 -->
+{#                        <div class="modal fade" id="chart_product_list" role="dialog" aria-labelledby="addLabel"#}
+{#                             aria-hidden="true">#}
+{#                            <div class="modal-dialog modal-lg" style="width:1000px;">#}
+{#                                <div class="modal-content">#}
+{#                                    <div class="modal-header">#}
+{#                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="false">#}
+{#                                            &times;#}
+{#                                        </button>#}
+{#                                        <h4 class="modal-title" id="addLabel" style="font-weight:bold">产品列表</h4>#}
+{#                                    </div>#}
+{#                                    <div class="modal-body">#}
+                                        {#                                        <div class="box box-primary">#}
+                                        {#                                            <br>#}
+                                        {#                                            <div class="table-container no-padding tab-pane active" id=""#}
+                                        {#                                                 style="padding:14px">#}
+                                        {#                                                <div class="table-actions-wrapper">#}
+                                        {#                                                    <table border="1" id='product_detail'#}
+                                        {#                                                           class="table table-bordered table-hover"#}
+                                        {#                                                           style="text-align: left">#}
+                                        {#                                                        <tbody>#}
+                                        {#                                                        <tr>#}
+                                        {#                                                            <th style="vertical-align: middle;text-align:center; width: 150px"#}
+                                        {#                                                                bgcolor="#f0ffff">#}
+                                        {#                                                                <b>产品名称</b>#}
+                                        {#                                                            <th style="vertical-align: middle;text-align:center;width: 150px"#}
+                                        {#                                                                bgcolor="#f0ffff">#}
+                                        {#                                                                <b>公司名称</b>#}
+                                        {#                                                            <th style="vertical-align: middle;text-align:center;width: 150px"#}
+                                        {#                                                                bgcolor="#f0ffff">#}
+                                        {#                                                                <b>成熟度</b>#}
+                                        {#                                                            <th style="vertical-align: middle;text-align:center;width: 150px"#}
+                                        {#                                                                bgcolor="#f0ffff">#}
+                                        {#                                                                <b>自主度</b>#}
+                                        {#                                                            <th style="vertical-align: middle;text-align:center; width: 150px"#}
+                                        {#                                                                bgcolor="#f0ffff">#}
+                                        {#                                                                <b>业务领域</b>#}
+                                        {#                                                            <th style="vertical-align: middle;text-align:center;width: 150px"#}
+                                        {#                                                                bgcolor="#f0ffff">#}
+                                        {#                                                                <b>技术形态</b>#}
+                                        {#                                                            <th style="vertical-align: middle;text-align:center; width: 150px"#}
+                                        {#                                                                bgcolor="#f0ffff">#}
+                                        {#                                                                <b>发布时间</b>#}
+                                        {#                                                        </tr>#}
+                                        {#                                                        <tr>#}
+                                        {##}
+                                        {#                                                        </tr>#}
+                                        {#                                                        <script>console.log(product_list)</script>#}
+                                        {#                                                        {% for i in product_list %}#}
+                                        {#                                                            <lable></lable>#}
+                                        {#                                                            <tr>#}
+                                        {#                                                                <td style="vertical-align: middle;text-align:center"><a#}
+                                        {#                                                                        href="/product_search/page_product_detail/{{ i.id }}">{{ i.product_name }}</a>#}
+                                        {#                                                                </td>#}
+                                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.pCompany_name }}</td>#}
+                                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.maturity_name }}</td>#}
+                                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.independence_name }}</td>#}
+                                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.business_name }}</td>#}
+                                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.technology_name }}</td>#}
+                                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.pass_time }}</td>#}
+                                        {#                                                            </tr>#}
+                                        {#                                                        {% endfor %}#}
+                                        {#                                                        </tbody>#}
+                                        {#                                                    </table>#}
+                                        {#                                                </div>#}
+                                        {#                        M结束#}
+                                        {#                                            </div>#}
+{##}
+                                        {#                                        </div>#}
+{#                                    </div>#}
+{#                                    <button type="button" class="btn btn-default" data-dismiss="modal">#}
+{#                                        取消#}
+{#                                    </button>#}
+{#                                </div><!-- /.modal-content -->#}
+{#                            </div><!-- /.modal -->#}
+{#                        </div>#}
 
                     </section>
                     <!-- right col -->
@@ -863,6 +911,9 @@
 
             </section>
         </div>
+    </div>
+    <div id="secondbody">
+
     </div>
 
 
@@ -895,13 +946,10 @@
             $("#company_checkbox input[type='checkbox']").each(function () {
                 var check = $(this).is(":checked");
                 if (!check) {
-                    {#console.log(true)#}
                     $(this).prop("checked", true);
                 } else {
-                    {#console.log(false)#}
                     $(this).prop("checked", false);
                 }
-                {#$(this).toggleClass("selected")#}
             });
 
         })

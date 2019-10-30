@@ -7,6 +7,7 @@
     <!-- Morris chart -->
     <link rel="stylesheet" href="/static/plugins/morris/morris.css">
 
+
 {% endblock %}
 
 
@@ -14,29 +15,12 @@
     <div class="box box-solid" id="tablebox" style="padding-left: 30px;padding-right: 30px">
         <div class="box-header with-border">
 
-            <label style="margin-top: 0px"><h3 style="margin-top: 20px;margin-bottom: 10px">产品列表</h3></label>
-{#            <form method="post" action="{% url 'page_show_product' %}">#}
-{#                {% csrf_token %}#}
-{#                <div hidden>#}
-{#                    {% for i in check_box_list%}#}
-{#                        <input type="checkbox" value="i" name="check_box_list" checked>#}
-{#                    {% endfor %}#}
-{#                </div>#}
-{#                <select hidden name="maturity__first_class">#}
-{#                    <option value="{{ maturity_choice}}" selected>1111</option>#}
-{#                </select>#}
-{#                <select hidden name="independence__first_class">#}
-{#                    <option value="{{ independence_choice}} " selected>1111</option>#}
-{#                </select>#}
-{#                <select hidden name="business__first_class">#}
-{#                    <option value="{{ business_choice}} " selected>1111</option>#}
-{#                </select>#}
-{#                <select hidden name="technology__first_class">#}
-{#                    <option value="{{ technology_choice}}" selected>1111</option>#}
-{#                </select>#}
-{#                <button type="submit" class="pull-right btn btn-default" style="margin-top: 20px;margin-bottom: 10px"> 返回<i#}
-{#                        class="fa fa-arrow-circle-right"></i></button>#}
-{#            </form>#}
+            <label style="margin-top: 0"><h3 style="margin-top: 20px;margin-bottom: 10px">产品列表</h3></label>
+            <form method="post" action="{% url 'page_show_product' %}">
+                {% csrf_token %}
+                <button type="submit" class="pull-right btn btn-default" style="margin-top: 20px;margin-bottom: 10px">
+                    返回<i class="fa fa-arrow-circle-right"></i></button>
+            </form>
         </div>
 
         <div class="box-body">
@@ -84,123 +68,11 @@
                             </tbody>
                         </table>
                     </div>
-                    {#                        M结束#}
                 </div>
             </div>
         </div>
     </div>
 
-    {#    <form method="post" action="{% url 'page_show_product' %}" style="float: left;margin-left: 20px">#}
-    {#        {% csrf_token %}#}
-    {#        <div class="row" style="margin-top: 0px" id="company_checkbox">#}
-    {#            <label><b>公司</b></label>#}
-    {#            {% if "1" in check_box_list %}#}
-    {#                <input class="" type='checkbox' value="1" name="check_box_list" checked><label>股份</label>#}
-    {#            {% else %}#}
-    {#                <input class="" type='checkbox' value="1" name="check_box_list"><label>股份</label>#}
-    {#            {% endif %}#}
-    {#            {% if "2" in check_box_list %}#}
-    {#                <input class="" type='checkbox' value="2" name="check_box_list" checked><label>精一</label>#}
-    {#            {% else %}#}
-    {#                <input class="" type='checkbox' value="2" name="check_box_list"><label>精一</label>#}
-    {#            {% endif %}#}
-    {#            {% if "3" in check_box_list %}#}
-    {#                <input class="" type='checkbox' value="3" name="check_box_list" checked><label>科威</label>#}
-    {#            {% else %}#}
-    {#                <input class="" type='checkbox' value="3" name="check_box_list"><label>科威</label>#}
-    {#            {% endif %}#}
-    {#            {% if "4" in check_box_list %}#}
-    {#                <input class="" type='checkbox' value="4" name="check_box_list" checked><label>医疗</label>#}
-    {#            {% else %}#}
-    {#                <input class="" type='checkbox' value="4" name="check_box_list"><label>医疗</label>#}
-    {#            {% endif %}#}
-    {#            {% if "5" in check_box_list %}#}
-    {#                <input class="" type='checkbox' value="5" name="check_box_list" checked><label>柏克</label>#}
-    {#            {% else %}#}
-    {#                <input class="" type='checkbox' value="5" name="check_box_list"><label>柏克</label>#}
-    {#            {% endif %}#}
-    {#            {% if "6" in check_box_list %}#}
-    {#                <input class="" type='checkbox' value="6" name="check_box_list" checked><label>科技</label>#}
-    {#            {% else %}#}
-    {#                <input class="" type='checkbox' value="6" name="check_box_list"><label>科技</label>#}
-    {#            {% endif %}#}
-    {#            {% if "7" in check_box_list %}#}
-    {#                <input class="" type='checkbox' value="7" name="check_box_list" checked><label>浙子</label>#}
-    {#            {% else %}#}
-    {#                <input class="" type='checkbox' value="7" name="check_box_list"><label>浙子</label>#}
-    {#            {% endif %}#}
-    {#            <button type="button" class="btn btn-sm green checkall" id="checkall"><i#}
-    {#                    class="fa fa-check"></i>#}
-    {#                全选/反选#}
-    {#            </button>#}
-    {#            <button type="button" class="btn btn-warning btn-sm red clearAll" id="clearall"><i#}
-    {#                    class="fa fa-times"></i> 清除#}
-    {#            </button>#}
-    {#        </div>#}
-    {##}
-    {#        <div class="row" style="margin-top: 20px;margin-bottom: 20px">#}
-    {#            <label><b>属性</b></label>#}
-    {#            <label style="letter-spacing: 0.35em">成熟度 </label>#}
-    {#            <select class="form-control input-inline input-small input-sm form-filter select "#}
-    {#                    name="maturity__first_class" data-placeholder='成熟度' style="width: 145px">#}
-    {#                <option value=''></option>#}
-    {#                {% for s in maturity %}#}
-    {#                    {% if maturity_choice == s.first_class %}#}
-    {#                        <option value="{{ s.first_class }}" selected>{{ s.meaning }}</option>#}
-    {#                    {% else %}#}
-    {#                        <option value="{{ s.first_class }}">{{ s.meaning }}</option>#}
-    {#                    {% endif %}#}
-    {##}
-    {#                {% endfor %}#}
-    {#            </select>#}
-    {##}
-    {#            <label style="letter-spacing: 0.35em">自主度</label>#}
-    {#            <select class="form-control input-inline input-small input-sm form-filter select"#}
-    {#                    name="independence__first_class" data-placeholder='自主度' style="width: 145px">#}
-    {#                <option value=''></option>#}
-    {#                {% for s in independence %}#}
-    {#                    {% if independence_choice == s.first_class %}#}
-    {#                        <option value="{{ s.first_class }}" selected>{{ s.meaning }}</option>#}
-    {#                    {% else %}#}
-    {#                        <option value="{{ s.first_class }}">{{ s.meaning }}</option>#}
-    {#                    {% endif %}#}
-    {##}
-    {#                {% endfor %}#}
-    {#            </select>#}
-    {##}
-    {#            <label>业务领域</label>#}
-    {#            <select class="form-control input-inline input-small input-sm form-filter select"#}
-    {#                    name="business__first_class" data-placeholder='业务领域' style="width: 145px">#}
-    {#                <option value=''></option>#}
-    {#                {% for s in business %}#}
-    {#                    {% if business_choice == s.first_class %}#}
-    {#                        <option value="{{ s.first_class }}" selected>{{ s.meaning }}</option>#}
-    {#                    {% else %}#}
-    {#                        <option value="{{ s.first_class }}">{{ s.meaning }}</option>#}
-    {#                    {% endif %}#}
-    {#                {% endfor %}#}
-    {#            </select>#}
-    {##}
-    {#            <label>技术形态</label>#}
-    {#            <select class="form-control input-inline input-small input-sm form-filter select"#}
-    {#                    name="technology__first_class" data-placeholder='技术形态' style="width: 145px">#}
-    {#                <option value=''></option>#}
-    {#                {% for s in technology %}#}
-    {#                    {% if technology_choice == s.first_class %}#}
-    {#                        <option value="{{ s.first_class }}" selected>{{ s.meaning }}</option>#}
-    {#                    {% else %}#}
-    {#                        <option value="{{ s.first_class }}">{{ s.meaning }}</option>#}
-    {#                    {% endif %}#}
-    {#                {% endfor %}#}
-    {#            </select>#}
-    {#            <button class="btn btn-sm yellow filter-submit" style="margin-left:100px"><i#}
-    {#                    class="fa fa-search"></i> 查询#}
-    {#            </button>#}
-    {#            <a type="button" class="btn btn-sm red filter-cancel text-right"#}
-    {#               href="{% url 'page_show_product' %}"><i class="fa fa-times"></i> 取消查询</a>#}
-    {#        </div>#}
-    {#    </form>#}
-    {#    <h3>{{ maturity_choice |safe }}</h3>#}
 {% endblock %}
 {% block footer_js %}
     <!-- Morris.js charts -->
@@ -213,11 +85,5 @@
     <script src="/static/js/table-ext.js"></script>
     <script src="/static/js/datatable.js"></script>
     <script src="/static/js/jPages.js"></script>
-    <script>
-        function classDelete(text, id) {
-            $('#a_delete').attr('href', text)
-            $('#s_delete').html($('#attribute_id_' + id).html())
-        }
-    </script>
-
+    <script src="/static/plugins/jQuery/jquery-2.2.3.min.js"></script>
 {% endblock %}

@@ -86,30 +86,27 @@ def show(request, template_name):
     maturity_list1 = []
     independence_list1 = []
     business_list1 = []
-    maturity_list2 = []
-    independence_list2 = []
-    #echarts 提示框所需产品数据
+    # echarts 提示框所需产品数据
     maturity_product = []
     independence_product = []
     business_product = []
     technology_product = []
     maturity_independence_product = []
     business_technology_product = []
-    #echarts绘图所需数据
+    # echarts绘图所需数据
     maturity_product1 = []
     independence_product1 = []
     business_product1 = []
     technology_product1 = []
     maturity_independence = []
     business_technology = []
-    #echarts产品列表
+    # echarts产品列表
     maturity_product_list = []
     independence_product_list = []
     business_product_list = []
     technology_product_list = []
     maturity_independence_product_list = []
     business_technology_product_list = []
-
 
     # 查询条件
     maturity_search_dict = {}
@@ -170,7 +167,7 @@ def show(request, template_name):
             maturity_product_list.append(bpl)
             maturity_product1.append({"name": i.meaning, "value": num})
             # print(maturity_search_dict)
-    maturity_list2=maturity_list1.reverse()
+    maturity_list1.reverse()
 
     # 自主度
     if independence_choice:
@@ -215,7 +212,7 @@ def show(request, template_name):
             independence_product.append([str])
             independence_product_list.append(bpl)
             independence_product1.append({"name": i.meaning, "value": num})
-    independence_list2=independence_list1.reverse()
+    independence_list1.reverse()
 
     # 业务领域
     if business_choice:
@@ -287,7 +284,6 @@ def show(request, template_name):
             technology_product_list.append(bpl)
             technology_product1.append({"name": i.meaning, "value": num})
 
-
     # 成熟度-自主度
     num1 = 0
     num2 = 0
@@ -295,7 +291,7 @@ def show(request, template_name):
     if independence_choice:
         for ind in independence:
             maturity_independence_product1 = []
-            maturity_independence_product_list1=[]
+            maturity_independence_product_list1 = []
             if independence_choice == ind.first_class:
                 if maturity_choice:
                     for mat in maturity:
@@ -401,7 +397,7 @@ def show(request, template_name):
     if technology_choice:
         for tec in technology:
             business_technology_product1 = []
-            business_technology_product_list1=[]
+            business_technology_product_list1 = []
             if technology_choice == tec.first_class:
                 if business_choice:
                     for bus in business:
@@ -511,7 +507,6 @@ def show(request, template_name):
                       "business_list": business_list, "technology_list": technology_list,
                       "maturity_list1": maturity_list1, "independence_list1": independence_list1,
                       "business_list1": business_list1,
-                      "maturity_list2": maturity_list2, "independence_list2": independence_list2,
 
                       "maturity_product1": maturity_product1,
                       "independence_product1": independence_product1,
@@ -554,23 +549,15 @@ def show(request, template_name):
 
 # 图表产品列表
 def chart_list(request, template_name):
-    # print(json.loads(request.POST.get("check_box_list")))
     res = {
-        "product_list":json.loads(request.POST.get("product_list")),
-        "check_box_list ": json.loads(request.POST.get("check_box_list")),
-        "maturity_choice ": request.POST.get("maturity_choice"),
-        "independence_choice ": request.POST.get("independence_choice"),
-        "business_choice ": request.POST.get("business_choice"),
-        "technology_choice ": request.POST.get("technology_choice")
+        "product_list": json.loads(request.POST.get("product_list")),
+        # "check_box_list ": json.loads(request.POST.get("check_box_list")),
+        # "maturity_choice ": request.POST.get("maturity_choice"),
+        # "independence_choice ": request.POST.get("independence_choice"),
+        # "business_choice ": request.POST.get("business_choice"),
+        # "technology_choice ": request.POST.get("technology_choice")
     }
-    # print(type(request.POST.get("maturity_choice")))
     return render(request, template_name, res)
-
-
-# # 图表产品列表返回展示查询结果
-# def list_return(request):
-#
-#     return HttpResponseRedirect("/product_search/page_show_product/search/")
 
 # 产品详情页
 def detail(request, template_name, bid):
