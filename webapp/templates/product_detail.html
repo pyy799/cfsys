@@ -25,8 +25,6 @@
                         <table border="1" id='product_detail' class="table table-bordered table-hover"
                                style="text-align: left">
                             <tbody>
-                            {#                            {% for attr in info %}#}
-                            {#                                {% if attr.ACT == 'a' and attr.attribute == 'M' %}#}
                             <tr>
                                 <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>产品名称</b>
                                 </td>
@@ -62,18 +60,34 @@
                             <tr>
                                 <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>过去一年销售额</b>
                                 </td>
-                                <td class="col-lg-4 col-md-4 col-sm-4">{{ info.one_year_money }}万元</td>
+                                {% if info.one_year_money %}
+                                    <td class="col-lg-4 col-md-4 col-sm-4">{{ info.one_year_money }}万元</td>
+                                {% else %}
+                                    <td class="col-lg-4 col-md-4 col-sm-4"></td>
+                                {% endif %}
                                 <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>过去一年销售数量</b>
                                 </td>
-                                <td class="col-lg-4 col-md-4 col-sm-4">{{ info.one_year_num }}套</td>
+                                {% if info.one_year_num %}
+                                    <td class="col-lg-4 col-md-4 col-sm-4">{{ info.one_year_num }}套</td>
+                                {% else %}
+                                    <td class="col-lg-4 col-md-4 col-sm-4"></td>
+                                {% endif %}
                             </tr>
                             <tr>
                                 <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>过去三年销售额</b>
                                 </td>
-                                <td class="col-lg-4 col-md-4 col-sm-4">{{ info.three_year_money }}万元</td>
+                                {% if info.three_year_money %}
+                                    <td class="col-lg-4 col-md-4 col-sm-4">{{ info.three_year_money }}万元</td>
+                                {% else %}
+                                    <td class="col-lg-4 col-md-4 col-sm-4"></td>
+                                {% endif %}
                                 <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle"><b>过去三年销售数量</b>
                                 </td>
-                                <td class="col-lg-4 col-md-4 col-sm-4">{{ info.three_year_num }}套</td>
+                                {% if info.three_year_num %}
+                                    <td class="col-lg-4 col-md-4 col-sm-4">{{ info.three_year_num }}套</td>
+                                {% else %}
+                                    <td class="col-lg-4 col-md-4 col-sm-4"></td>
+                                {% endif %}
                             </tr>
                             <tr>
                                 <td class="col-lg-2 col-md-2 col-sm-2 text-center" style="vertical-align: middle">
@@ -107,8 +121,9 @@
                             </tr>
 
                             <a type="button" class="btn green" style="height: 30px;width: 100px;margin-bottom: 10px"
-                               href="{{ download_path_excel }}" {% if info.real_name %}download="{{ info.real_name }}"{% else %}disabled{% endif %}><i
-                                    class="fa fa-arrow-down" id="download" ></i>附件下载</a>
+                               href="{{ download_path_excel }}" {% if info.real_name %}download="{{ info.real_name }}"
+                               {% else %}disabled{% endif %}><i
+                                    class="fa fa-arrow-down" id="download"></i>附件下载</a>
 
                             </tbody>
                         </table>
