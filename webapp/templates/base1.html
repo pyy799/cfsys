@@ -73,18 +73,26 @@
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="{% url 'page_search_product' %}">产品信息查询</a></li>
                                 <li><a href="{% url 'page_show_product' %}">产品能力展示</a></li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">产品信息管理<span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="{% url 'page_new_product' %}">新建及更新产品</a></li>
-                                <li><a href="{% url 'page_pass_product' %}">产品审核</a></li>
                                 <li><a href="{% url 'page_table' %}">产品属性化分类表</a></li>
                             </ul>
                         </li>
+                    {% if perms.webapp.product_information_manage_new or perms.webapp.product_information_manage_update or perms.webapp.product_information_manege_check %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">产品信息管理<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                {% if perms.webapp.product_information_manage_new or perms.webapp.product_information_manage_update %}
+                                <li><a href="{% url 'page_new_product' %}">新建及更新产品</a></li>
+                                {% endif %}
+                                {% if perms.webapp.product_information_manege_check %}
+                                <li><a href="{% url 'page_pass_product' %}">产品审核</a></li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                    {% endif %}
+                    {% if perms.webapp.product_attribute_management %}
+                    <li><a href="{% url 'page_M' %}">产品属性管理</a></li>
+                    {% endif %}
 
-                    <li><a href="{% url 'page_attribute' %}">产品属性管理</a></li>
                     {% if perms.webapp.user_right_management_user or perms.webapp.user_right_management_role %}
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">用户及权限管理<span class="caret"></span></a>

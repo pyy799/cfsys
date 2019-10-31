@@ -23,8 +23,8 @@ var WaitCheckTable = function () {
                 "bLengthChange": false,
                 "serverSide": true,
                 "bFilter": false,
-                "ordering": true,
-                // "bProcessing": true, //开启读取服务器数据时显示正在加载中……特别是大数据量的时候，开启此功能比较好
+                "ordering": false,
+                "bProcessing": true, //开启读取服务器数据时显示正在加载中……特别是大数据量的时候，开启此功能比较好
                 ajax: {
                     url: "/product_management/wait_check/data/"
                 },
@@ -159,18 +159,37 @@ var WaitCheckTable = function () {
             $('.dateFilter').val('');
             grid.resetFilter();
         });
-        //全选按钮
-        $(".checkall").click(function () {
+        //清除按钮
+        $('#clearall').click(function () {
             $("#waitcheck_table tr input[type='checkbox']").each(function () {
-                var check = $(this).parent("span").hasClass("checked");
+                $(this).prop("checked", false).uniform('refresh');;
+            })
+        })
+        //全选按钮
+        $('.checkall').click(function () {
+            $("#waitcheck_table tr input[type='checkbox']").each(function () {
+                var check = $(this).is(":checked");
                 if (!check) {
-                    $(this).prop("checked", true).uniform('refresh');
-                } else {
-                    $(this).prop("checked", false).uniform('refresh');
+                    $(this).prop("checked", true).uniform('refresh');;
                 }
-                $(this).parents("tr").toggleClass("selected")
             });
-        });
+
+        })
+        //全选按钮
+        // $(".checkall").click(function () {
+        //     $("#waitcheck_table tr input[type='checkbox']").each(function () {
+        //         var check = $(this).parent("span").hasClass("checked");
+        //         if (!check) {
+        //             // $(this).prop("checked", false);
+        //             $(this).prop("checked", true).uniform('refresh');
+        //         } else {
+        //             $(this).prop("checked", false).uniform('refresh');
+        //             // $(this).prop("checked", false);
+        //         }
+        //         // $(this).prop("checked", false);
+        //         $(this).parents("tr").toggleClass("selected")
+        //     });
+        // });
         //多选提交按钮
         $("#submit").on('click', function () {
             var checkedBox = $("input[type='checkbox']:checked");
