@@ -58,47 +58,53 @@ def add_attribute(request):
     meaning=meaning.replace(' ','')
     information=information.replace(' ','')
 
-    check_meaning = Attribute.objects.filter(meaning=meaning)
-    if len(check_meaning) == 0:
-        if meaning:
-            if first_class:
-                if second_class:
-                    act = 't'
-                    # all_first = Attribute.objects.filter(Q(first_class=first_class),Q(ACT='c'))
-                    check_first = Attribute.objects.filter(Q(first_class=first_class), Q(attribute=attribute),Q(ACT='c'))
-                    check_second = Attribute.objects.filter(Q(second_class=second_class),Q(ACT='t'))
-                    if check_first:
-                        if len(check_second) == 0:
+    # check_meaning = Attribute.objects.filter(meaning=meaning)
+    # if len(check_meaning) == 0:
+    if meaning:
+        if first_class:
+            if second_class:
+                act = 't'
+                # all_first = Attribute.objects.filter(Q(first_class=first_class),Q(ACT='c'))
+                check_meaning = Attribute.objects.filter(Q(meaning=meaning),Q(attribute=attribute),Q(first_class=first_class),Q(ACT='t'))
+                check_first = Attribute.objects.filter(Q(first_class=first_class), Q(attribute=attribute),Q(ACT='c'))
+                check_second = Attribute.objects.filter(Q(second_class=second_class),Q(ACT='t'))
+                if check_first:
+                    if len(check_second) == 0:
+                        if len(check_meaning)==0:
                             attr = Attribute.objects.create(ACT=act, attribute=attribute, first_class=first_class,
                                                             second_class=second_class, meaning=meaning, information=information)
                             attr.save()
                             messages.success(request, "增加成功")
                         else:
-                            messages.success(request, "已有此小类，请重新输入！")
+                            messages.error(request, "已有此含义，请重新输入！")
                     else:
-                        messages.success(request, "此属性中无此大类，请重新输入或先增加此大类！")
-
+                        messages.error(request, "已有此小类，请重新输入！")
                 else:
-                    act = 'c'
-                    check_first = Attribute.objects.filter(Q(first_class=first_class),Q(ACT='c'))
-                    if len(check_first) == 0:
+                    messages.error(request, "此属性中无此大类，请重新输入或先增加此大类！")
+
+            else:
+                act = 'c'
+                check_meaning = Attribute.objects.filter(Q(meaning=meaning),Q(attribute=attribute),Q(ACT='c'))
+                check_first = Attribute.objects.filter(Q(first_class=first_class),Q(ACT='c'))
+                if len(check_first) == 0:
+                    if len(check_meaning)==0:
                         attr = Attribute.objects.create(ACT=act, attribute=attribute, first_class=first_class,
                                                         second_class=second_class, meaning=meaning, information=information)
                         attr.save()
                         messages.success(request, "增加成功")
                     else:
-                        messages.success(request, "已有此大类，请重新输入！")
-            else:
-                messages.success(request, "大类不能为空，请重新输入！")
+                        messages.error(request, "已有此含义，请重新输入！")
+                else:
+                    messages.error(request, "已有此大类，请重新输入！")
         else:
-            messages.success(request, "含义不能为空，请重新输入！")
-
+            messages.error(request, "大类不能为空，请重新输入！")
     else:
-        messages.success(request, "已有此含义，请重新输入！")
+        messages.error(request, "含义不能为空，请重新输入！")
 
-    return HttpResponseRedirect("/attribute/page_attribute/")
+    # else:
+    #     messages.success(request, "已有此含义，请重新输入！")
 
-        # return HttpResponseRedirect("/attribute/page_attribute/"+attribute)
+    return HttpResponseRedirect("/attribute/page_attribute/"+ attribute)
 
 
 
