@@ -60,7 +60,7 @@
                         {% endif %}
                         <button type="button" class="btn btn-sm green checkall" id="checkall"><i
                                 class="fa fa-check"></i>
-                            全选/反选
+                            全选
                         </button>
                         <button type="button" class="btn btn-warning btn-sm red clearAll" id="clearall"><i
                                 class="fa fa-times"></i> 清除
@@ -130,11 +130,11 @@
                                 class="fa fa-search"></i> 查询
                         </button>
                         <a type="button" class="btn btn-sm red filter-cancel text-right"
-                           href="{% url 'page_show_product' %}"><i class="fa fa-times"></i> 取消查询</a>
+                           href="{% url 'page_show_product' %}"><i class="fa fa-search-plus"></i> 全部显示</a>
                     </div>
                 </form>
             </div>
-            <section class="content" style="margin-bottom: -80px">
+            <section class="content" >
                 <!-- Main row -->
                 <div class="row">
                     <!--/.left col -->
@@ -944,12 +944,13 @@
         $('#checkall').click(function () {
             //全选按钮
             $("#company_checkbox input[type='checkbox']").each(function () {
-                var check = $(this).is(":checked");
-                if (!check) {
-                    $(this).prop("checked", true);
-                } else {
-                    $(this).prop("checked", false);
-                }
+                $(this).prop("checked", true);
+                {#var check = $(this).is(":checked");#}
+                {#if (!check) {#}
+                {#    $(this).prop("checked", true);#}
+                {# else {#}
+                {#    $(this).prop("checked", false);#}
+                {##}
             });
 
         })
