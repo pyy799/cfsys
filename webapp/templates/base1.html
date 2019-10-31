@@ -84,30 +84,31 @@
                             </ul>
                         </li>
 
-                    <li><a href="{% url 'page_attribute' %}">产品属性管理</a></li>
-                    {% if perms.webapp.user_right_management_user or perms.webapp.user_right_management_role %}
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">用户及权限管理<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            {% if perms.webapp.user_right_management_user %}
-                            <li><a href="{% url 'page_user_management' %}">用户管理</a></li>
-                            {% endif %}
-                            {% if perms.webapp.user_right_management_role %}
-                            <li><a href="{% url 'page_role_management' %}">角色权限管理</a></li>
-                            {% endif %}
-                         </ul>
-                    </li>
-                {% endif %}
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-          {% if not request.user.is_authenticated %}
-              <li><span class="like">欢迎,游客朋友!</span></li>
-              <li><a href="{% url 'login' %}">您尚未登陆,请登陆</a></li>
-          {% else %}
-              <li><a href="{% url 'userinformation' %}">欢迎,{{ request.user }}&nbsp;!</a></li>
-              <li><a href="{% url 'logout' %}">退出登陆</a></li>
-          {% endif %}
-      </ul>
+                        <li><a href="{% url 'page_attribute' %}">产品属性管理</a></li>
+                        {% if perms.webapp.user_right_management_user or perms.webapp.user_right_management_role %}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">用户及权限管理<span
+                                        class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    {% if perms.webapp.user_right_management_user %}
+                                        <li><a href="{% url 'page_user_management' %}">用户管理</a></li>
+                                    {% endif %}
+                                    {% if perms.webapp.user_right_management_role %}
+                                        <li><a href="{% url 'page_role_management' %}">角色权限管理</a></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        {% endif %}
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if not request.user.is_authenticated %}
+                            <li><span class="like">欢迎,游客朋友!</span></li>
+                            <li><a href="{% url 'login' %}">您尚未登陆,请登陆</a></li>
+                        {% else %}
+                            <li><a href="{% url 'userinformation' %}">欢迎,{{ request.user }}&nbsp;!</a></li>
+                            <li><a href="{% url 'logout' %}">退出登陆</a></li>
+                        {% endif %}
+                    </ul>
 
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
@@ -131,10 +132,49 @@
 
     </div>
     <!-- /.content-wrapper -->
-    <footer class="main-footer">
-        <div class="pull-right hidden-xs"><b>Version</b> 1.0</div>
-        <strong>Copyright &copy; 2019-2020 北京航天长峰股份有限公司.</strong> All rights reserved.
+    <footer class="main-footer"style="height: 50px">
+        <div class=" pull-right" style="margin-top: -5px;font-size: 14px"> <b>联系方式</b>：航天长峰研究院办公室 |  8212/8215 &nbsp;&nbsp;&nbsp;
+            <a type="button" class="btn btn-default " style="height: 30px;font-size: 14px"
+           href="/static/documents/userfile.pdf" download="产品能力分类管理系统用户手册.pdf">用户手册下载</a></div>
+        <h5 style="margin-top: 3px"><strong>Copyright &copy; 2019-2020
+            北京航天长峰股份有限公司.</strong> All rights reserved. <b>Version</b> 1.0</h5>
+
     </footer>
+    {#    <footer class="py-lg-4 py-md-3 py-sm-3 py-3">#}
+    {#        <div class="container py-lg-5 py-md-5 py-sm-4 py-4 text-center">#}
+    {#            <div class="footer-headder mb-lg-4 mb-3">#}
+    {#                <div class="title-img text-center mb-2">#}
+    {#                    <img src="images/logo.png" alt="" class="img-fluid">#}
+    {#                </div>#}
+    {#                <h2><a href="index.html">Hookah</a></h2>#}
+    {#            </div>#}
+    {#            <div class="row address-contact-form">#}
+    {#                <div class=" footer-contact-list col-lg-4 col-md-4">#}
+    {#                    <h6 class="mb-3">Address#}
+    {#                    </h6>#}
+    {#                    <p>South Brisbane,<br>Old 4101 Australia#}
+    {#                    </p>#}
+    {#                </div>#}
+    {#                <div class="footer-contact-list col-lg-4 col-md-4">#}
+    {#                    <h6 class="mb-3">Phone</h6>#}
+    {#                    <p>+ 1 (234) 567 8901</p>#}
+    {#                    <p>+ 1 (000) 555 9901</p>#}
+    {#                </div>#}
+    {#                <div class="footer-contact-list col-lg-4 col-md-4">#}
+    {#                    <h6 class="mb-3">Email</h6>#}
+    {#                    <p><a href="mailto:info@example.com">info@example.com</a></p>#}
+    {#                    <p><a href="mailto:info@example.com">info2@example.com</a></p>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#            <div class="bottem-down-footer mt-lg-4 mt-3">#}
+    {#                <p>#}
+    {#                    Copyright © 2018.Company name All rights reserved.More Templates <a href="http://www.cssmoban.com/"#}
+    {#                                                                                        target="_blank" title="模板之家">模板之家</a>#}
+    {#                    - Collect from <a href="http://www.cssmoban.com/" title="网页模板" target="_blank">网页模板</a>#}
+    {#                </p>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </footer>#}
 </div>
 {% block footer_block %}
 {% endblock %}
