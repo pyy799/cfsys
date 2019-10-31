@@ -19,15 +19,15 @@
             <div class="nav-tabs-custom">
             <!-- Tabs within a box -->
             <ul class="nav nav-tabs pull-left">
-                <li {% if request.path == '/attribute/page_attribute/' %}class="active" {% endif %}><a href="#M" data-toggle="tab">M成熟度</a></li>
-                <li ><a href="#I" data-toggle="tab">I自由度</a></li>
-                <li ><a href="#B" data-toggle="tab">B业务领域</a></li>
-                <li ><a href="#T" data-toggle="tab">T技术形态</a></li>
+                <li {% if request.path == '/attribute/page_attribute/M/' %} class="active" {% endif %}><a href="#M" data-toggle="tab">M成熟度</a></li>
+                <li {% if request.path == '/attribute/page_attribute/I/' %} class="active" {% endif %}><a href="#I" data-toggle="tab">I自由度</a></li>
+                <li {% if request.path == '/attribute/page_attribute/B/' %} class="active" {% endif %}><a href="#B" data-toggle="tab">B业务领域</a></li>
+                <li {% if request.path == '/attribute/page_attribute/T/' %} class="active" {% endif %}><a href="#T" data-toggle="tab">T技术形态</a></li>
             </ul>
             <div style="clear:both"></div>
             <div class="tab-content">
 
-                <div class="table-container no-padding tab-pane active" id="M" style="padding:14px">
+                <div {% if request.path == '/attribute/page_attribute/M/' %} class="active table-container no-padding tab-pane" {% endif %} class="table-container no-padding tab-pane" id="M" style="padding:14px">
                     <div class="table-actions-wrapper">
                         <div class="box box-solid" style=" ">
                         <div class="box-header with-border">
@@ -51,7 +51,7 @@
                                                 <td>{{ attr.meaning }}</td>
                                             </tr>
                                              <tr>
-                                                <td style="width: 100px"><b>备注</b></td>
+                                                <td style="width: 100px"><b>描述</b></td>
                                                 <td>{{ attr.information }}</td>
                                                  <td>
                                                      <button class="btn btn-sm pull-right green" style="height: 30px" data-toggle="modal" data-target="#attribute-edit" onclick="attributeedit('{{ attr.id }}','{{ attr.attribute }}','{{ attr.meaning }}','{{ attr.information }}')"><i class="fa fa-edit"></i> 修改</button>
@@ -80,7 +80,7 @@
                                         <th style="text-align: center;width: 150px">大类</th>
                                         <th style="text-align: center;width: 150px">小类</th>
                                         <th style="text-align: center;width: 250px">含义</th>
-                                        <th style="text-align: center;width: 250px">备注</th>
+                                        <th style="text-align: center;width: 250px">描述</th>
                                         <th style="text-align: center;width: 250px">操作</th>
                                     </tr>
                                     </thead>
@@ -112,7 +112,7 @@
                     </div>
                 </div>{#                        M结束#}
 
-                <div class="table-container no-padding tab-pane" id="I" style="padding:14px">
+                <div {% if request.path == '/attribute/page_attribute/I/' %} class="active table-container no-padding tab-pane" {% endif %} class="table-container no-padding tab-pane" id="I" style="padding:14px">
                     <div class="table-actions-wrapper">
                         <div class="box box-solid" style=" ">
                          <div class="box-header with-border">
@@ -136,7 +136,7 @@
                                                 <td>{{ attr.meaning }}</td>
                                             </tr>
                                              <tr>
-                                                <td style="width: 100px"><b>备注</b></td>
+                                                <td style="width: 100px"><b>描述</b></td>
                                                 <td>{{ attr.information }}</td>
                                                  <td>
                                                      <button class="btn btn-sm pull-right green" style="height: 30px" data-toggle="modal" data-target="#attribute-edit" onclick="attributeedit('{{ attr.id }}','{{ attr.attribute }}','{{ attr.meaning }}','{{ attr.information }}')"><i class="fa fa-edit"></i> 修改</button>
@@ -167,7 +167,7 @@
                                         <th style="text-align: center;width: 150px">大类</th>
                                         <th style="text-align: center;width: 150px">小类</th>
                                         <th style="text-align: center;width: 250px">含义</th>
-                                        <th style="text-align: center;width: 250px">备注</th>
+                                        <th style="text-align: center;width: 250px">描述</th>
                                         <th style="text-align: center;width: 250px">操作</th>
                                     </tr>
                                     </thead>
@@ -198,7 +198,7 @@
                     </div>
                 </div>
 
-                <div class="table-container no-padding tab-pane" id="B" style="padding:14px">
+                <div {% if request.path == '/attribute/page_attribute/B/' %} class="active table-container no-padding tab-pane" {% endif %} class="table-container no-padding tab-pane" id="B" style="padding:14px">
                     <div class="table-actions-wrapper">
                     <div class="box box-solid" style=" ">
                          <div class="box-header with-border">
@@ -222,7 +222,7 @@
                                                 <td>{{ attr.meaning }}</td>
                                             </tr>
                                              <tr>
-                                                <td style="width: 100px"><b>备注</b></td>
+                                                <td style="width: 100px"><b>描述</b></td>
                                                 <td>{{ attr.information }}</td>
                                              <td>
                                                  <button class="btn btn-sm pull-right green" style="height: 30px" data-toggle="modal" data-target="#attribute-edit" onclick="attributeedit('{{ attr.id }}','{{ attr.attribute }}','{{ attr.meaning }}','{{ attr.information }}')"><i class="fa fa-edit"></i> 修改</button>
@@ -252,7 +252,7 @@
                                         <th style="text-align: center;width: 150px">大类</th>
                                         <th style="text-align: center;width: 150px">小类</th>
                                         <th style="text-align: center;width: 250px">含义</th>
-                                        <th style="text-align: center;width: 250px">备注</th>
+                                        <th style="text-align: center;width: 250px">描述</th>
                                         <th style="text-align: center;width: 250px">操作</th>
                                     </tr>
                                     </thead>
@@ -283,7 +283,7 @@
                     </div>
                 </div>
 
-                <div class="table-container no-padding tab-pane" id="T" style="padding:14px">
+                <div {% if request.path == '/attribute/page_attribute/T/' %} class="active table-container no-padding tab-pane" {% endif %} class="table-container no-padding tab-pane" id="T" style="padding:14px">
                     <div class="table-actions-wrapper">
                     <div class="box box-solid" style=" ">
                          <div class="box-header with-border">
@@ -307,7 +307,7 @@
                                                 <td>{{ attr.meaning }}</td>
                                             </tr>
                                              <tr>
-                                                <td style="width: 100px"><b>备注</b></td>
+                                                <td style="width: 100px"><b>描述</b></td>
                                                 <td>{{ attr.information }}</td>
                                                  <td>
                                                      <button class="btn btn-sm pull-right green" style="height: 30px" data-toggle="modal" data-target="#attribute-edit" onclick="attributeedit('{{ attr.id }}','{{ attr.attribute }}','{{ attr.meaning }}','{{ attr.information }}')"><i class="fa fa-edit"></i> 修改</button>
@@ -337,7 +337,7 @@
                                         <th style="text-align: center;width: 150px">大类</th>
                                         <th style="text-align: center;width: 150px">小类</th>
                                         <th style="text-align: center;width: 250px">含义</th>
-                                        <th style="text-align: center;width: 250px">备注</th>
+                                        <th style="text-align: center;width: 250px">描述</th>
                                         <th style="text-align: center;width: 250px">操作</th>
                                     </tr>
                                     </thead>
@@ -374,7 +374,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
-                                <h4 class="modal-title" id="addLabel" style="font-weight:bold">修改备注</h4>
+                                <h4 class="modal-title" id="addLabel" style="font-weight:bold">修改描述</h4>
                             </div>
                             <div class="modal-body">
                                 <div class="box box-primary">
@@ -398,12 +398,12 @@
                                             <input id="meaning" name="meaning" class="form-control" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-sm-6" style="height:45px;width:600px;text-align: center">
+                                    <div class="col-sm-6" style="height:80px;width:600px;text-align: center">
                                         <div class="col-sm-2" style="text-align: left">
-                                            <label for="information_edit" class="control-label">备注</label>
+                                            <label for="information_edit" class="control-label">描述</label>
                                         </div>
                                         <div class="col-sm-10" style="text-align: right">
-                                            <textarea   id="information_edit" name="information_edit" class="form-control"></textarea>
+                                            <textarea  rows="5" id="information_edit" name="information_edit" class="form-control" placeholder="请输入描述"></textarea>
                                         </div>
                                     </div>
                                     <div class="col-sm-12" style="height: 30px;margin-top:5px">
@@ -478,12 +478,12 @@
 
                                     </div>
 
-                                    <div class="col-sm-10" style="height:45px;width:600px">
+                                    <div class="col-sm-10" style="height:80px;width:600px">
                                             <div class="col-sm-2" style="text-align: left">
-                                            <label for="class_information" class="control-label">备注</label>
+                                            <label for="class_information" class="control-label">描述</label>
                                             </div>
                                             <div class="col-sm-10" style="text-align: right">
-                                                <textarea   id="class_information" name="class_information" class="form-control" value="" placeholder="请输入备注"></textarea>
+                                                <textarea rows="5"  id="class_information" name="class_information" class="form-control" value="" placeholder="请输入描述"></textarea>
                                             </div>
                                     </div>
                                     <div class="col-sm-12" style="height: 30px;margin-top:5px">
@@ -495,7 +495,7 @@
                                 </div>
 
                                 <div class="modal-footer" style="text-align: center">
-                                    <button type="submit" class="btn btn-primary" onclick="goClassEdit()">确认</button>
+                                    <button type="button" class="btn btn-primary" onclick="goClassEdit()">确认</button>
                                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                                 </div>
 
@@ -561,12 +561,12 @@
 
                                     </div>
 
-                                    <div class="col-sm-10" style="height:45px;width:600px">
+                                    <div class="col-sm-10" style="height:100px;width:600px">
                                             <div class="col-sm-2" style="text-align: left">
-                                            <label for="information_add" class="control-label">备注</label>
+                                            <label for="information_add" class="control-label">描述</label>
                                             </div>
                                             <div class="col-sm-10" style="text-align: right">
-                                                <textarea   id="information_add" name="information_add" class="form-control" value="" placeholder="请输入备注"></textarea>
+                                                <textarea rows="5"  id="information_add" name="information_add" class="form-control" value="" placeholder="请输入描述"></textarea>
                                             </div>
                                     </div>
 
@@ -662,6 +662,7 @@
     }
     function goattr_edit() {
         $('#attribute-edit').modal('hide')
+        var attribute_e=$("#attribute-e").val()
         var data = {
               'attribute_id': $("#attribute_id").val(),
             'information_edit': $("#information_edit").val()
@@ -674,16 +675,21 @@
                 console.log(res)
                 if (res.status === 0) {
                     alert("修改成功！");
-                    location.reload();
+                    location.replace("/attribute/page_attribute/"+attribute_e);
+{#                    location.reload();#}
                 }
                 else if(res.status === 1){
                     alert("输入内容与修改前相同，请重新输入！");
-                    location.reload();
+{#                    location.reload();#}
+                    location.replace("/attribute/page_attribute/"+attribute_e);
                 }
+
                 else if(res.status === 2){
                     alert("找不到此属性！");
-                    location.reload();
+{#                    location.reload();#}
+                    location.replace("/attribute/page_attribute/"+attribute_e);
                 }
+
             },
             error:function () {}
         })
@@ -723,19 +729,45 @@
             data:data,
             success:function (res) {
                 console.log(res)
-                if (res.status0===0 && res.status1===0) {
+                if (res.status0===0) {
                     console.log('0')
                     alert("修改成功！相关产品的属性信息已同步！");
-                    location.reload();
-                }else if (res.status0===1 && res.status1===0){
+{#                    location.reload();#}
+                    location.replace("/attribute/page_attribute/"+data.class_attribute);
+                }else if (res.status0===2){
                     alert("请填写必填项！");
 {#                    $.growlService("请填写必填项！", {type: "danger"});#}
-                    location.reload();
-                }else if (res.status0===0 && res.status1===1){
+{#                    location.reload();#}
+                    location.replace("/attribute/page_attribute/"+data.class_attribute);
+                }else if (res.status0===1){
                     alert("已有此分类，请重新输入！");
 {#                    $.growlService("已有此分类，请重新输入！", {type: "danger"});#}
-                    location.reload();
+{#                    location.reload();#}
+                    location.replace("/attribute/page_attribute/"+data.class_attribute);
+                }else if (res.status0===3){
+                    alert("输入内容与修改前相同，请重新输入！");
+{#                    $.growlService("已有此分类，请重新输入！", {type: "danger"});#}
+                    location.replace("/attribute/page_attribute/"+ data.class_attribute);
+{#                    location.reload();#}
                 }
+
+{#                if (res.status0===0 && res.status1===0 && res.status2==0) {#}
+{#                    console.log('0')#}
+{#                    alert("修改成功！相关产品的属性信息已同步！");#}
+{#                    location.reload();#}
+{#                }else if (res.status0===1 && res.status1===0 && res.status2==0){#}
+{#                    alert("请填写必填项！");#}
+{#                    $.growlService("请填写必填项！", {type: "danger"});#}
+{#                    location.reload();#}
+{#                }else if (res.status0===0 && res.status1===1 && res.status2==0){#}
+{#                    alert("已有此分类，请重新输入！");#}
+{#                    $.growlService("已有此分类，请重新输入！", {type: "danger"});#}
+{#                    location.reload();#}
+{#                }#}
+{#                else if (res.status0===1 && res.status1===1 && res.status2==1){#}
+{#                    alert("输入内容与修改前相同，请重新输入");#}
+{#                    location.reload();#}
+{#                }#}
             },
             error:function () {
             }

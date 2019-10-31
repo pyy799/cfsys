@@ -58,45 +58,53 @@ def add_attribute(request):
     meaning=meaning.replace(' ','')
     information=information.replace(' ','')
 
-    check_meaning = Attribute.objects.filter(meaning=meaning)
-    if len(check_meaning) == 0:
-        if meaning:
-            if first_class:
-                if second_class:
-                    act = 't'
-                    # all_first = Attribute.objects.filter(Q(first_class=first_class),Q(ACT='c'))
-                    check_first = Attribute.objects.filter(Q(first_class=first_class), Q(attribute=attribute),Q(ACT='c'))
-                    check_second = Attribute.objects.filter(Q(second_class=second_class),Q(ACT='t'))
-                    if check_first:
-                        if len(check_second) == 0:
+    # check_meaning = Attribute.objects.filter(meaning=meaning)
+    # if len(check_meaning) == 0:
+    if meaning:
+        if first_class:
+            if second_class:
+                act = 't'
+                # all_first = Attribute.objects.filter(Q(first_class=first_class),Q(ACT='c'))
+                check_meaning = Attribute.objects.filter(Q(meaning=meaning),Q(attribute=attribute),Q(first_class=first_class),Q(ACT='t'))
+                check_first = Attribute.objects.filter(Q(first_class=first_class), Q(attribute=attribute),Q(ACT='c'))
+                check_second = Attribute.objects.filter(Q(second_class=second_class),Q(ACT='t'))
+                if check_first:
+                    if len(check_second) == 0:
+                        if len(check_meaning)==0:
                             attr = Attribute.objects.create(ACT=act, attribute=attribute, first_class=first_class,
                                                             second_class=second_class, meaning=meaning, information=information)
                             attr.save()
                             messages.success(request, "增加成功")
                         else:
-                            messages.success(request, "已有此小类，请重新输入！")
+                            messages.error(request, "已有此含义，请重新输入！")
                     else:
-                        messages.success(request, "此属性中无此大类，请重新输入或先增加此大类！")
-
+                        messages.error(request, "已有此小类，请重新输入！")
                 else:
-                    act = 'c'
-                    check_first = Attribute.objects.filter(Q(first_class=first_class),Q(ACT='c'))
-                    if len(check_first) == 0:
+                    messages.error(request, "此属性中无此大类，请重新输入或先增加此大类！")
+
+            else:
+                act = 'c'
+                check_meaning = Attribute.objects.filter(Q(meaning=meaning),Q(attribute=attribute),Q(ACT='c'))
+                check_first = Attribute.objects.filter(Q(first_class=first_class),Q(ACT='c'))
+                if len(check_first) == 0:
+                    if len(check_meaning)==0:
                         attr = Attribute.objects.create(ACT=act, attribute=attribute, first_class=first_class,
                                                         second_class=second_class, meaning=meaning, information=information)
                         attr.save()
                         messages.success(request, "增加成功")
                     else:
-                        messages.success(request, "已有此大类，请重新输入！")
-            else:
-                messages.success(request, "大类不能为空，请重新输入！")
+                        messages.error(request, "已有此含义，请重新输入！")
+                else:
+                    messages.error(request, "已有此大类，请重新输入！")
         else:
-            messages.success(request, "含义不能为空，请重新输入！")
-
+            messages.error(request, "大类不能为空，请重新输入！")
     else:
-        messages.success(request, "已有此含义，请重新输入！")
+        messages.error(request, "含义不能为空，请重新输入！")
 
-    return HttpResponseRedirect("/attribute/page_attribute/")
+    # else:
+    #     messages.success(request, "已有此含义，请重新输入！")
+
+    return HttpResponseRedirect("/attribute/page_attribute/"+ attribute)
 
 
 
@@ -135,24 +143,10 @@ def attribute_edit(request):
 @login_required
 @permission_required('webapp.product_attribute_management')
 def class_edit(request):
-    # attr_class = Attribute.objects.filter(Q(id=class_id), Q(ACT=class_act)).first()
-    # ex_first = attr_class.first_class
-    # attr_class.first_class = first_class_edit
-    # attr_class.second_class = second_class_edit
-    # attr_class.meaning = class_meaning
-    # attr_class.information = class_information
-    # attr_class.save()
-    # if class_act == 'c':
-    #     attr_c = Attribute.objects.filter(Q(first_class=ex_first), Q(ACT='t'))
-    #     for attr in attr_c:
-    #         attr.first_class=first_class_edit
-    #         attr.save()
-    # # return JsonResponse({"first": first_class_edit})
-    # return JsonResponse({"status": 0})
 
     class_id = request.POST.get("class_id")
     class_act = request.POST.get("class_act")
-    # class_attribute =request.POST.get("class_attribute")
+    class_attribute =request.POST.get("class_attribute")
     first_class_edit = request.POST.get("first_class_edit")
     second_class_edit = request.POST.get("second_class_edit")
     class_meaning = request.POST.get("class_meaning")
@@ -163,55 +157,79 @@ def class_edit(request):
     # class_meaning=class_meaning.strip()
     # class_information=class_information.strip()
 
-    attr_class = Attribute.objects.filter(Q(id=class_id), Q(ACT=class_act)).first()
+    attr_class = Attribute.objects.filter(Q(id=class_id), Q(ACT=class_act), Q(attribute=class_attribute)).first()
     ex_first = attr_class.first_class
+    ex_second=attr_class.second_class
+    ex_meaning=attr_class.meaning
+    ex_information=attr_class.information
     attr_class.information = class_information
+    if ex_first==first_class_edit and ex_second==second_class_edit and ex_meaning==class_meaning and ex_information==class_information:
+        status0=3
+        return JsonResponse({"status0": status0})
+    else:
+        if first_class_edit:
+            if class_meaning:
+                # all_meaning = Attribute.objects.filter(Q(meaning=class_meaning), ~Q(id=class_id))
+                if class_act == 't':
+                    if second_class_edit:
+                        all_meaning = Attribute.objects.filter(Q(meaning=class_meaning), ~Q(id=class_id), Q(ACT='t'), Q(attribute=class_attribute), Q(first_class=first_class_edit))
+                        all_second = Attribute.objects.filter(Q(second_class=second_class_edit), Q(ACT='t'), Q(attribute=class_attribute), Q(first_class=first_class_edit), ~Q(id=class_id))
+                        if len(all_meaning)==0 and len(all_second)==0:
+                            status0 = 0
+                            status1 = 0
+                            attr_class.second_class = second_class_edit
+                            attr_class.meaning = class_meaning
+                            attr_class.save()
+                            return JsonResponse({"status0": status0})
+                            # return JsonResponse({"status0": status0, "status1": status1})
+                            # return JsonResponse({"status0": status0, "status1": status1, "status2": 0})
 
-    if first_class_edit:
-        if class_meaning:
-            all_meaning = Attribute.objects.filter(Q(meaning=class_meaning), ~Q(id=class_id))
-            if class_act == 't':
-                if second_class_edit:
-                    all_second = Attribute.objects.filter(Q(second_class=second_class_edit), Q(ACT='t'), ~Q(id=class_id))
-                    if len(all_meaning)==0 and len(all_second)==0:
+                        else:
+                            status0 = 1
+                            status1 = 1
+                            return JsonResponse({"status0": status0})
+                            # return JsonResponse({"status0": status0, "status1": status1})
+                            # return JsonResponse({"status0": status0, "status1": status1, "status2": 0})
+                    else:
+                        status0 = 2
+                        status1 = 0
+                        return JsonResponse({"status0": status0})
+                        # return JsonResponse({"status0": status0, "status1": status1})
+                        # return JsonResponse({"status0": status0, "status1": status1, "status2": 0})
+                elif class_act == 'c':
+                    all_meaning = Attribute.objects.filter(Q(meaning=class_meaning), ~Q(id=class_id), Q(ACT='c'), Q(attribute=class_attribute))
+                    all_first = Attribute.objects.filter(Q(first_class=first_class_edit), Q(ACT='c'), Q(attribute=class_attribute), ~Q(id=class_id))
+                    if len(all_first) == 0 and len(all_meaning) == 0:
                         status0 = 0
                         status1 = 0
-                        attr_class.second_class = second_class_edit
+                        attr_class.first_class = first_class_edit
                         attr_class.meaning = class_meaning
+                        attr_c = Attribute.objects.filter(Q(first_class=ex_first), Q(ACT='t'))
+                        for attr in attr_c:
+                            attr.first_class = first_class_edit
+                            attr.save()
                         attr_class.save()
+                        return JsonResponse({"status0": status0})
+                        # return JsonResponse({"status0": status0, "status1": status1})
+                        # return JsonResponse({"status0": status0, "status1": status1, "status2": 0})
                     else:
-                        status0 = 0
+                        status0 = 1
                         status1 = 1
-                        return JsonResponse({"status0": status0, "status1": status1})
-                else:
-                    status0 = 1
-                    status1 = 0
-                    return JsonResponse({"status0": status0, "status1": status1})
-            elif class_act == 'c':
-                all_first = Attribute.objects.filter(Q(first_class=first_class_edit), Q(ACT='c'), ~Q(id=class_id))
-                if len(all_first)==0 and len(all_meaning)==0:
-                    status0 = 0
-                    status1 = 0
-                    attr_class.first_class = first_class_edit
-                    attr_class.meaning = class_meaning
-                    attr_c = Attribute.objects.filter(Q(first_class=ex_first), Q(ACT='t'))
-                    for attr in attr_c:
-                        attr.first_class = first_class_edit
-                        attr.save()
-                    attr_class.save()
-                else:
-                    status0 = 0
-                    status1 = 1
-                    return JsonResponse({"status0": status0, "status1": status1})
+                        return JsonResponse({"status0": status0})
+                        # return JsonResponse({"status0": status0, "status1": status1})
+                        # return JsonResponse({"status0": status0, "status1": status1, "status2": 0})
+            else:
+                status0 = 2
+                status1 = 0
+                return JsonResponse({"status0": status0})
+                # return JsonResponse({"status0": status0, "status1": status1})
+                # return JsonResponse({"status0": status0, "status1": status1, "status2": 0})
         else:
-            status0 = 1
+            status0 = 2
             status1 = 0
-            return JsonResponse({"status0": status0, "status1": status1})
-    else:
-        status0 = 1
-        status1 = 0
-        return JsonResponse({"status0": status0, "status1": status1})
-    return JsonResponse({"status0": status0, "status1": status1})
+            return JsonResponse({"status0": status0})
+            # return JsonResponse({"status0": status0, "status1": status1})
+            # return JsonResponse({"status0": status0, "status1": status1, "status2": 0})
 
 
 # 删除大小类(查询产品)
