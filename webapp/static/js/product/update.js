@@ -21,7 +21,7 @@ var UpdateTable = function () {
                 "bLengthChange": false,
                 "serverSide": true,
                 "bFilter": false,
-                "ordering": true,
+                "ordering": false,
                 // "bProcessing": true, //开启读取服务器数据时显示正在加载中……特别是大数据量的时候，开启此功能比较好
                 ajax: {
                     url: "/product_management/update/data/"

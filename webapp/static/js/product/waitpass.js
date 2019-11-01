@@ -21,7 +21,7 @@ var WaitPassTable = function () {
                 "bLengthChange": false,
                 "serverSide": true,
                 "bFilter": false,
-                "ordering": true,
+                "ordering": false,
                 // "bProcessing": true, //开启读取服务器数据时显示正在加载中……特别是大数据量的时候，开启此功能比较好
                 ajax: {
                     url: "/product_management/wait_pass/data/"
@@ -37,7 +37,6 @@ var WaitPassTable = function () {
                             element.append(detail);
                         }
                     },
-                    {"mData": "product_name", "sTitle": "产品名称"},
                     {"mData": "pCompany_name", "sTitle": "公司名称"},
                     // {"mData": "one_year_money", "sTitle": "过去一年销售额"},
                     // {"mData": "three_year_money", "sTitle": "过去三年销售额"},

@@ -21,7 +21,7 @@ var PassedTable = function () {
                 "bLengthChange": false,
                 "serverSide": true,
                 "bFilter": false,
-                "ordering": true,
+                "ordering": false,
                 // "bProcessing": true, //开启读取服务器数据时显示正在加载中……特别是大数据量的时候，开启此功能比较好
                 ajax: {
                     url: "/product_management/passed/data/"
@@ -37,7 +37,6 @@ var PassedTable = function () {
                             element.append(detail);
                         }
                     },
-                    {"mData": "product_name", "sTitle": "产品名称"},
                     {"mData": "pCompany_name", "sTitle": "公司名称"},
                     {"mData": "maturity_name", "sTitle": "成熟度"},
                     {"mData": "independence_name", "sTitle": "自主度"},

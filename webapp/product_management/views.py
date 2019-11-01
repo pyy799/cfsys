@@ -46,7 +46,9 @@ def update_data(request):
     fil = {"status": ProductStatus.PASS, "is_vaild": True}
     # 只能看到自己公司的
     user = request.user.userprofile
-    fil.update({"pCompany": user.uCompany})
+    group = Group.objects.get(user=user)
+    if not group.name == "总公司管理员":
+        fil.update({"pCompany": user.uCompany})
     product_list, count, error = get_query(request, Product, **fil)
     pack_list = [i.pack_data() for i in product_list]
     res = create_data(request.POST.get("draw", 1), pack_list, count)
@@ -102,68 +104,113 @@ def wait_submit(request):
 def new_many(request):
     user = request.user.userprofile
     now = int(time.time())
-    if request.method != "POST":
-        return ajax_error("上传失败")
-    zip = request.FILES.get("zip", None)  # 获取上传的文件，如果没有文件，则默认为None
-    save_name = os.path.splitext(zip.name)[0] + '_' + user.username + '_' + str(now)
-    save_zip = os.path.splitext(zip.name)[1]
-    zip_file_name = save_name+save_zip
-    if not os.path.exists(PRODUCT_TEMP_ZIP_PATH):
-        os.makedirs(PRODUCT_TEMP_ZIP_PATH)
-    destination = open(os.path.join(PRODUCT_TEMP_ZIP_PATH, zip_file_name), "wb+")  # 把文件写入
-    for chunk in zip.chunks():  # 分块写入文件
-        destination.write(chunk)
-    destination.close()
-
-    excel = request.FILES.get("excel", None)  # 获取上传的文件，如果没有文件，则默认为None
-    save_excel = os.path.splitext(excel.name)[1]
-    excel_file_name = save_name+save_excel
-    if not os.path.exists(PRODUCT_TEMP_EXCEL_PATH):
-        os.makedirs(PRODUCT_TEMP_EXCEL_PATH)
-    destination = open(os.path.join(PRODUCT_TEMP_EXCEL_PATH, excel_file_name), "wb+")  # 把文件写入
-    for chunk in excel.chunks():  # 分块写入文件
-        destination.write(chunk)
-    destination.close()
-
-    file = os.path.join(PRODUCT_TEMP_EXCEL_PATH, excel_file_name)
-    wb = xlrd.open_workbook(file)
-    sheet = wb.sheet_by_index(0)
-    nrows = sheet.nrows
     product_list = []
+    zip_file_name = ''
+    excel_file_name = ''
+    i = 0
     try:
+        if request.method != "POST":
+            return ajax_error("上传失败")
+        zip = request.FILES.get("zip", None)  # 获取上传的文件，如果没有文件，则默认为None
+        save_name = os.path.splitext(zip.name)[0] + '_' + user.username + '_' + str(now)
+        save_zip = os.path.splitext(zip.name)[1]
+        if save_zip != '.zip' and save_zip != '.rar':
+            raise Exception("审批信息文件类型有误！")
+        zip_file_name = save_name+save_zip
+        if not os.path.exists(PRODUCT_TEMP_ZIP_PATH):
+            os.makedirs(PRODUCT_TEMP_ZIP_PATH)
+        destination = open(os.path.join(PRODUCT_TEMP_ZIP_PATH, zip_file_name), "wb+")  # 把文件写入
+        for chunk in zip.chunks():  # 分块写入文件
+            destination.write(chunk)
+        destination.close()
+
+        excel = request.FILES.get("excel", None)  # 获取上传的文件，如果没有文件，则默认为None
+        save_excel = os.path.splitext(excel.name)[1]
+        if save_excel != '.xls' and save_excel != '.xlsx':
+            raise Exception("产品信息文件类型有误！")
+        excel_file_name = save_name+save_excel
+        if not os.path.exists(PRODUCT_TEMP_EXCEL_PATH):
+            os.makedirs(PRODUCT_TEMP_EXCEL_PATH)
+        destination = open(os.path.join(PRODUCT_TEMP_EXCEL_PATH, excel_file_name), "wb+")  # 把文件写入
+        for chunk in excel.chunks():  # 分块写入文件
+            destination.write(chunk)
+        destination.close()
+
+        file = os.path.join(PRODUCT_TEMP_EXCEL_PATH, excel_file_name)
+        wb = xlrd.open_workbook(file)
+        sheet = wb.sheet_by_index(0)
+        nrows = sheet.nrows
+
         for i in range(1, nrows):
             row = sheet.row_values(i)
             product_name = str(row[0]).strip()
+            if not product_name:
+                raise Exception("产品名称不能为空！")
             product_exist = Product.objects.filter(product_name=product_name, is_vaild=True)
             if len(product_exist)>0:
-                for product in product_list:
-                    product.delete()
-                os.remove(os.path.join(PRODUCT_TEMP_ZIP_PATH, zip_file_name))
-                os.remove(os.path.join(PRODUCT_TEMP_EXCEL_PATH, excel_file_name))
-                return ajax_error("产品名称重复！")
+                raise Exception("产品名称已存在！")
             old_product_name = str(row[1]).strip()
             if old_product_name == 'N.A.' or not old_product_name:
                 old_product_name = None
             introduction = str(row[2]).strip()
+            if not introduction:
+                raise Exception("产品描述不能为空！")
             overlap = str(row[3]).strip()
             if overlap=="是":
                 is_overlap = True
-            else:
+            elif overlap=="否":
                 is_overlap = False
+            else:
+                raise Exception("是否重叠填写有误！")
             target_field = str(row[4]).strip()
             apply_situation = str(row[5]).strip()
             example = str(row[6]).strip()
-            one_year_money = float(row[7])
-            one_year_num = int(re.findall(r"\d+", row[8])[0])
-            three_year_money = float(row[9])
-            three_year_num = int(re.findall(r"\d+", row[10])[0])
+            if type(row[7]) is int or type(row[7]) is float:
+                one_year_money = float(row[7])
+            else:
+                raise Exception("过去一年销售额填写有误！")
+            if re.findall(r"\d+", str(row[8])):
+                one_year_num = int(re.findall(r"\d+", str(row[8]))[0])
+            else:
+                raise Exception("过去一年销售数量填写有误！")
+            if type(row[9]) is int or type(row[9]) is float:
+                three_year_money = float(row[9])
+            else:
+                raise Exception("过去三年销售额填写有误！")
+            if re.findall(r"\d+", str(row[10])):
+                three_year_num = int(re.findall(r"\d+", str(row[10]))[0])
+            else:
+                raise Exception("过去三年销售数量填写有误！")
+
             pCompany = str(row[11]).strip()
-            pCompany = int(get_key(dict(COMPANY_CHOICE),pCompany)[0])
+            if get_key(dict(COMPANY_CHOICE),pCompany):
+                pCompany = int(get_key(dict(COMPANY_CHOICE),pCompany)[0])
+            else:
+                raise Exception("公司填写有误！")
+
             maturity = str(row[12]).strip()
             independence = str(row[13]).strip()
             business = str(row[14]).strip()
             technology = str(row[15]).strip()
+            if maturity and independence and business and technology:
+                maturity_a = Attribute.objects.filter(first_class=maturity)
+                independence_a = Attribute.objects.filter(first_class=independence)
+                business_a = Attribute.objects.filter(second_class=business)
+                technology_a = Attribute.objects.filter(second_class=technology)
+                if not maturity_a:
+                    raise Exception("成熟度填写有误！")
+                if not independence_a:
+                    raise Exception("自主度填写有误！")
+                if not business_a:
+                    raise Exception("业务类别填写有误！")
+                if not technology_a:
+                    raise Exception("技术性态填写有误！")
+            else:
+                raise Exception("属性不能为空！")
+
             contact_people = str(row[16]).strip()
+            if not contact_people:
+                raise Exception("联系人不能为空！")
             remark = str(row[17]).strip()
             upload_time = datetime.date.today()
             real_name = zip.name
@@ -196,10 +243,10 @@ def new_many(request):
             product.upload_time = upload_time
             product.real_name = real_name
             product.save_name = zip_file_name
-            product.maturity = Attribute.objects.get(first_class=maturity)
-            product.independence = Attribute.objects.get(first_class=independence)
-            product.business = Attribute.objects.get(second_class=business)
-            product.technology = Attribute.objects.get(second_class=technology)
+            product.maturity = maturity_a[0]
+            product.independence = independence_a[0]
+            product.business = business_a[0]
+            product.technology = technology_a[0]
             product.attribute_num = attribute_num
             product.status = status
             product.apply_type = apply_type
@@ -207,11 +254,17 @@ def new_many(request):
             product.is_vaild = is_vaild
             product.save()
     except Exception as e:
-        for product in product_list:
-            product.delete()
-        os.remove(os.path.join(PRODUCT_TEMP_ZIP_PATH, zip_file_name))
-        os.remove(os.path.join(PRODUCT_TEMP_EXCEL_PATH, excel_file_name))
-        return ajax_error("产品内容有误!"+str(e))
+        if product_list:
+            for product in product_list:
+                product.delete()
+        if zip_file_name:
+            os.remove(os.path.join(PRODUCT_TEMP_ZIP_PATH, zip_file_name))
+        if excel_file_name:
+            os.remove(os.path.join(PRODUCT_TEMP_EXCEL_PATH, excel_file_name))
+        if i:
+            return ajax_error("产品文件上传失败:"+"第"+str(i+1)+"行"+str(e))
+        else:
+            return ajax_error("产品文件上传失败:" + str(e))
 
     # '产品名称', '旧产品名称', '产品描述', '是否重叠', '目标行业', '应用场景', '市场案例', '过去一年销售额（万元）',
     # '过去一年销售数量（套/件/组）', '过去三年销售数量（万元）', '过去三年销售数量（套/件/组）', '公司', 'M\n（成熟度）',
@@ -350,6 +403,8 @@ def update_many(request):
             product.version = version
             product.is_vaild = is_vaild
             product.save()
+            product_exist.is_vaild = False
+            product_exist.save()
     except Exception as e:
         for product in product_list:
             product.delete()
@@ -386,8 +441,10 @@ def edit_product(request, pid, template_name):
             product = Product.objects.get(id=pid)
             product_value = product.pack_data()
             real_name = product.real_name
+
             if product.status != ProductStatus.PASS:# 如果是修改，则原文件在temp路径；如果是更新，则不显示原文件
                 file_name = real_name
+                print(real_name)
         except Exception as e:
             return ajax_error("产品不存在!"+str(e))
 
@@ -413,7 +470,6 @@ def edit_upload_file(request, pid):
             return ajax_error("上传失败")
         zip = request.FILES.get("zip", None)  # 获取上传的文件，如果没有文件，则默认为None
         save_name = os.path.splitext(zip.name)[0] + '_' + user.username + '_' + str(now)
-        print(save_name)
         save_zip = os.path.splitext(zip.name)[1]
         zip_file_name = save_name+save_zip
         path = PRODUCT_TEMP_ZIP_PATH
@@ -423,6 +479,28 @@ def edit_upload_file(request, pid):
         for chunk in zip.chunks():  # 分块写入文件
             destination.write(chunk)
         destination.close()
+        # if product.status ==ProductStatus.PASS: # 如果是更新的话
+        #     product_new = Product()
+        #     product_new.save()
+        #     product_new.product_num = product.product_num
+        #     product_new.introduction = product.introduction
+        #     product_new.is_overlap = product.is_overlap
+        #     product_new.target_field = product.target_field
+        #     product_new.apply_situation = product.apply_situation
+        #     product_new.example = product.example
+        #     product_new.one_year_money = product.one_year_money
+        #     product_new.one_year_num = product.one_year_num
+        #     product_new.three_year_money = product.three_year_money
+        #     product_new.three_year_num = product.three_year_num
+        #     product_new.pCompany = product.pCompany
+        #     product_new.maturity = product.maturity
+        #     product_new.maturity = product.independence
+        #     product_new.maturity = product.business
+        #     product_new.maturity = product.technology
+        #     product_new.contact_people = product.contact_people
+        #     product_new.remark = product.remark
+        #     product_new.save()
+        # else:
         product.save_name = zip_file_name
         product.real_name = zip.name
         product.save()
@@ -479,105 +557,129 @@ def edit_delete_file(request, pid):
 def edit_submit(request, pid):
     user = request.user.userprofile
     pid = int(pid)
-    product_name = request.POST.get("product_name").strip()
-    product_list = Product.objects.filter(product_name=product_name, is_vaild=True)
-    count = len(product_list)
-    if count > 0 and pid == 0:
-        return HttpResponse("产品名称已存在!")
-    old_product_name = request.POST.get("old_product_name").strip()
-    if old_product_name == 'N.A.' or not old_product_name:
-        old_product_name = None
-    pCompany = request.POST.get("pCompany").strip()
-    is_overlap = request.POST.get("is_overlap").strip()
-    maturity = request.POST.get("maturity").strip() or ''
-    independence = request.POST.get("independence").strip() or ''
-    business = request.POST.get("business").strip() or ''
-    technology = request.POST.get("technology").strip() or ''
-    one_year_money= float(request.POST.get("one_year_money") or 0)
-    one_year_num= int(request.POST.get("one_year_num") or 0)
-    three_year_money = float(request.POST.get("three_year_money") or 0)
-    three_year_num= int(request.POST.get("three_year_num") or 0)
-    contact_people= request.POST.get("contact_people").strip()
-    introduction= request.POST.get("introduction").strip()
-    target_field = request.POST.get("target_field").strip()
-    apply_situation = request.POST.get("apply_situation").strip()
-    example= request.POST.get("example").strip()
-    remark = request.POST.get("remark").strip()
-    upload_time = datetime.date.today()
-    status = ProductStatus.WAIT_SUBMIT
-    maturity = Attribute.objects.get(id=maturity)
-    independence = Attribute.objects.get(id=independence)
-    business = Attribute.objects.get(id=business)
-    technology = Attribute.objects.get(id=technology)
-    attribute_num = maturity.first_class + independence.first_class + business.second_class + technology.second_class
-    uploader = user
-    is_vaild = True
+    product_old = None
+    product = None
+    try:
+        product_name = request.POST.get("product_name").strip()
+        product_list = Product.objects.filter(product_name=product_name, is_vaild=True)
+        count = len(product_list)
+        if count > 0 and pid == 0:
+            raise Exception("产品名称已存在!")
+        old_product_name = request.POST.get("old_product_name").strip()
+        if old_product_name == 'N.A.' or not old_product_name:
+            old_product_name = None
 
-    if pid != 0:
-        product_old = Product.objects.get(id=pid)
-        if product_old.status == ProductStatus.PASS:  # 单个更新
+        pCompany = request.POST.get("pCompany").strip()
+        is_overlap = request.POST.get("is_overlap").strip()
+        maturity = request.POST.get("maturity").strip() or ''
+        independence = request.POST.get("independence").strip() or ''
+        business = request.POST.get("business").strip() or ''
+        technology = request.POST.get("technology").strip() or ''
+
+        pattern = re.compile(r'^[-+]?[-0-9]\d*\.\d*|[-+]?\.?[0-9]\d*$')
+        if not str(request.POST.get("one_year_money")).strip():
+            one_year_money = 0
+        elif pattern.match(str(request.POST.get("one_year_money")).strip()):
+            one_year_money= float(request.POST.get("one_year_money") or 0)
+        else:
+            raise Exception("过去一年销售额填写有误！")
+        one_year_num= int(request.POST.get("one_year_num") or 0)
+        if not str(request.POST.get("three_year_money")).strip():
+            three_year_money = 0
+        elif pattern.match(str(request.POST.get("three_year_money")).strip()):
+            three_year_money = float(request.POST.get("three_year_money") or 0)
+        else:
+            raise Exception("过去三年销售额填写有误！")
+        three_year_num= int(request.POST.get("three_year_num") or 0)
+
+        contact_people= request.POST.get("contact_people").strip()
+        introduction= request.POST.get("introduction").strip()
+        target_field = request.POST.get("target_field").strip()
+        apply_situation = request.POST.get("apply_situation").strip()
+        example= request.POST.get("example").strip()
+        remark = request.POST.get("remark").strip()
+        upload_time = datetime.date.today()
+        status = ProductStatus.WAIT_SUBMIT
+        maturity = Attribute.objects.get(id=maturity)
+        independence = Attribute.objects.get(id=independence)
+        business = Attribute.objects.get(id=business)
+        technology = Attribute.objects.get(id=technology)
+        attribute_num = maturity.first_class + independence.first_class + business.second_class + technology.second_class
+        uploader = user
+        is_vaild = True
+
+        if pid != 0:
             product_old = Product.objects.get(id=pid)
-            # product_old.is_vaild = False
-            # product_old.save()
+            if product_old.status == ProductStatus.PASS:  # 单个更新
+                product = Product()
+                product.save()
+                product.product_num = product_old.product_num
+                product.apply_type = ApplyStatus.ALTER
+                product.version = product_old.version+1
+            else:  # 待提交修改和审核不通过修改
+                product = product_old
 
+        else:  # 单个新建
             product = Product()
             product.save()
-            product.product_num = product_old.product_num
-            product.apply_type = ApplyStatus.ALTER
-            product.version = product_old.version+1
-        else:  # 待提交修改和审核不通过修改
-            product = product_old
+            product.product_num = product.id
+            product.apply_type = ApplyStatus.NEW
+            product.version = 1
 
-    else:  # 单个新建
-        product = Product()
+        product.product_name = product_name
+        product.old_product_name = old_product_name
+        product.introduction = introduction
+        product.is_overlap = is_overlap
+        product.target_field = target_field
+        product.apply_situation = apply_situation
+        product.example = example
+        product.one_year_money = one_year_money
+        product.one_year_num = one_year_num
+        product.three_year_money = three_year_money
+        product.three_year_num = three_year_num
+        product.pCompany = pCompany
+        product.contact_people = contact_people
+        product.remark = remark
+        product.uploader = uploader
+        product.upload_time = upload_time
+        product.maturity = maturity
+        product.independence = independence
+        product.technology = technology
+        product.business = business
+        product.attribute_num = attribute_num
+        product.status = status
+        # product.apply_type = apply_type
+        # product.version = version
+        product.is_vaild = is_vaild
+        file_name = request.POST.get("file_name")
+        if file_name!='[]' and file_name:
+            if pid == 0:  # 新建上传的文件路径为temp/user
+                path = os.path.join(TEMP_FILES_PATH, user.username)
+                if os.path.exists(path) and os.listdir(path):
+                    file = os.listdir(path)[0]
+                    file_path = os.path.join(path, file)
+                    dest_path = os.path.join(PRODUCT_TEMP_ZIP_PATH, file)
+                    if not os.path.exists(PRODUCT_TEMP_ZIP_PATH):
+                        os.makedirs(PRODUCT_TEMP_ZIP_PATH)
+                    shutil.move(file_path, dest_path)
+                    shutil.rmtree(path)
+                    product.real_name = os.path.splitext(file)[0].split('_')[0]+os.path.splitext(file)[1]
+                    product.save_name = file
+                    product.save()
+        else:
+            product.delete()
+            raise Exception("未上传审批文件！")
         product.save()
-        product.product_num = product.id
-        product.apply_type = ApplyStatus.NEW
-        product.version = 1
-
-    product.product_name = product_name
-    product.old_product_name = old_product_name
-    product.introduction = introduction
-    product.is_overlap = is_overlap
-    product.target_field = target_field
-    product.apply_situation = apply_situation
-    product.example = example
-    product.one_year_money = one_year_money
-    product.one_year_num = one_year_num
-    product.three_year_money = three_year_money
-    product.three_year_num = three_year_num
-    product.pCompany = pCompany
-    product.contact_people = contact_people
-    product.remark = remark
-    product.uploader = uploader
-    product.upload_time = upload_time
-    product.maturity = maturity
-    product.independence = independence
-    product.technology = technology
-    product.business = business
-    product.attribute_num = attribute_num
-    product.status = status
-    # product.apply_type = apply_type
-    # product.version = version
-    product.is_vaild = is_vaild
-    product.save()
-    file_name = request.POST.get("file_name")
-    if file_name!='[]' and file_name:
-        if pid == 0:  # 新建上传的文件路径为temp/user
-            path = os.path.join(TEMP_FILES_PATH, user.username)
-            if os.path.exists(path) and os.listdir(path):
-                file = os.listdir(path)[0]
-                file_path = os.path.join(path, file)
-                dest_path = os.path.join(PRODUCT_TEMP_ZIP_PATH, file)
-                if not os.path.exists(PRODUCT_TEMP_ZIP_PATH):
-                    os.makedirs(PRODUCT_TEMP_ZIP_PATH)
-                shutil.move(file_path, dest_path)
-                shutil.rmtree(path)
-                product.real_name = os.path.splitext(file)[0].split('_')[0]+os.path.splitext(file)[1]
-                product.save_name = file
-                product.save()
-
-    return HttpResponseRedirect("/product_management/page_waitsubmit_product/")
+        if product_old and product_old.status == ProductStatus.PASS:
+            product_old.is_vaild = False
+            product_old.save()
+    except Exception as e:
+        if product:
+            product.delete()
+        product_old.is_vaild = True
+        product_old.save()
+        return ajax_error("产品提交失败:" + str(e))
+    return ajax_success()
 
 
 # 取消提交操作
@@ -591,19 +693,20 @@ def cancel_submit_product(request, pid):
     # 取消更新/新建
     if product.apply_type == ApplyStatus.NEW or product.apply_type == ApplyStatus.ALTER:
         file = product.save_name
-        product_list = Product.objects.filter(save_name=file)
-        if not product_list or len(product_list)==0:
-            file_path = os.path.join(PRODUCT_TEMP_ZIP_PATH, file)
-            if os.path.isfile(file_path):
-                os.remove(file_path)
-            files = os.listdir(PRODUCT_TEMP_EXCEL_PATH)
-            for f in files:
-                if os.path.splitext(file)[0] in f:
-                    file = f
-                    break
-            file_path = os.path.join(PRODUCT_TEMP_EXCEL_PATH, file)
-            if os.path.isfile(file_path):
-                os.remove(file_path)
+        if file:
+            product_list = Product.objects.filter(save_name=file)
+            if product_list.count() == 1:
+                file_path = os.path.join(PRODUCT_TEMP_ZIP_PATH, file)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+                files = os.listdir(PRODUCT_TEMP_EXCEL_PATH)
+                for f in files:
+                    if os.path.splitext(file)[0] in f:
+                        file = f
+                        break
+                file_path = os.path.join(PRODUCT_TEMP_EXCEL_PATH, file)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
         product.delete()
     else:
         product.apply_type = ApplyStatus.FINISHED

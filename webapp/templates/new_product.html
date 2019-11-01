@@ -61,7 +61,7 @@
                                             <div class="form-group">
                                             <div class="col-sm-12">
                                                 <div class="col-sm-6">
-                                                <label class="control-label">请上传包含产品信息的文件(.xlsx)*请使用指定模版进行批量上传</label>
+                                                <label class="control-label">请上传包含产品信息的文件(.xlsx\.xls)请使用指定模版进行批量上传</label>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <input type="file" class="form-control" name="excel" id="excel" accept=".xlsx,.xls" required/>
@@ -69,7 +69,7 @@
                                             </div>
                                             <div class="col-sm-12">
                                                 <div class="col-sm-6">
-                                                <label class="control-label">请上传包含审批信息的压缩文件(.zip)</label>
+                                                <label class="control-label">请上传包含审批信息的压缩文件(.zip\.rar)</label>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <input type="file" class="form-control" name="zip" id="zip" accept=".zip,.rar" required/>
@@ -335,7 +335,7 @@
             url: "/product_management/new_many/",    //提交到的url
             success: function (data) {
                 if (data.success) {
-                    location.href = "";
+                    location.href = "/product_management/page_waitsubmit_product/";
                 } else {
                     $.growlService(data.error_message, {type: "danger"})
                 }
@@ -353,7 +353,7 @@
             url: "/product_management/update_many/",    //提交到的url
             success: function (data) {
                 if (data.success) {
-                    location.href = "";
+                    location.href = "/product_management/page_waitsubmit_product/";
                 } else {
                     $.growlService(data.error_message, {type: "danger"})
                 }
