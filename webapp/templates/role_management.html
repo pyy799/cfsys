@@ -35,6 +35,9 @@
             </thead>
             <tbody id="role_info_table">
             {% for group in group_list %}
+                {% ifequal group.name "无权限角色" %}
+                <tr hidden></tr>
+                {% else %}
                 <tr id="{{ group.id }}" >
                     <td style="text-align: center" onclick="get_group_company('{{ group.id }}')">{{ group.name }}</td>
                     <td style="text-align: center">
@@ -73,10 +76,10 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% ifequal group.name "无权限角色" %}
-                            <button type="button" class="btn btn-success btn-sm" disabled
+                        {% ifequal group.name "超级管理员" %}
+                            <button type="button" class="btn btn-success btn-sm" disabled title="系统内置角色无法修改"
                             data-toggle="modal" data-target="#modify" onclick="goModify('{{ group.id }}')">修改</button>
-                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" title="系统内置角色无法删除"
                                     data-target="#delete" disabled onclick="goDelete('{{ group.id }}')">删除</button>
                         {% else %}
                             <button type="button" class="btn btn-success btn-sm"
@@ -86,6 +89,7 @@
                         {% endifequal %}
                     </td>
                 </tr>
+                {% endifequal %}
             {% endfor %}
             </tbody>
         </table>
@@ -97,13 +101,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
-                <h5 class="modal-title" id="addLabel" style="font-weight:bold">新增角色</h5>
+                <h5 class="modal-title" id="addLabel" style="font-weight:bold">新增角色(角色名称为必填项)</h5>
             </div>
             <form style=";float:none" class="form-horizontal">
                 {% csrf_token %}
                 <div class="modal-form" style="margin-top: 0">
                     <div class="col-sm-12" style="margin-top: 5px">
-                        <label for="add_name" class="control-label" style="width:62px;text-align: right">角色名称</label>
+                        <label for="add_name" class="control-label" style="width:70px;text-align: right">
+                            <span style="color:red;width:20px">*</span>角色名称</label>
                         <input type="text" id="add_name" name="add_name"
                                placeholder="请输入角色名称" class="form-control input-inline" style="width: 200px">
                     </div>
@@ -128,7 +133,7 @@
                         <input type="checkbox" id="add_perm7" name="add_perm7" class="checkbox input-inline">
                     </div>
                 </div>
-                <div class="col-sm-12" id="err_message" style="height:30px;margin-top: 5px"></div>
+                <div class="col-sm-12" id="err_message" style="height:30px;margin-top: 5px;color:red"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                     <button type="button" class="btn btn-primary" onclick="add()">确认</button>
@@ -143,14 +148,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
-                <h5 class="modal-title" id="modifyLabel" style="font-weight:bold">修改角色信息</h5>
+                <h5 class="modal-title" id="modifyLabel" style="font-weight:bold">修改角色信息(角色名称为必填项)</h5>
             </div>
             <form style=";float:none" class="form-horizontal">
                 {% csrf_token %}
                 <input type="hidden" id="modify_id">
                 <div class="modal-form" style="margin-top: 0">
                     <div class="col-sm-12" style="margin-top: 5px">
-                        <label for="modify_name" class="control-label" style="width:62px;text-align: right">角色名称</label>
+                        <label for="modify_name" class="control-label" style="width:70px;text-align: right"><span style="color:red;width:20px">*</span>角色名称</label>
                         <input type="text" id="modify_name" name="modify_name"
                                placeholder="请输入角色名称" class="form-control input-inline" style="width: 200px">
                     </div>
@@ -175,7 +180,7 @@
                         <input type="checkbox" id="modify_perm7" name="modify_perm7" class="checkbox input-inline">
                     </div>
                 </div>
-                <div class="col-sm-12"  style="height:30px;margin-top: 5px" id="err_message2"></div>
+                <div class="col-sm-12"  style="height:30px;margin-top: 5px;color:red" id="err_message2"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                     <button type="button" class="btn btn-primary" onclick="modify()">确认</button>
@@ -249,8 +254,8 @@
 <script src="/static/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script>
     function add(){
-        var group_name = $('#add_name').val()
-        if($.trim(group_name)==="")
+        var group_name = $.trim($('#add_name').val())
+        if(group_name==="")
         {
             $('#err_message').html("角色名称不能为空!")
         }
@@ -322,8 +327,8 @@
         }
     }
     function modify(){
-        var group_name = $('#modify_name').val()
-        if($.trim(group_name)==="")
+        var group_name = $.trim($('#modify_name').val())
+        if(group_name==="")
         {
             $('#err_message2').html("角色名称不能为空!")
         }
@@ -374,7 +379,9 @@
                     }
                 }
             },
-            error:function(){}
+            error:function(){
+                $('#err_message2').html("服务器出错了!")
+            }
         })
         }
 
@@ -398,7 +405,9 @@
                     child.parentNode.removeChild(child)
                 }
             },
-            error:function(){}
+            error:function(){
+
+            }
         })
     }
     function goAdd(){

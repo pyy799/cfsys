@@ -6,25 +6,36 @@ from webapp.models import UserProfile, Group   # GroupCom
 from django.contrib.auth.models import Permission
 import json
 
+
 @login_required
 @permission_required('webapp.user_right_management_user')
 def jump_user(request, template_name):
-    # print(request.session['relate_company'])
+    group_login = Group.objects.get(user=request.user)  # 登陆人员的group
+    company_login = request.user.userprofile.uCompany  # 登陆人员的公司
+    company_login_name = request.user.userprofile.get_company(company_login)
     page = 1
     pageLimit = 10
-    userCounts = UserProfile.objects.all().count()
+    if group_login.name == "超级管理员":
+        userCounts = UserProfile.objects.all().count()
+    else:
+        userCounts = UserProfile.objects.filter(uCompany=company_login).count()
     if userCounts % pageLimit != 0:
         pageCounts = int(userCounts/pageLimit)+1
     else:
         pageCounts = int(userCounts/pageLimit)
-    users = UserProfile.objects.all().order_by("-id")[(page-1)*pageLimit:page*pageLimit]
+    if group_login.name == "超级管理员":
+        users = UserProfile.objects.all().order_by("-id")[(page-1)*pageLimit:page*pageLimit]
+    else:
+        users = UserProfile.objects.filter(uCompany=company_login).order_by("-id")[(page-1)*pageLimit:page*pageLimit]
     groups = Group.objects.all().order_by("id")
     for user in users:
         user.date_joined = user.date_joined.strftime('%Y-%m-%d')
         user.Company = user.get_company(user.uCompany)
         gr = Group.objects.get(user=user)
         user.group = gr.name
-    return render(request, template_name, {"users": users, "groups": groups, "pageCounts": pageCounts})
+    return render(request, template_name, {"users": users, "groups": groups, "pageCounts": pageCounts,
+                                           "company_login": company_login,"group_login": group_login.name,
+                                           "company_login_name": company_login_name})
 
 
 @login_required
@@ -56,7 +67,7 @@ def delete_user(request, delete_id):
 @login_required
 @permission_required('webapp.user_right_management_user')
 def active_user(request):
-    active_id = request.GET.get("active_id")
+    active_id = int(request.GET.get("active_id"))
     user = UserProfile.objects.get(id=active_id)
     user.is_active = not user.is_active
     user.save()
@@ -67,11 +78,13 @@ def active_user(request):
 @login_required
 @permission_required('webapp.user_right_management_user')
 def modify_user(request):
-    # 判断数据库中是否已经存在该用户名称
-    userCount = UserProfile.objects.filter(username=request.POST.get("username").strip()).count()
-    if userCount > 1:
-        return JsonResponse({"status": -1})
-    modify_id = request.POST.get("id")
+    modify_id = int(request.POST.get("id"))
+    username = request.POST.get("username").strip()
+    userCount = UserProfile.objects.filter(username=username).count()
+    if userCount == 1:
+        user1 = UserProfile.objects.get(username=username)
+        if user1.id != modify_id:
+            return JsonResponse({"status": -1})
     user = UserProfile.objects.get(id=modify_id)
     user.username = request.POST.get("username").strip()
     user.gender = request.POST.get("gender")
@@ -105,6 +118,7 @@ def modify_user(request):
 @login_required
 @permission_required('webapp.user_right_management_user')
 def search_user(request):
+    group_login = Group.objects.get(user=request.user)  # 登陆人员的group
     # 获得页数
     page = int(request.POST.get("page"))
     pageLimit = 10
@@ -117,17 +131,22 @@ def search_user(request):
     search_dict = dict()
     if username.strip() != "":
         search_dict["username__contains"] = username
-    if uCompany != '0':
-        search_dict["uCompany"] = int(uCompany)
+    if group_login.name == "超级管理员":
+        if uCompany != '0':
+            search_dict["uCompany"] = int(uCompany)
+    else:
+        search_dict["uCompany"] = request.user.userprofile.uCompany
     if department.strip() != "":
         search_dict["department__contains"] = department
     if position.strip() != "":
         search_dict["position__contains"] = position
     if group != '0':
         search_dict["groups__id"] = int(group)
-    print(search_dict)
     if not search_dict:
-        userCounts = UserProfile.objects.all().count()
+        if group_login.name == "超级管理员":
+            userCounts = UserProfile.objects.all().count()
+        else:
+            userCounts = UserProfile.objects.filter(uCompany=request.user.userprofile.uCompany).count()
     else:
         userCounts = UserProfile.objects.filter(**search_dict).count()
     if userCounts % pageLimit != 0:
@@ -135,7 +154,10 @@ def search_user(request):
     else:
         pageCounts = int(userCounts/pageLimit)
     if not search_dict:
-        user_set = UserProfile.objects.all().order_by("-id")[(page-1)*pageLimit:page*pageLimit]
+        if group_login.name == "超级管理员":
+            user_set = UserProfile.objects.all().order_by("-id")[(page-1)*pageLimit:page*pageLimit]
+        else:
+            user_set = UserProfile.objects.filter(uCompany=request.user.userprofile.uCompany).order_by("-id")[(page-1)*pageLimit:page*pageLimit]
     else:
         user_set = UserProfile.objects.filter(**search_dict).order_by("-id")[(page-1)*pageLimit:page*pageLimit]
     data_list = []
@@ -225,11 +247,13 @@ def add_role(request):
 @login_required
 @permission_required('webapp.user_right_management_role')
 def modify_role(request):
+    group_id = int(request.POST.get("group_id"))
     group_name = request.POST.get("group_name").strip()
     groupCount = Group.objects.filter(name=group_name).count()
-    if groupCount > 1:
-        return JsonResponse({"status": -1})
-    group_id = request.POST.get("group_id")
+    if groupCount==1:
+        group1 = Group.objects.get(name=group_name)
+        if group1.id !=group_id:
+            return JsonResponse({"status": -1})
     group = Group.objects.get(id=group_id)
     group.name = group_name
     group.permissions.clear()

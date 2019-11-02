@@ -64,7 +64,7 @@ def login_func(request):
 @login_required
 def logout_func(request):
     logout(request)
-    return HttpResponse('欢迎下次光临!')
+    return HttpResponseRedirect('/')
 
 
 def findpassword(request):
@@ -118,8 +118,6 @@ def reset_password(request):
 def reset_password_success(request):
     password = request.POST.get("password")
     username = request.POST.get("username")
-    print(password)
-    print(username)
     count = UserProfile.objects.filter(username=username)
     if count == 0:
         return HttpResponse("修改密码失败!")
