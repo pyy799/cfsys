@@ -135,6 +135,12 @@ var UpdateTable = function () {
                 $(this).parents("tr").toggleClass("selected")
             });
         });
+        //清除按钮
+        $(".clearall").click(function () {
+            $("#update_table tr input[type='checkbox']").each(function () {
+                $(this).prop("checked", false).uniform('refresh');
+            });
+        });
 
         //多选停用按钮
         $("#invalid_many").on('click', function () {

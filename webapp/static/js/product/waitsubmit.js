@@ -58,7 +58,7 @@ var WaitSubmitTable = function () {
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
                             var modify = $('<a href="/product_management/edit_product/'+oData["id"]+'/" class="btn btn-xs">修改</a>');
-                            var cancel = $('<a href="javascript:;" class="btn btn-xs btn-danger">取消</a>');
+                            var cancel = $('<a href="javascript:;" class="btn btn-xs btn-danger">删除</a>');
                             var submit = $('<a href="javascript:;" class="btn btn-xs btn-info">提交</a>');
                             element.append(modify);
                             element.append(cancel);
@@ -66,11 +66,11 @@ var WaitSubmitTable = function () {
 
                             cancel.on('click',function () {
                                 var id = oData["id"];
-                                var con = confirm("确定取消提交吗?");
+                                var con = confirm("确定删除吗?");
                                 if (con) {
                                     $.get("/product_management/wait_submit/cancel/" + id + "/", function (data) {
                                         if (data.success) {
-                                            $.growlService("取消提交！", {type: "success"});
+                                            $.growlService("产品已删除！", {type: "success"});
                                             location.href = "/product_management/page_waitsubmit_product/";
                                         } else {
                                             $.growlService(data.error_messag, {type: "danger"});
@@ -134,6 +134,13 @@ var WaitSubmitTable = function () {
                 $(this).parents("tr").toggleClass("selected")
             });
         });
+        //清除按钮
+        $(".clearall").click(function () {
+            $("#waitsubmit_table tr input[type='checkbox']").each(function () {
+                $(this).prop("checked", false).uniform('refresh');
+            });
+        });
+
 
         //多选提交按钮
         $("#submit").on('click', function () {
@@ -172,7 +179,7 @@ var WaitSubmitTable = function () {
                 return
             } else {
                 // 选中全部不通过
-                var con = confirm("确定取消吗?");
+                var con = confirm("确定删除吗?");
                 if (con) {
                     var checkedBox_all = $("input[class='check']");
                     for (var i=0; i < checkedBox_all.length; i++) {
@@ -180,7 +187,7 @@ var WaitSubmitTable = function () {
                             var data = $("#waitsubmit_table").DataTable().row(i).data();
                             $.get("/product_management/wait_submit/cancel/" + data["id"] + "/", function (data) {
                                 if (data.success) {
-                                            $.growlService("提交成功！", {type: "success"});
+                                            $.growlService("删除成功！", {type: "success"});
                                             location.href = "/product_management/page_waitsubmit_product/";
                                         } else {
                                             $.growlService(data.error_messag, {type: "danger"});

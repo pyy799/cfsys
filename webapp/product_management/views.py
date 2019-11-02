@@ -34,7 +34,18 @@ def page_new_product(request, template_name):
     page_dict = {}
     company_choice = COMPANY_CHOICE
     apply_choice = APPLY_CHOICE
-    page_dict.update({"company_choice": company_choice, "apply_choice": apply_choice})
+    fil = {"status": ProductStatus.WAIT_SUBMIT, "is_vaild": True}
+    user = request.user.userprofile
+    fil.update({"uploader": user})
+    product_list = Product.objects.filter(**fil)
+    waitsubmit_num = product_list.count()
+    fil = {"status": ProductStatus.FAIL}
+    user = request.user.userprofile
+    fil.update({"uploader": user})
+    product_list = Product.objects.filter(**fil)
+    nopass_num = product_list.count()
+    page_dict.update({"company_choice": company_choice, "apply_choice": apply_choice, "waitsubmit_num":waitsubmit_num,
+                      "nopass_num":nopass_num})
 
     return render(request, template_name, page_dict)
 
@@ -804,7 +815,7 @@ def passed(request):
     # 只能看到自己的
     user = request.user.userprofile
     fil.update({"uploader": user})
-    product_list, count, error = get_query(request, Product, **fil)
+    product_list, count, error = get_query(request, Product, **fil,order=["-status"])
     pack_list = [i.pack_data() for i in product_list]
     res = create_data(request.POST.get("draw", 1), pack_list, count)
     return HttpResponse(res)

@@ -33,9 +33,11 @@
             <ul class="nav nav-tabs pull-left">
                 <li {% if request.path == '/product_management/page_new_product/' %} class="active" {% endif %}><a href="#new" data-toggle="tab">新建产品</a></li>
                 <li {% if request.path == '/product_management/page_update_product/' %} class="active" {% endif %}><a href="#update" data-toggle="tab">更新产品</a></li>
-                <li {% if request.path == '/product_management/page_waitsubmit_product/' %} class="active" {% endif %}><a href="#waitsubmit" data-toggle="tab">待提交</a></li>
+                <li {% if request.path == '/product_management/page_waitsubmit_product/' %} class="active" {% endif %}>
+                <a href="#waitsubmit" data-toggle="tab">待提交<small class="label pull-right bg-green">{{ waitsubmit_num }}</small></a></li>
                 <li {% if request.path == '/product_management/page_waitpass_product/' %} class="active" {% endif %}><a href="#waitpass" data-toggle="tab">待审核</a></li>
-                <li {% if request.path == '/product_management/page_passed_product/' %} class="active" {% endif %}><a href="#passed" data-toggle="tab">已审核</a></li>
+                <li {% if request.path == '/product_management/page_passed_product/' %} class="active" {% endif %}>
+                <a href="#passed" data-toggle="tab">审核结果<small class="label pull-right bg-red">{{ nopass_num }}</small></a></li>
             </ul>
             <div style="clear:both"></div>
             <div class="tab-content">
@@ -126,7 +128,8 @@
                         </select>
                         <button class="btn btn-sm yellow filter-submit"><i class="fa fa-search"></i> 查询</button>
                         <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> 取消查询</button>
-                        <button class="btn btn-sm green checkall" id="checkall"><i class="fa fa-check"></i> 全选/反选</button>
+                        <button class="btn btn-sm green checkall" id="checkall"><i class="fa fa-check"></i> 全选</button>
+                        <button class="btn btn-sm red clearall" id="clearall"><i class="fa fa-times"></i> 清除</button>
                         <button class="btn btn-sm blue" data-toggle="modal" data-target="#update_many">
                             <i class="fa fa-plus"></i> 批量更新</button>
                         <div class="modal fade" id="update_many" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -212,7 +215,8 @@
                         </select>
                         <button class="btn btn-sm yellow filter-submit"><i class="fa fa-search"></i> 查询</button>
                         <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> 取消查询</button>
-                        <button class="btn btn-sm green checkall" id="checkall"><i class="fa fa-check"></i> 全选/反选</button>
+                        <button class="btn btn-sm green checkall" id="checkall"><i class="fa fa-check"></i> 全选</button>
+                        <button class="btn btn-sm red clearall" id="clearall"><i class="fa fa-times"></i> 清除</button>
                     </div>
                     <table class="table table-striped table-bordered table-hover dataTable no-footer"
                     id="waitsubmit_table" style="word-break: keep-all">
@@ -291,6 +295,13 @@
                             {% for s in apply_choice %}
                                 <option value="{{ s.0 }}">{{ s.1 }}</option>
                             {% endfor %}
+                        </select>
+                        <label>审核状态</label>
+                        <select class="form-control input-inline input-small input-sm form-filter select"
+                                name="status" data-placeholder='审核状态'>
+                            <option value=''></option>
+                            <option value=3>审核通过</option>
+                            <option value=4>审核不通过</option>
                         </select>
                         <button class="btn btn-sm yellow filter-submit"><i class="fa fa-search"></i> 查询</button>
                         <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> 取消查询</button>
