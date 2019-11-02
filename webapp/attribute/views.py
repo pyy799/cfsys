@@ -67,7 +67,7 @@ def add_attribute(request):
                 # all_first = Attribute.objects.filter(Q(first_class=first_class),Q(ACT='c'))
                 check_meaning = Attribute.objects.filter(Q(meaning=meaning),Q(attribute=attribute),Q(first_class=first_class),Q(ACT='t'))
                 check_first = Attribute.objects.filter(Q(first_class=first_class), Q(attribute=attribute),Q(ACT='c'))
-                check_second = Attribute.objects.filter(Q(second_class=second_class),Q(ACT='t'))
+                check_second = Attribute.objects.filter(Q(second_class=second_class), Q(attribute=attribute),Q(ACT='t'))
                 if check_first:
                     if len(check_second) == 0:
                         if len(check_meaning)==0:
@@ -85,7 +85,7 @@ def add_attribute(request):
             else:
                 act = 'c'
                 check_meaning = Attribute.objects.filter(Q(meaning=meaning),Q(attribute=attribute),Q(ACT='c'))
-                check_first = Attribute.objects.filter(Q(first_class=first_class),Q(ACT='c'))
+                check_first = Attribute.objects.filter(Q(first_class=first_class),Q(attribute=attribute),Q(ACT='c'))
                 if len(check_first) == 0:
                     if len(check_meaning)==0:
                         attr = Attribute.objects.create(ACT=act, attribute=attribute, first_class=first_class,

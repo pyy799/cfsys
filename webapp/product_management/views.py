@@ -875,6 +875,10 @@ def cancel_check_product(request):
     product.status = ProductStatus.FAIL
     product.pass_time = datetime.date.today()
     product.reason=request.POST.get('reason')
+    product_old = Product.objects.get(Q(product_num=product.product_num), Q(version=product.version - 1))
+    if product_old:
+        product_old.is_vaild = True
+        product_old.save()
     # a=product.reason
     # b=product.status
     product.save()
