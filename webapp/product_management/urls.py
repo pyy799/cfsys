@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^update/delete/(?P<pid>\d+)/$', views.update_delete, name="update_delete"),
     # 编辑详情
     url(r'^edit_product/(?P<pid>\d+)/$', views.edit_product, {"template_name": "edit_product.html"}, name="edit_product"),
+    url(r'^update_edit_product/(?P<pid>\d+)/$', views.update_edit_product, name="update_edit_product"),
     url(r'^edit_product/delete_file/(?P<pid>\d+)/$', views.edit_delete_file, name="edit_delete_file"),
     url(r'^edit_product/upload/(?P<pid>\d+)/$', views.edit_upload_file, name="edit_upload_product"),
     url(r'^edit_product/submit/(?P<pid>\d+)/$', views.edit_submit, name="edit_submit"),
