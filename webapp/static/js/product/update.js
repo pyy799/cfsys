@@ -58,7 +58,7 @@ var UpdateTable = function () {
                         "mData": null, "sTitle": "操作", "sClass": "center",
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
-                            var modify = $('<a href="/product_management/edit_product/' + oData["id"] + '/" class="btn btn-xs">修改</a>');
+                            var modify = $('<a href="/product_management/update_edit_product/' + oData["id"] + '/" class="btn btn-xs">修改</a>');
                             var invalid = $('<a href="javascript:;" class="btn btn-xs btn-warning">停用</a>');
                             var delete_p = $('<a href="javascript:;" class="btn btn-xs btn-danger">删除</a>');
                             element.append(modify);

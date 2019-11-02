@@ -693,6 +693,43 @@ def edit_submit(request, pid):
     return ajax_success()
 
 
+@login_required
+@permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
+def update_edit_product(request, pid):
+    pid = int(pid)
+    product = Product.objects.get(id = pid)
+    product_new = Product()
+    product_new.product_name = product.product_name
+    product_new.old_product_name = product.old_product_name
+
+    product_new.product_num = product.product_num
+    product_new.introduction = product.introduction
+    product_new.is_overlap = product.is_overlap
+    product_new.target_field = product.target_field
+    product_new.apply_situation = product.apply_situation
+    product_new.example = product.example
+    product_new.one_year_money = product.one_year_money
+    product_new.one_year_num = product.one_year_num
+    product_new.three_year_money = product.three_year_money
+    product_new.three_year_num = product.three_year_num
+    product_new.pCompany = product.pCompany
+    product_new.maturity = product.maturity
+    product_new.independence = product.independence
+    product_new.business = product.business
+    product_new.technology = product.technology
+    product_new.attribute_num = product.attribute_num
+    product_new.contact_people = product.contact_people
+    product_new.remark = product.remark
+
+    product_new.status = ProductStatus.WAIT_SUBMIT
+    product_new.apply_type = ApplyStatus.ALTER
+    product_new.version = product.version + 1
+    product_new.is_vaild = False
+    product_new.uploader = request.user.userprofile
+    product_new.save()
+    return HttpResponseRedirect("/product_management/edit_product/" + str(product_new.id) + "/")
+
+
 # 取消提交操作
 @login_required
 @permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
