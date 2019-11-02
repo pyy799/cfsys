@@ -126,24 +126,27 @@ def show(request, template_name):
     # 成熟度
     if maturity_choice:
         for i in maturity1:
-            str = ""
+            str1 = ""
+            serial = 0
             bpl = []
             if maturity_choice == i.first_class:
                 product_list = Product.objects.filter(**maturity_search_dict)
                 num = len(product_list)
                 for s in product_list:
-                    str = str + '<br/>' + s.product_name
+                    serial += 1
+                    serial_str = str(serial)
+                    str1 = str1 + '<br/>' + serial_str + '. ' + s.product_name
                 for s in product_list:
                     bpl.append(s.pack_data())
             else:
                 num = 0
             maturity_list.append(i.meaning)
             name_m = re.findall(p1, i.meaning)
-            if (name_m):
+            if name_m:
                 maturity_list1.append(name_m[0])
             else:
                 maturity_list1.append(i.meaning)
-            maturity_product.append([str])
+            maturity_product.append([str1])
             maturity_product_list.append(bpl)
             maturity_product1.append({"name": i.meaning, "value": num})
     else:
@@ -151,19 +154,22 @@ def show(request, template_name):
             maturity_search_dict.update({"maturity__first_class": i.first_class})
             product_list = Product.objects.filter(**maturity_search_dict)
             num = len(product_list)
-            str = ""
+            str1 = ""
+            serial = 0
             bpl = []
             for s in product_list:
-                str = str + '<br/>' + s.product_name
+                serial += 1
+                serial_str = str(serial)
+                str1 = str1 + '<br/>' + serial_str + '. ' + s.product_name
             for s in product_list:
                 bpl.append(s.pack_data())
             maturity_list.append(i.meaning)
             name_m = re.findall(p1, i.meaning)
-            if (name_m):
+            if name_m:
                 maturity_list1.append(name_m[0])
             else:
                 maturity_list1.append(i.meaning)
-            maturity_product.append([str])
+            maturity_product.append([str1])
             maturity_product_list.append(bpl)
             maturity_product1.append({"name": i.meaning, "value": num})
             # print(maturity_search_dict)
@@ -172,24 +178,27 @@ def show(request, template_name):
     # 自主度
     if independence_choice:
         for i in independence1:
-            str = ""
+            str1 = ""
+            serial = 0
             bpl = []
             if independence_choice == i.first_class:
                 product_list = Product.objects.filter(**independence_search_dict)
                 num = len(product_list)
                 for s in product_list:
-                    str = str + '<br/>' + s.product_name
+                    serial += 1
+                    serial_str = str(serial)
+                    str1 = str1 + '<br/>' + serial_str + '. ' + s.product_name
                 for s in product_list:
                     bpl.append(s.pack_data())
             else:
                 num = 0
             independence_list.append(i.meaning)
             name_i = re.findall(p1, i.meaning)
-            if (name_i):
+            if name_i:
                 independence_list1.append(name_i[0])
             else:
                 independence_list1.append(i.meaning)
-            independence_product.append([str])
+            independence_product.append([str1])
             independence_product_list.append(bpl)
             independence_product1.append({"name": i.meaning, "value": num})
     else:
@@ -197,19 +206,22 @@ def show(request, template_name):
             independence_search_dict.update({"independence__first_class": i.first_class})
             product_list = Product.objects.filter(**independence_search_dict)
             num = len(product_list)
-            str = ""
+            str1 = ""
+            serial = 0
             bpl = []
             for s in product_list:
-                str = str + '<br/>' + s.product_name
+                serial += 1
+                serial_str = str(serial)
+                str1 = str1 + '<br/>' + serial_str + '. ' + s.product_name
             for s in product_list:
                 bpl.append(s.pack_data())
             independence_list.append(i.meaning)
             name_i = re.findall(p1, i.meaning)
-            if (name_i):
+            if name_i:
                 independence_list1.append(name_i[0])
             else:
                 independence_list1.append(i.meaning)
-            independence_product.append([str])
+            independence_product.append([str1])
             independence_product_list.append(bpl)
             independence_product1.append({"name": i.meaning, "value": num})
     independence_list1.reverse()
@@ -217,20 +229,23 @@ def show(request, template_name):
     # 业务领域
     if business_choice:
         for i in business:
-            str = ""
+            str1 = ""
+            serial = 0
             bpl = []
             if business_choice == i.first_class:
                 product_list = Product.objects.filter(**business_search_dict)
                 num = len(product_list)
                 for s in product_list:
-                    str = str + '<br/>' + s.product_name
+                    serial += 1
+                    serial_str = str(serial)
+                    str1 = str1 + '<br/>' + serial_str + '. ' + s.product_name
                 for s in product_list:
                     bpl.append(s.pack_data())
             else:
                 num = 0
             business_list.append(i.meaning)
             business_list1.append(i.meaning.strip('业务大类'))
-            business_product.append([str])
+            business_product.append([str1])
             business_product_list.append(bpl)
             business_product1.append({"name": i.meaning, "value": num})
     else:
@@ -238,34 +253,40 @@ def show(request, template_name):
             business_search_dict.update({"business__first_class": i.first_class})
             product_list = Product.objects.filter(**business_search_dict)
             num = len(product_list)
-            str = ""
+            str1 = ""
+            serial = 0
             bpl = []
             for s in product_list:
-                str = str + '<br/>' + s.product_name
+                serial += 1
+                serial_str = str(serial)
+                str1 = str1 + '<br/>' + serial_str + '. ' + s.product_name
             for s in product_list:
                 bpl.append(s.pack_data())
             business_list.append(i.meaning)
             business_list1.append(i.meaning.strip('业务大类'))
-            business_product.append([str])
+            business_product.append([str1])
             business_product_list.append(bpl)
             business_product1.append({"name": i.meaning, "value": num})
 
     # 技术形态
     if technology_choice:
         for i in technology:
-            str = ""
+            str1 = ""
+            serial = 0
             bpl = []
             if technology_choice == i.first_class:
                 product_list = Product.objects.filter(**technology_search_dict)
                 num = len(product_list)
                 for s in product_list:
-                    str = str + '<br/>' + s.product_name
+                    serial += 1
+                    serial_str = str(serial)
+                    str1 = str1 + '<br/>' + serial_str + '. ' + s.product_name
                 for s in product_list:
                     bpl.append(s.pack_data())
             else:
                 num = 0
             technology_list.append(i.meaning)
-            technology_product.append([str])
+            technology_product.append([str1])
             technology_product_list.append(bpl)
             technology_product1.append({"name": i.meaning, "value": num})
     else:
@@ -274,13 +295,16 @@ def show(request, template_name):
             product_list = Product.objects.filter(**technology_search_dict)
             technology_list.append(i.meaning)
             num = len(product_list)
-            str = ""
+            str1 = ""
+            serial = 0
             bpl = []
             for s in product_list:
-                str = str + '<br/>' + s.product_name
+                serial += 1
+                serial_str = str(serial)
+                str1 = str1 + '<br/>' + serial_str + '. ' + s.product_name
             for s in product_list:
                 bpl.append(s.pack_data())
-            technology_product.append([str])
+            technology_product.append([str1])
             technology_product_list.append(bpl)
             technology_product1.append({"name": i.meaning, "value": num})
 
@@ -295,37 +319,43 @@ def show(request, template_name):
             if independence_choice == ind.first_class:
                 if maturity_choice:
                     for mat in maturity:
-                        str = ""
+                        str1 = ""
+                        serial = 0
                         bpl = []
                         if maturity_choice == mat.first_class:
                             product_list = Product.objects.filter(
                                 **maturity_independence_search_dict)
                             num3 = len(product_list)
                             for s in product_list:
-                                str = str + '<br/>' + s.product_name
+                                serial += 1
+                                serial_str = str(serial)
+                                str1 = str1 + '<br/>' + serial_str + '. ' + s.product_name
                             for s in product_list:
                                 bpl.append(s.pack_data())
                             maturity_independence_max_num = max(maturity_independence_max_num, num3)
                         else:
                             num3 = 0
-                        maturity_independence_product1.append([str])
+                        maturity_independence_product1.append([str1])
                         maturity_independence_product_list1.append(bpl)
                         maturity_independence_one = [num1, num2, num3]
                         maturity_independence.append(maturity_independence_one)
                         num2 += 1
                 else:
                     for mat in maturity:
-                        str = ""
+                        str1 = ""
+                        serial = 0
                         bpl = []
                         maturity_independence_search_dict["maturity__first_class"] = mat.first_class
                         product_list = Product.objects.filter(**maturity_independence_search_dict)
                         num3 = len(product_list)
                         for s in product_list:
-                            str = str + '<br/>' + s.product_name
+                            serial += 1
+                            serial_str = str(serial)
+                            str1 = str1 + '<br/>' + serial_str + '. ' + s.product_name
                         for s in product_list:
                             bpl.append(s.pack_data())
                         maturity_independence_max_num = max(maturity_independence_max_num, num3)
-                        maturity_independence_product1.append([str])
+                        maturity_independence_product1.append([str1])
                         maturity_independence_product_list1.append(bpl)
                         maturity_independence_one = [num1, num2, num3]
                         maturity_independence.append(maturity_independence_one)
@@ -333,9 +363,9 @@ def show(request, template_name):
             else:
                 for mat in maturity:
                     num3 = 0
-                    str = ""
+                    str1 = ""
                     bpl = []
-                    maturity_independence_product1.append([str])
+                    maturity_independence_product1.append([str1])
                     maturity_independence_product_list1.append(bpl)
                     maturity_independence_one = [num1, num2, num3]
                     maturity_independence.append(maturity_independence_one)
@@ -351,19 +381,22 @@ def show(request, template_name):
             maturity_independence_search_dict["independence__first_class"] = ind.first_class
             if maturity_choice:
                 for mat in maturity:
-                    str = ""
+                    str1 = ""
+                    serial = 0
                     bpl = []
                     if maturity_choice == mat.first_class:
                         product_list = Product.objects.filter(**maturity_independence_search_dict)
                         num3 = len(product_list)
                         for s in product_list:
-                            str = str + '<br/>' + s.product_name
+                            serial += 1
+                            serial_str = str(serial)
+                            str1 = str1 + '<br/>' + serial_str + '. ' + s.product_name
                         for s in product_list:
                             bpl.append(s.pack_data())
                         maturity_independence_max_num = max(maturity_independence_max_num, num3)
                     else:
                         num3 = 0
-                    maturity_independence_product1.append([str])
+                    maturity_independence_product1.append([str1])
                     maturity_independence_product_list1.append(bpl)
                     maturity_independence_one = [num1, num2, num3]
                     maturity_independence.append(maturity_independence_one)
@@ -373,14 +406,17 @@ def show(request, template_name):
                     maturity_independence_search_dict["maturity__first_class"] = mat.first_class
                     product_list = Product.objects.filter(**maturity_independence_search_dict)
                     num3 = len(product_list)
-                    str = ""
+                    str1 = ""
+                    serial = 0
                     bpl = []
                     for s in product_list:
-                        str = str + '<br/>' + s.product_name
+                        serial += 1
+                        serial_str = str(serial)
+                        str1 = str1 + '<br/>' + serial_str + '. ' + s.product_name
                     for s in product_list:
                         bpl.append(s.pack_data())
                     maturity_independence_max_num = max(maturity_independence_max_num, num3)
-                    maturity_independence_product1.append([str])
+                    maturity_independence_product1.append([str1])
                     maturity_independence_product_list1.append(bpl)
                     maturity_independence_one = [num1, num2, num3]
                     maturity_independence.append(maturity_independence_one)
@@ -401,19 +437,22 @@ def show(request, template_name):
             if technology_choice == tec.first_class:
                 if business_choice:
                     for bus in business:
-                        str = ""
+                        str1 = ""
+                        serial = 0
                         bpl = []
                         if business_choice == bus.first_class:
                             product_list = Product.objects.filter(**business_technology_search_dict)
                             num3 = len(product_list)
                             for s in product_list:
-                                str = str + '<br/>' + s.product_name
+                                serial += 1
+                                serial_str = str(serial)
+                                str1 = str1 + '<br/>' + serial_str + '. ' + s.product_name
                             for s in product_list:
                                 bpl.append(s.pack_data())
                             business_technology_max_num = max(business_technology_max_num, num3)
                         else:
                             num3 = 0
-                        business_technology_product1.append([str])
+                        business_technology_product1.append([str1])
                         business_technology_product_list1.append(bpl)
                         business_technology_one = [num1, num2, num3]
                         business_technology.append(business_technology_one)
@@ -423,14 +462,17 @@ def show(request, template_name):
                         business_technology_search_dict["business__first_class"] = bus.first_class
                         product_list = Product.objects.filter(**business_technology_search_dict)
                         num3 = len(product_list)
-                        str = ""
+                        str1 = ""
+                        serial = 0
                         bpl = []
                         for s in product_list:
-                            str = str + '<br/>' + s.product_name
+                            serial += 1
+                            serial_str = str(serial)
+                            str1 = str1 + '<br/>' + serial_str + '. ' + s.product_name
                         for s in product_list:
                             bpl.append(s.pack_data())
                         business_technology_max_num = max(business_technology_max_num, num3)
-                        business_technology_product1.append([str])
+                        business_technology_product1.append([str1])
                         business_technology_product_list1.append(bpl)
                         business_technology_one = [num1, num2, num3]
                         business_technology.append(business_technology_one)
@@ -438,9 +480,9 @@ def show(request, template_name):
             else:
                 for bus in business:
                     num3 = 0
-                    str = ""
+                    str1 = ""
                     bpl = []
-                    business_technology_product1.append([str])
+                    business_technology_product1.append([str1])
                     business_technology_product_list1.append(bpl)
                     business_technology_one = [num1, num2, num3]
                     business_technology.append(business_technology_one)
@@ -456,19 +498,22 @@ def show(request, template_name):
             business_technology_search_dict["technology__first_class"] = tec.first_class
             if business_choice:
                 for bus in business:
-                    str = ""
+                    str1 = ""
+                    serial = 0
                     bpl = []
                     if business_choice == bus.first_class:
                         product_list = Product.objects.filter(**business_technology_search_dict)
                         num3 = len(product_list)
                         for s in product_list:
-                            str = str + '<br/>' + s.product_name
+                            serial += 1
+                            serial_str = str(serial)
+                            str1 = str1 + '<br/>' + serial_str + '. ' + s.product_name
                         for s in product_list:
                             bpl.append(s.pack_data())
                         business_technology_max_num = max(business_technology_max_num, num3)
                     else:
                         num3 = 0
-                    business_technology_product1.append([str])
+                    business_technology_product1.append([str1])
                     business_technology_product_list1.append(bpl)
                     business_technology_one = [num1, num2, num3]
                     business_technology.append(business_technology_one)
@@ -478,14 +523,17 @@ def show(request, template_name):
                     business_technology_search_dict["business__first_class"] = bus.first_class
                     product_list = Product.objects.filter(**business_technology_search_dict)
                     num3 = len(product_list)
-                    str = ""
+                    str1 = ""
+                    serial = 0
                     bpl = []
                     for s in product_list:
-                        str = str + '<br/>' + s.product_name
+                        serial += 1
+                        serial_str = str(serial)
+                        str1 = str1 + '<br/>' + serial_str + '. ' + s.product_name
                     for s in product_list:
                         bpl.append(s.pack_data())
                     business_technology_max_num = max(business_technology_max_num, num3)
-                    business_technology_product1.append([str])
+                    business_technology_product1.append([str1])
                     business_technology_product_list1.append(bpl)
                     business_technology_one = [num1, num2, num3]
                     business_technology.append(business_technology_one)
@@ -558,6 +606,7 @@ def chart_list(request, template_name):
         # "technology_choice ": request.POST.get("technology_choice")
     }
     return render(request, template_name, res)
+
 
 # 产品详情页
 def detail(request, template_name, bid):
