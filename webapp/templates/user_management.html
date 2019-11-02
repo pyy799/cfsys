@@ -10,6 +10,7 @@
 
 {% block content %}
 <div class="box box-solid" style="padding-left: 100px;">
+    <input type="hidden" id="group_login" value="{{ group_login }}">
     <div><h3 class="box-header with-border" style="margin-top: 0;padding-top: 30px">用户管理</h3></div>
     <div class="box-body">
         <form style="float:left">
@@ -18,7 +19,8 @@
              <input type="text" id="name" name="name"
                    placeholder="请输入用户名" class="form-control input-inline" style="width:255px">
              <label for="company" style="width:50px;text-align: right">公司</label>
-             <select type="text" id="company" name="company" class="form-control input-inline" style="width:255px">
+             {% if group_login == "超级管理员" %}
+                <select id="company" name="company" class="form-control input-inline" style="width:255px">
                 <option value="0" selected>所有</option>
                 <option value="1">股份</option>
                 <option value="2">精一</option>
@@ -28,6 +30,11 @@
                 <option value="6">科技</option>
                 <option value="7">浙子</option>
             </select>
+             {% else %}
+                 <select id="company" name="company" class="form-control input-inline" style="width:255px">
+                <option value="{{ company_login }}" selected>{{ company_login_name }}</option>
+            </select>
+             {% endif %}
              <label for="department" style="width:50px;text-align: right">部门</label>
              <input type="text" id="department" name="department" class="form-control input-inline"
                    placeholder="部门" value="" style="width:255px">
@@ -92,17 +99,36 @@
                         {% else %}
                         <td id="active_{{ user.id }}">已停用</td>
                         {% endif %}
-                        <td>
-                            <button type="button"class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"
-                                onclick="goModify('{{ user.id }}')">修改</button>
+                        {% if user.group == "超级管理员" and group_login != "超级管理员" %}
+                            <td>
+                            <button type="button" class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"
+                                    disabled title="你没有权限修改该用户" onclick="goModify('{{ user.id }}')">修改</button>
                             {% if user.is_active %}
-                            <button type="button"class="btn btn-info btn-sm" onclick="changeUse('{{ user.id }}')" id="change_{{ user.id }}">停用</button>
+                            <button type="button" class="btn btn-info btn-sm" onclick="changeUse('{{ user.id }}')"
+                                    id="change_{{ user.id }}" disabled title="你没有权限停用该用户">停用</button>
                             {% else %}
-                            <button type="button"class="btn  btn-info btn-sm" onclick="changeUse('{{ user.id }}')" id="change_{{ user.id }}">启用</button>
+                            <button type="button" class="btn  btn-info btn-sm" onclick="changeUse('{{ user.id }}')"
+                                    id="change_{{ user.id }}" disabled title="你没有权限启用该用户">启用</button>
+                            {% endif %}
+                            <button type="button" class="btn  btn-danger btn-sm" data-toggle="modal"
+                                    disabled title="你没有权限删除该用户"
+                                data-target="#delete" onclick="goDelete('{% url "delete_user"  user.id %}','{{ user.id }}')">删除</button>
+                            </td>
+                        {% else %}
+                            <td>
+                            <button type="button" class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"
+                                     onclick="goModify('{{ user.id }}')">修改</button>
+                            {% if user.is_active %}
+                            <button type="button" class="btn btn-info btn-sm" onclick="changeUse('{{ user.id }}')"
+                                    id="change_{{ user.id }}" >停用</button>
+                            {% else %}
+                            <button type="button" class="btn  btn-info btn-sm" onclick="changeUse('{{ user.id }}')"
+                                    id="change_{{ user.id }}" >启用</button>
                             {% endif %}
                             <button type="button" class="btn  btn-danger btn-sm" data-toggle="modal"
                                 data-target="#delete" onclick="goDelete('{% url "delete_user"  user.id %}','{{ user.id }}')">删除</button>
                         </td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -129,13 +155,15 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
-                <h5 class="modal-title" id="addLabel" style="font-weight:bold">新增用户</h5>
+                <h5 class="modal-title" id="addLabel" style="font-weight:bold">
+                    新增用户(带<span style="color:red;width:20px">*</span>的选项为必填项)</h5>
             </div>
             <form style=";float:none" class="form-horizontal" method="post" action="{% url 'add_user' %}" id="add_user_form">
                 {% csrf_token %}
                 <div class="modal-form" style="margin-top: 0">
                     <div class="col-sm-12" style="margin-top: 5px">
-                        <label for="add_name" class="control-label" style="width:50px;text-align: right">用户名</label>
+                        <label for="add_name" class="control-label" style="width:50px;text-align: right">
+                            <span style="color:red;width:20px">*</span>用户名</label>
                         <input type="text" id="add_name" name="add_name"
                                placeholder="请输入用户名" class="form-control input-inline" style="width: 200px">
                         <label for="add_gender" class="control-label" style="width:50px;text-align: right">性别</label>
@@ -146,7 +174,8 @@
                     </div>
                     <div class="col-sm-12" style="margin-top: 5px">
                         <label for="add_company" class="control-label" style="width:50px;text-align: right">公司</label>
-                        <select  id="add_company" name="add_company" class="form-control input-inline" style="width: 200px">
+                        {% if group_login == "超级管理员" %}
+                            <select  id="add_company" name="add_company" class="form-control input-inline" style="width: 200px">
                             <option value="1" selected>股份</option>
                             <option value="2">精一</option>
                             <option value="3">科威</option>
@@ -155,6 +184,12 @@
                             <option value="6">科技</option>
                             <option value="7">浙子</option>
                         </select>
+                        {% else %}
+                            <select  id="add_company" name="add_company" class="form-control input-inline" style="width: 200px">
+                            <option value="{{ company_login }}" selected>{{ company_login_name }}</option>
+
+                        </select>
+                        {% endif %}
                         <label for="add_department" class="control-label" style="width:50px;text-align: right">部门</label>
                         <input type="text" id="add_department" name="add_department" class="form-control input-inline" value="" placeholder="部门名称" style="width: 200px">
                     </div>
@@ -164,20 +199,28 @@
                         <label for="add_role" class="control-label" style="width:50px;text-align: right">角色</label>
                         <select id="add_role" name="add_role" class="form-control input-inline" style="width: 200px">
                             {% for group in groups %}
-                            <option value="{{ group.id }}">{{ group.name }}</option>
+                                {% if group.name == "超级管理员" %}
+                                    {% if group_login == "超级管理员" %}
+                                        <option value="{{ group.id }}">{{ group.name }}</option>
+                                    {% endif %}
+                                {% else %}
+                                    <option value="{{ group.id }}">{{ group.name }}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>
                     <div class="col-sm-12" style="margin-top: 5px">
-                        <label for="add_phone" class="control-label" style="width:50px;text-align: right">电话</label>
+                        <label for="add_phone" class="control-label" style="width:50px;text-align: right">
+                            <span style="color:red;width:20px">*</span>电话</label>
                             <input type="text" id="add_phone" name="add_phone"
                                 placeholder="请输入电话" class="form-control input-inline" style="width: 200px">
-                        <label for="add_email" class="control-label" style="width:50px;text-align: right">邮箱</label>
+                        <label for="add_email" class="control-label" style="width:50px;text-align: right">
+                            <span style="color:red;width:20px">*</span>邮箱</label>
                             <input type="text" id="add_email" name="add_email"
                                 placeholder="请输入邮箱" class="form-control input-inline" style="width: 200px">
                     </div>
                 </div>
-                <div class="col-sm-12" id="err_message" style="height:30px;margin-top: 5px"></div>
+                <div class="col-sm-12" id="err_message" style="height:30px;margin-top: 5px;color:red"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                     <button type="button" class="btn btn-primary" onclick="check_submit()">确认</button>
@@ -192,13 +235,15 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
-                <h5 class="modal-title" id="modifyLabel" style="font-weight:bold">修改用户信息</h5>
+                <h5 class="modal-title" id="modifyLabel" style="font-weight:bold">
+                    修改用户信息(带<span style="color:red;width:20px">*</span>的选项为必填项)</h5>
             </div>
             <form style=";float:none" class="form-horizontal" enctype="application/x-www-form-urlencoded">
                 {% csrf_token %}
                 <div class="modal-form" style="margin-top: 0">
                     <div class="col-sm-12" style="margin-top: 5px">
-                        <label for="modify_name" class="control-label" style="width:50px;text-align: right">用户名</label>
+                        <label for="modify_name" class="control-label" style="width:50px;text-align: right">
+                            <span style="color:red;width:20px">*</span>用户名</label>
                         <input type="text" id="modify_name" name="modify_name"
                                     placeholder="请输入用户名" class="form-control input-inline" style="width: 200px">
                         <label for="modify_gender" class="control-label" style="width:50px;text-align: right">性别</label>
@@ -209,15 +254,21 @@
                     </div>
                     <div class="col-sm-12" style="margin-top: 5px">
                         <label for="modify_company" class="control-label" style="width:50px;text-align: right">公司</label>
-                        <select id="modify_company" name="modify_company" class="form-control input-inline" style="width: 200px">
-                                        <option value="1">股份</option>
-                                        <option value="2">精一</option>
-                                        <option value="3">科威</option>
-                                        <option value="4">医疗</option>
-                                        <option value="5">柏克</option>
-                                        <option value="6">科技</option>
-                                        <option value="7">浙子</option>
-                                    </select>
+                        {% if group_login == "超级管理员" %}
+                            <select id="modify_company" name="modify_company" class="form-control input-inline" style="width: 200px">
+                                <option value="1">股份</option>
+                                <option value="2">精一</option>
+                                <option value="3">科威</option>
+                                <option value="4">医疗</option>
+                                <option value="5">柏克</option>
+                                <option value="6">科技</option>
+                                <option value="7">浙子</option>
+                            </select>
+                        {% else %}
+                            <select id="modify_company" name="modify_company" class="form-control input-inline" style="width: 200px">
+                                <option value="{{ company_login }}">{{ company_login_name }}</option>
+                            </select>
+                        {% endif %}
                         <label for="modify_department" class="control-label" style="width:50px;text-align: right">部门</label>
                         <input type="text" id="modify_department" name="modify_department" class="form-control input-inline" value="" placeholder="部门" style="width: 200px">
                     </div>
@@ -226,21 +277,29 @@
                         <input type="text" id="modify_position" name="modify_position" class="form-control input-inline" value="" placeholder="职位" style="width: 200px">
                         <label for="modify_role" class="control-label" style="width:50px;text-align: right">角色</label>
                         <select  id="modify_role" name="modify_role" class="form-control input-inline" style="width: 200px">
-                        {% for group in groups %}
-                        <option value="{{ group.id }}">{{ group.name }}</option>
-                        {% endfor %}
+                            {% for group in groups %}
+                                {% if group.name == "超级管理员" %}
+                                    {% if group_login == "超级管理员" %}
+                                        <option value="{{ group.id }}">{{ group.name }}</option>
+                                    {% endif %}
+                                {% else %}
+                                    <option value="{{ group.id }}">{{ group.name }}</option>
+                                {% endif %}
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="col-sm-12" style="margin-top: 5px">
-                        <label for="modify_phone" class="control-label" style="width:50px;text-align: right">电话</label>
+                        <label for="modify_phone" class="control-label" style="width:50px;text-align: right">
+                            <span style="color:red;width:20px">*</span>电话</label>
                         <input type="text" id="modify_phone" name="modify_phone"
                                     placeholder="请输入电话" class="form-control input-inline" style="width: 200px">
-                        <label for="modify_email" class="control-label" style="width:50px;text-align: right">邮箱</label>
+                        <label for="modify_email" class="control-label" style="width:50px;text-align: right">
+                            <span style="color:red;width:20px">*</span>邮箱</label>
                         <input type="text" id="modify_email" name="modify_email"
                                     placeholder="请输入邮箱" class="form-control input-inline" style="width: 200px">
                     </div>
                 </div>
-                <div class="col-sm-12" style="height: 30px;margin-top:5px" id="err_message2"></div>
+                <div class="col-sm-12" style="height: 30px;margin-top:5px;color:red" id="err_message2"></div>
                 <input type="hidden" id="modify_id"/>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
@@ -270,6 +329,8 @@
     </div>
 <script src="/static/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script>
+    var add_time = 0
+    var add_group_value
     function goDelete(text,id){
         $('#a_delete').attr('href',text)
         $('#s_delete').html($('#username_'+id).html())
@@ -324,22 +385,45 @@
     $('#modify_it').click(function(){
           var data = {
               'id': $("#modify_id").val(),
-              'username': $('#modify_name').val(),
+              'username': $.trim($('#modify_name').val()),
               'gender': $("#modify_gender").val(),
               'uCompany': $("#modify_company").val(),
-              'department': $('#modify_department').val(),
-              'position': $('#modify_position').val(),
+              'department': $.trim($('#modify_department').val()),
+              'position': $.trim($('#modify_position').val()),
               'role': $('#modify_role').val(),
-              'phone': $('#modify_phone').val(),
-              'email': $('#modify_email').val(),
+              'phone': $.trim($('#modify_phone').val()),
+              'email': $.trim($('#modify_email').val()),
               'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
           }
-          if($.trim(data.username)==="")
+          if(data.username==="")
           {
               $('#err_message2').html("用户名不能为空!")
           }
-          else
-          {
+          else if(data.phone===""){
+              $('#err_message2').html("电话号码不能为空!")
+              return false
+          }
+          else if(!(/^[0-9]+$/.test(data.phone))){
+              $('#err_message').html("电话号码应全为数字!")
+              return false
+          }
+          else if(data.phone.length >11){
+              $('#err_message2').html("电话号码长度超过11位!")
+              return false
+          }
+          else if(data.phone.length<6){
+             $('#err_message2').html("电话号码长度小于6位!")
+             return false
+          }
+          else if(data.email===""){
+              $('#err_message2').html("邮箱地址不能为空!")
+              return false
+          }
+          else if(data.email.indexOf('@')===-1){
+              $('#err_message2').html("邮箱地址不含'@',无效!")
+              return false
+          }
+          else{
               $.ajax({
                   url:'modify/',
                   type:'POST',
@@ -367,7 +451,7 @@
                       }
                     },
                     error:function(){
-                        console.log("出现错误!!")
+                        $('#err_message2').html("服务器出错了!")
                     }
               });
               return false;
@@ -383,12 +467,15 @@
             'page': page,
             'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
         }
+        var group_login = $('#group_login').val()
         $.ajax({
             url:'search/',
             data:data,
             type:'post',
             async:true,
             success:function(res){
+
+                console.log(group_login)
                 $('#pageError').html("")
                 $('#user_info_table').html("")
                 $('#pageCounts').html(res.pageCounts)
@@ -411,21 +498,46 @@
                    var dateString = '<td>'+value.date_joined+'</td>'
                    var activeString
                    var useString
+                   var modifyString
+                   var deleteString
                    if(value.is_active===true){
                        activeString = '<td id="active_'+value.id+'">'+'正在使用</td>'
-                       useString = '<button type="button"class="btn btn-info btn-sm" onclick="changeUse('
+                       if(value.group==="超级管理员" && group_login !=="超级管理员") {
+                           useString = '<button type="button"class="btn btn-info btn-sm" onclick="changeUse('
+                       +value.id+')" id="change_'+value.id+'" disabled title="你没有权限停用该用户">停用</button>'
+                       }
+                       else{
+                          useString = '<button type="button"class="btn btn-info btn-sm" onclick="changeUse('
                        +value.id+')" id="change_'+value.id+'">停用</button>'
+                       }
                    }
                    else{
                        activeString = '<td id="active_'+value.id+'">'+'已停用</td>'
-                       useString = '<button type="button"class="btn btn-info btn-sm" onclick="changeUse('
+                       if(value.group==="超级管理员"&& group_login!=="超级管理员"){
+                           useString = '<button type="button"class="btn btn-info btn-sm" onclick="changeUse('
+                       +value.id+')" id="change_'+value.id+'" disabled title="你没有权限启用该用户">启用</button>'
+                       }
+                       else{
+                           useString = '<button type="button"class="btn btn-info btn-sm" onclick="changeUse('
                        +value.id+')" id="change_'+value.id+'">启用</button>'
+                       }
+
                    }
-                   var modifyString = '<button type="button"class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"'
+                   if(value.group==="超级管理员"&& group_login !=="超级管理员"){
+                        modifyString = '<button type="button"class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"'
+                        +'onclick="goModify('+value.id + ')" disabled title="你没有权限修改该用户">修改</button>'
+                        deleteString = '<button type="button" class="btn  btn-danger btn-sm" data-toggle="modal"'+'data-target="#delete" onclick="goDelete('
+                       +"'"+deleteUrl+"'"+','+value.id
+                            +')" disabled title="你没有权限删除该用户">删除</button>'
+                   }
+                   else{
+                        modifyString = '<button type="button"class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"'
                         +'onclick="goModify('+value.id + ')">修改</button>'
-                   var deleteString = '<button type="button" class="btn  btn-danger btn-sm" data-toggle="modal"'+'data-target="#delete" onclick="goDelete('
+                        deleteString = '<button type="button" class="btn  btn-danger btn-sm" data-toggle="modal"'+'data-target="#delete" onclick="goDelete('
                        +"'"+deleteUrl+"'"+','+value.id
                             +')">删除</button>'
+                   }
+
                    $('#user_info_table').append('<tr style="text-align: center">' + usernameString + genderString +
                        companyString + departString + positionString + groupString + phoneString + emailString +dateString+activeString
                        + '<td>'+ modifyString + useString + deleteString + '</td></tr>')
@@ -459,13 +571,54 @@
         }
     }
     function goSubmit() {
+        if(add_time===0)
+        {
+            add_group_value = $('#add_role').val()
+            add_time = 1
+        }
+        else
+        {
+            $('#add_role').val(add_group_value)
+        }
         $('#err_message').html("")
+        $('#add_name').val("")
+        $('#add_gender').val("1")
+        $('#add_company').val("1")
+        $('#add_department').val("")
+        $('#add_position').val("")
+        $('#add_phone').val("")
+        $('#add_email').val("")
     }
     function check_submit(){
-        var username = $('#add_name').val()
-        if($.trim(username)==="")
-        {
+        var username = $.trim($('#add_name').val())
+        var phone = $.trim($('#add_phone').val())
+        var email = $.trim($('#add_email').val())
+        if(username===""){
             $('#err_message').html("用户名不能为空!")
+            return false
+        }
+        else if(phone===""){
+            $('#err_message').html("电话号码不能为空!")
+            return false
+        }
+        else if(!(/^[0-9]+$/.test(phone))){
+            $('#err_message').html("电话号码应全为数字!")
+            return false
+        }
+        else if(phone.length >11){
+            $('#err_message').html("电话号码长度超过11位!")
+            return false
+        }
+        else if(phone.length<6){
+            $('#err_message').html("电话号码长度小于6位!")
+            return false
+        }
+        else if(email===""){
+            $('#err_message').html("邮箱地址不能为空!")
+            return false
+        }
+        else if(email.indexOf('@')===-1){
+            $('#err_message').html("邮箱地址不含'@',无效!")
             return false
         }
         else
@@ -482,9 +635,10 @@
                     else{
                         $('#err_message').html("")
                         $('#add_user_form').submit()
+                        $('#add').modal("hide")
                     }
                 },
-                error:function(res)
+                error:function()
                 {
                     $('#err_message').html("服务器出错了!")
                 }

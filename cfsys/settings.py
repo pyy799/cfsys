@@ -80,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cfdatabase2',
         'USER': 'root',
-        'PASSWORD': '18911912812pyy',
+        'PASSWORD': '10213213',
         'HOST': '127.0.0.1',
         'PORT': 3306,
     }
