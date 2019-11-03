@@ -224,18 +224,9 @@
                         <tbody></tbody>
                     </table>
                     <div>
-
-                    {% if file_names %}待提交文件：
-                        {% for s in file_names %}
-                            <a href="/product_management/wait_submit/delete_file/{{ s.1 }}/"
-                             class="btn btn-default" type="button"> {{ s.0 }}<i class="fa fa-times"></i></a>
-                        {% endfor %}
-                    {% else %}
-
-                    {% endif %}
                     </div>
                     <div style="text-align: right">
-                        <a href="javascript:;"><button class="btn btn-sm btn-danger" id="cancel_submit"><i class="fa fa-times"></i> 取消</button></a>
+                        <a href="javascript:;"><button class="btn btn-sm btn-danger" id="cancel_submit"><i class="fa fa-times"></i> 删除</button></a>
                         <a href="javascript:;"><button class="btn btn-sm btn-info" id="submit"><i class="fa fa-check"></i> 提交</button></a>
                     </div>
                 </div>
