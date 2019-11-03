@@ -33,7 +33,7 @@ var WaitSubmitTable = function () {
                         "mData": null,
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
-                            var input = '<input id='+oData["id"]+' type="checkbox" name="checkList" class="check"/>';
+                            var input = '<input id=' + oData["id"] + ' type="checkbox" name="checkList" class="check"/>';
                             element.append(input);
                         }
                     },
@@ -54,17 +54,18 @@ var WaitSubmitTable = function () {
                     {"mData": "technology_name", "sTitle": "技术形态"},
                     {"mData": "uploader", "sTitle": "申请人"},
                     {"mData": "apply_type_name", "sTitle": "申请类型"},
-                    {"mData":null,"sTitle":"操作", "sClass": "center",
+                    {
+                        "mData": null, "sTitle": "操作", "sClass": "center",
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
-                            var modify = $('<a href="/product_management/edit_product/'+oData["id"]+'/" class="btn btn-xs">修改</a>');
+                            var modify = $('<a href="/product_management/edit_product/' + oData["id"] + '/" class="btn btn-xs">修改</a>');
                             var cancel = $('<a href="javascript:;" class="btn btn-xs btn-danger">删除</a>');
                             var submit = $('<a href="javascript:;" class="btn btn-xs btn-info">提交</a>');
                             element.append(modify);
                             element.append(cancel);
                             element.append(submit);
 
-                            cancel.on('click',function () {
+                            cancel.on('click', function () {
                                 var id = oData["id"];
                                 var con = confirm("确定删除吗?");
                                 if (con) {
@@ -78,7 +79,7 @@ var WaitSubmitTable = function () {
                                     })
                                 }
                             });
-                            submit.on('click',function () {
+                            submit.on('click', function () {
                                 var id = oData["id"];
                                 var con = confirm("确定提交吗?");
                                 if (con) {
@@ -154,16 +155,16 @@ var WaitSubmitTable = function () {
                 if (con) {
                     // 选中全部通过
                     var checkedBox_all = $("input[class='check']");
-                    for (var i=0; i < checkedBox_all.length; i++){
+                    for (var i = 0; i < checkedBox_all.length; i++) {
                         if (checkedBox_all[i].checked) {
                             var data = $("#waitsubmit_table").DataTable().row(i).data();
                             $.get("/product_management/wait_submit/submit/" + data["id"] + "/", function (data) {
                                 if (data.success) {
-                                            $.growlService("提交成功！", {type: "success"});
-                                            location.href = "/product_management/page_waitpass_product/";
-                                        } else {
-                                            $.growlService(data.error_messag, {type: "danger"});
-                                        }
+                                    $.growlService("提交成功！", {type: "success"});
+                                    location.href = "/product_management/page_waitpass_product/";
+                                } else {
+                                    $.growlService(data.error_messag, {type: "danger"});
+                                }
                             })
                         }
                     }
@@ -182,17 +183,19 @@ var WaitSubmitTable = function () {
                 var con = confirm("确定删除吗?");
                 if (con) {
                     var checkedBox_all = $("input[class='check']");
-                    for (var i=0; i < checkedBox_all.length; i++) {
+                    for (var i = 0; i < checkedBox_all.length; i++) {
+                        // console.log("===== %s", i)
                         if (checkedBox_all[i].checked) {
                             var data = $("#waitsubmit_table").DataTable().row(i).data();
                             $.get("/product_management/wait_submit/cancel/" + data["id"] + "/", function (data) {
                                 if (data.success) {
-                                            $.growlService("删除成功！", {type: "success"});
-                                            location.href = "/product_management/page_waitsubmit_product/";
-                                        } else {
-                                            $.growlService(data.error_messag, {type: "danger"});
-                                        }
+                                    $.growlService("删除成功！", {type: "success"});
+                                    location.href = "/product_management/page_waitsubmit_product/";
+                                } else {
+                                    $.growlService(data.error_messag, {type: "danger"});
+                                }
                             })
+                            // console.log("=====%s done", i)
                         }
                     }
                 }

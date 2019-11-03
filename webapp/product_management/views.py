@@ -34,7 +34,7 @@ def page_new_product(request, template_name):
     page_dict = {}
     company_choice = COMPANY_CHOICE
     apply_choice = APPLY_CHOICE
-    fil = {"status": ProductStatus.WAIT_SUBMIT, "is_vaild": True}
+    fil = {"status": ProductStatus.WAIT_SUBMIT}
     user = request.user.userprofile
     fil.update({"uploader": user})
     product_list = Product.objects.filter(**fil)
@@ -99,7 +99,7 @@ def update_delete(request, pid):
 @login_required
 @permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def wait_submit(request):
-    fil = {"status": ProductStatus.WAIT_SUBMIT, "is_vaild": True}
+    fil = {"status": ProductStatus.WAIT_SUBMIT}
     # 只能看到自己的
     user = request.user.userprofile
     fil.update({"uploader": user})
@@ -264,7 +264,7 @@ def new_many(request):
             status = ProductStatus.WAIT_SUBMIT
             apply_type = ApplyStatus.NEW
             version = 1
-            is_vaild = True
+            is_vaild = False
 
             product = Product()
             product_list.append(product)
@@ -328,7 +328,7 @@ def update_many(request):
     zip_file_name = ''
     excel_file_name = ''
     i = 0
-
+    product_invaild_list = []
     try:
         if request.method != "POST":
             return ajax_error("上传失败")
@@ -498,7 +498,7 @@ def update_many(request):
             real_name = zip.name
             attribute_num = maturity+independence+business+technology
             status = ProductStatus.WAIT_SUBMIT
-            is_vaild = True
+            is_vaild = False
 
             product = Product()
             product_list.append(product)
@@ -538,10 +538,15 @@ def update_many(request):
             if product_exist:
                 product_exist.is_vaild = False
                 product_exist.save()
+                product_invaild_list.append(product_exist)
     except Exception as e:
         if product_list:
             for product in product_list:
                 product.delete()
+        if product_invaild_list:
+            for product in product_invaild_list:
+                product_exist.is_vaild = True
+                product_exist.save()
         if zip_file_name:
             os.remove(os.path.join(PRODUCT_TEMP_ZIP_PATH, zip_file_name))
         if excel_file_name:
@@ -582,10 +587,8 @@ def edit_product(request, pid, template_name):
             product = Product.objects.get(id=pid)
             product_value = product.pack_data()
             real_name = product.real_name
-
-            if product.status != ProductStatus.PASS:# 如果是修改，则原文件在temp路径；如果是更新，则不显示原文件
-                file_name = real_name
-                print(real_name)
+            file_name = real_name
+            print(real_name)
         except Exception as e:
             return ajax_error("产品不存在!"+str(e))
 
@@ -689,6 +692,12 @@ def edit_submit(request, pid):
     product_old = None
     product = None
     try:
+        file_name = request.POST.get("file_name")
+        if not file_name:
+            raise Exception("未上传审批文件！")
+        if file_name == '[]' or file_name == 'None':
+            raise Exception("未上传审批文件！")
+
         product_name = request.POST.get("product_name").strip()
         product_list = Product.objects.filter(product_name=product_name, is_vaild=True)
         count = len(product_list)
@@ -735,6 +744,7 @@ def edit_submit(request, pid):
         example= request.POST.get("example").strip()
         remark = request.POST.get("remark").strip()
         upload_time = datetime.date.today()
+
         status = ProductStatus.WAIT_SUBMIT
         maturity = Attribute.objects.get(id=maturity)
         independence = Attribute.objects.get(id=independence)
@@ -742,18 +752,19 @@ def edit_submit(request, pid):
         technology = Attribute.objects.get(id=technology)
         attribute_num = maturity.first_class + independence.first_class + business.second_class + technology.second_class
         uploader = user
-        is_vaild = True
+        is_vaild = False
 
         if pid != 0:
-            product_old = Product.objects.get(id=pid)
-            if product_old.status == ProductStatus.PASS:  # 单个更新
-                product = Product()
-                product.save()
-                product.product_num = product_old.product_num
-                product.apply_type = ApplyStatus.ALTER
-                product.version = product_old.version+1
-            else:  # 待提交修改和审核不通过修改
-                product = product_old
+            product = Product.objects.get(id=pid)
+            if product.status == ProductStatus.PASS:  # 单个更新
+                product_old = Product.objects.get(product_num=product.product_num, version=product.version-1)
+                product_old.is_vaild = False
+                product_old.save()
+                # apply_type = ApplyStatus.ALTER
+                # version = product_old.version+1
+            # else:  # 待提交修改和审核不通过修改
+                # apply_type = product.apply_type
+                # version = product.version
 
         else:  # 单个新建
             product = Product()
@@ -788,30 +799,23 @@ def edit_submit(request, pid):
         # product.version = version
         product.is_vaild = is_vaild
         product.save()
-        file_name = request.POST.get("file_name")
-        if not file_name:
-            raise Exception("未上传审批文件！")
-        if file_name == '[]' or file_name == 'None':
-            raise Exception("未上传审批文件！")
-        else:
-            if pid == 0:  # 新建上传的文件路径为temp/user
-                path = os.path.join(TEMP_FILES_PATH, user.username)
-                if os.path.exists(path) and os.listdir(path):
-                    file = os.listdir(path)[0]
-                    file_path = os.path.join(path, file)
-                    dest_path = os.path.join(PRODUCT_TEMP_ZIP_PATH, file)
-                    if not os.path.exists(PRODUCT_TEMP_ZIP_PATH):
-                        os.makedirs(PRODUCT_TEMP_ZIP_PATH)
-                    shutil.move(file_path, dest_path)
-                    shutil.rmtree(path)
-                    product.real_name = os.path.splitext(file)[0].split('_')[0]+os.path.splitext(file)[1]
-                    product.save_name = file
-                    product.save()
-        if product_old and product_old.status == ProductStatus.PASS:
-            product_old.is_vaild = False
-            product_old.save()
+
+        if pid == 0:  # 新建上传的文件路径为temp/user
+            path = os.path.join(TEMP_FILES_PATH, user.username)
+            if os.path.exists(path) and os.listdir(path):
+                file = os.listdir(path)[0]
+                file_path = os.path.join(path, file)
+                dest_path = os.path.join(PRODUCT_TEMP_ZIP_PATH, file)
+                if not os.path.exists(PRODUCT_TEMP_ZIP_PATH):
+                    os.makedirs(PRODUCT_TEMP_ZIP_PATH)
+                shutil.move(file_path, dest_path)
+                shutil.rmtree(path)
+                product.real_name = os.path.splitext(file)[0].split('_')[0]+os.path.splitext(file)[1]
+                product.save_name = file
+                product.save()
+
     except Exception as e:
-        if product:
+        if pid == 0 and product:
             product.delete()
         if product_old:
             product_old.is_vaild = True
@@ -849,7 +853,7 @@ def update_edit_product(request, pid):
     product_new.contact_people = product.contact_people
     product_new.remark = product.remark
 
-    product_new.status = ProductStatus.WAIT_SUBMIT
+    product_new.status = ProductStatus.PASS
     product_new.apply_type = ApplyStatus.ALTER
     product_new.version = product.version + 1
     product_new.is_vaild = False
@@ -869,9 +873,11 @@ def cancel_submit_product(request, pid):
     # 取消更新/新建
     if product.apply_type == ApplyStatus.NEW or product.apply_type == ApplyStatus.ALTER:
         file = product.save_name
+        product.delete()
         if file:
             product_list = Product.objects.filter(save_name=file)
-            if product_list.count() == 1:
+            print(product_list.count())
+            if product_list.count() == 0:
                 file_path = os.path.join(PRODUCT_TEMP_ZIP_PATH, file)
                 if os.path.isfile(file_path):
                     os.remove(file_path)
@@ -883,7 +889,6 @@ def cancel_submit_product(request, pid):
                 file_path = os.path.join(PRODUCT_TEMP_EXCEL_PATH, file)
                 if os.path.isfile(file_path):
                     os.remove(file_path)
-        product.delete()
     else:
         product.apply_type = ApplyStatus.FINISHED
         product.status = ProductStatus.PASS
@@ -936,7 +941,7 @@ def submit_product(request, pid):
 @login_required
 @permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def wait_pass(request):
-    fil = {"status": ProductStatus.WAIT_PASS, "is_vaild": True}
+    fil = {"status": ProductStatus.WAIT_PASS}
     # 只能看到自己的
     user = request.user.userprofile
     fil.update({"uploader": user})
@@ -990,7 +995,7 @@ def passed(request):
 @login_required
 @permission_required('webapp.product_information_manege_check')
 def wait_check(request):
-    fil = {"status": ProductStatus.WAIT_PASS, "is_vaild": True}
+    fil = {"status": ProductStatus.WAIT_PASS}
     product_list, count, error = get_query(request, Product, **fil)
     pack_list = [i.pack_data() for i in product_list]
     res = create_data(request.POST.get("draw", 1), pack_list, count)
