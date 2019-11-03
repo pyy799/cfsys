@@ -10,7 +10,7 @@
 
 
 {% block content %}
-    <div class="box box-solid" id="tablebox" style="padding-left: 100px">
+    <div class="box box-solid" id="tablebox" style="padding-left: 20px">
         <div class="box-header with-border">
             <h3>提交产品信息</h3>
         </div>
@@ -90,6 +90,12 @@
                             <div class="form-group">
                                 <label class="col-sm-2 control-label"><span style="color:red">*</span>所属公司</label>
                                 <div class="col-sm-3">
+                                    {% if user_company %}
+                                    <select class="form-control" name="pCompany" required >
+                                            <option class="defaultval" selected
+                                                value="{{ user_company }}">{{ user_company_name }}</option>
+                                    </select>
+                                    {% else %}
                                     <select class="form-control" name="pCompany" required>
                                         <option class="defaultval" selected
                                                 value="{{ product.pCompany }}">{{ product.pCompany_name }}</option>
@@ -97,6 +103,7 @@
                                             <option value="{{ s.0 }}">{{ s.1 }}</option>
                                         {% endfor %}
                                     </select>
+                                    {% endif %}
                                 </div>
                                 <label class="col-sm-2 control-label">是否重叠</label>
                                 <div class="col-sm-3">

@@ -152,16 +152,19 @@ var UpdateTable = function () {
                 var con = confirm("确定提交吗?");
                 if (con) {
                     // 选中全部通过
-                    for (var i = 0; i < checkedBox.length; i++) {
-                        var data = $("#update_table").DataTable().row(i + 1).data();
-                        $.get("/product_management/update/invalid/" + data["id"] + "/", function (data) {
-                            if (data.success) {
-                                $.growlService("提交成功！", {type: "success"});
-                                location.href = "/product_management/page_waitsubmit_product/";
-                            } else {
-                                $.growlService(data.error_messag, {type: "danger"});
-                            }
-                        })
+                    var checkedBox_all = $("input[class='check']");
+                    for (var i = 0; i < checkedBox_all.length; i++) {
+                        if (checkedBox_all[i].checked) {
+                            var data = $("#update_table").DataTable().row(i).data();
+                            $.get("/product_management/update/invalid/" + data["id"] + "/", function (data) {
+                                if (data.success) {
+                                    $.growlService("提交成功！", {type: "success"});
+                                    location.href = "/product_management/page_waitsubmit_product/";
+                                } else {
+                                    $.growlService(data.error_messag, {type: "danger"});
+                                }
+                            })
+                        }
                     }
                 }
             }
@@ -176,16 +179,19 @@ var UpdateTable = function () {
                 // 选中全部不通过
                 var con = confirm("确定取消吗?");
                 if (con) {
-                    for (var i = 0; i < checkedBox.length; i++) {
-                        var data = $("#update_table").DataTable().row(i + 1).data();
-                        $.get("/product_management/update/delete/" + data["id"] + "/", function (data) {
-                            if (data.success) {
-                                $.growlService("提交成功！", {type: "success"});
-                                location.href = "/product_management/page_waitsubmit_product/";
-                            } else {
-                                $.growlService(data.error_messag, {type: "danger"});
-                            }
-                        })
+                    var checkedBox_all = $("input[class='check']");
+                    for (var i = 0; i < checkedBox_all.length; i++) {
+                        if (checkedBox_all[i].checked) {
+                            var data = $("#update_table").DataTable().row(i).data();
+                            $.get("/product_management/update/delete/" + data["id"] + "/", function (data) {
+                                if (data.success) {
+                                    $.growlService("提交成功！", {type: "success"});
+                                    location.href = "/product_management/page_waitsubmit_product/";
+                                } else {
+                                    $.growlService(data.error_messag, {type: "danger"});
+                                }
+                            })
+                        }
                     }
                 }
             }
