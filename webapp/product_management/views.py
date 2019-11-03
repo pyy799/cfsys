@@ -881,6 +881,7 @@ def check_product(request, pid):
     print(product.product_name)
     product.status=ProductStatus.PASS
     product.pass_time = datetime.date.today()
+    product.reason=""
     a=product.pass_time
     b=product.apply_type
     if product.apply_type==ApplyStatus.NEW:
@@ -903,7 +904,7 @@ def check_product(request, pid):
 @login_required
 @permission_required('webapp.product_information_manege_check')
 def checked(request):
-    fil = {"status__gte": ProductStatus.PASS,"is_vaild":True}
+    fil = {"status__gte": ProductStatus.PASS}
     product_list, count, error = get_query(request, Product, **fil)
     pack_list = [i.pack_data() for i in product_list]
     res = create_data(request.POST.get("draw", 1), pack_list, count)
@@ -923,10 +924,11 @@ def cancel_check_product(request):
     product.status = ProductStatus.FAIL
     product.pass_time = datetime.date.today()
     product.reason=request.POST.get('reason')
-    product_old = Product.objects.get(Q(product_num=product.product_num), Q(version=product.version - 1))
-    if product_old:
-        product_old.is_vaild = True
-        product_old.save()
+    if product.apply_type == ApplyStatus.ALTER:
+        product_old = Product.objects.get(Q(product_num=product.product_num), Q(version=product.version - 1))
+        if product_old:
+            product_old.is_vaild = True
+            product_old.save()
     # a=product.reason
     # b=product.status
     product.save()
