@@ -1014,15 +1014,17 @@ def check_product(request, pid):
     product.status=ProductStatus.PASS
     product.pass_time = datetime.date.today()
     product.reason=""
-    product.is_vaild=True
+    # product.is_vaild=True
     a=product.pass_time
     b=product.apply_type
     if product.apply_type==ApplyStatus.NEW:
+        product.is_vaild = True
         product.save()
     elif product.apply_type==ApplyStatus.ALTER:
         product_old=Product.objects.get(Q(product_num=product.product_num),Q(version=product.version-1),Q(is_vaild=True))
         product_old.is_vaild=False
         product_old.save()
+        product.is_vaild = True
         product.save()
     elif product.apply_type==ApplyStatus.DELETE:
         product.delete()
