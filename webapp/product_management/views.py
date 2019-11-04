@@ -1014,6 +1014,7 @@ def check_product(request, pid):
     product.status=ProductStatus.PASS
     product.pass_time = datetime.date.today()
     product.reason=""
+    product.is_vaild=True
     a=product.pass_time
     b=product.apply_type
     if product.apply_type==ApplyStatus.NEW:
@@ -1061,9 +1062,11 @@ def cancel_check_product(request):
         if product_old:
             product_old.is_vaild = True
             product_old.save()
+        product.save()
+    else:
+        product.save()
     # a=product.reason
     # b=product.status
-    product.save()
     return ajax_success()
 
 def get_key(dict, value):
