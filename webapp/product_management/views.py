@@ -58,7 +58,7 @@ def update_data(request):
     # 只能看到自己公司的
     user = request.user.userprofile
     group = Group.objects.get(user=user)
-    if not group.name == "总公司管理员":
+    if not group.id == 1:
         fil.update({"pCompany": user.uCompany})
     product_list, count, error = get_query(request, Product, **fil)
     pack_list = [i.pack_data() for i in product_list]
@@ -114,6 +114,7 @@ def wait_submit(request):
 @permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def new_many(request):
     user = request.user.userprofile
+    group = Group.objects.get(user=user)
     now = int(time.time())
     product_list = []
     zip_file_name = ''
@@ -159,7 +160,7 @@ def new_many(request):
                 raise Exception("产品名称不能为空！")
             if len(product_name)>64:
                 raise Exception("产品名称不能超过64个字符！")
-            product_exist = Product.objects.filter(product_name=product_name, is_vaild=True)
+            product_exist = Product.objects.exclude(Q(apply_type=ApplyStatus.INVALID)& Q(status=ProductStatus.PASS)).filter(product_name=product_name)
             if len(product_exist)>0:
                 raise Exception("产品名称已存在！")
             old_product_name = str(row[1]).strip()
@@ -197,6 +198,8 @@ def new_many(request):
                     one_year_money = float(row[7])
                 else:
                     raise Exception("过去一年销售额填写有误！")
+            else:
+                one_year_money = 0
             one_year_num = str(row[8]).strip()
             if one_year_num:
                 if len(one_year_num) > 11:
@@ -205,6 +208,8 @@ def new_many(request):
                     one_year_num = int(re.findall(r"\d+", str(row[8]))[0])
                 else:
                     raise Exception("过去一年销售数量填写有误！")
+            else:
+                one_year_num = 0
             three_year_money = str(row[9]).strip()
             if three_year_money:
                 if len(three_year_money) > 11:
@@ -213,6 +218,8 @@ def new_many(request):
                     three_year_money = float(row[9])
                 else:
                     raise Exception("过去三年销售额填写有误！")
+            else:
+                three_year_money = 0
             three_year_num = str(row[10]).strip()
             if three_year_num:
                 if len(three_year_num) > 11:
@@ -221,13 +228,22 @@ def new_many(request):
                     three_year_num = int(re.findall(r"\d+", str(row[10]))[0])
                 else:
                     raise Exception("过去三年销售数量填写有误！")
-
+            else:
+                three_year_num = 0
             pCompany = str(row[11]).strip()
             if pCompany:
-                if get_key(dict(COMPANY_CHOICE),pCompany):
-                    pCompany = int(get_key(dict(COMPANY_CHOICE),pCompany)[0])
+                if pCompany in dict(COMPANY_CHOICE).values():
+                    if group.id != 1:  # 不是超级管理员
+                        if pCompany == dict(COMPANY_CHOICE).get(user.uCompany):
+                            pCompany = user.uCompany
+                        else:
+                            raise Exception("公司只能为当前登陆者所在公司！")
+                    else:
+                        pCompany = get_key(dict(COMPANY_CHOICE), pCompany)
                 else:
                     raise Exception("公司填写有误！")
+            else:
+                raise Exception("公司不能为空！")
 
             maturity = str(row[12]).strip()
             independence = str(row[13]).strip()
@@ -323,6 +339,7 @@ def new_many(request):
 @permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def update_many(request):
     user = request.user.userprofile
+    group = Group.objects.get(user=user)
     now = int(time.time())
     product_list = []
     zip_file_name = ''
@@ -367,6 +384,7 @@ def update_many(request):
             product_name = str(row[0]).strip()
             if not product_name:
                 raise Exception("产品名称不能为空！")
+
             if len(product_name)>64:
                 raise Exception("产品名称不能超过64个字符！")
             old_product_name = str(row[1]).strip()
@@ -404,6 +422,8 @@ def update_many(request):
                     one_year_money = float(row[7])
                 else:
                     raise Exception("过去一年销售额填写有误！")
+            else:
+                one_year_money = 0
             one_year_num = str(row[8]).strip()
             if one_year_num:
                 if len(one_year_num) > 11:
@@ -412,6 +432,8 @@ def update_many(request):
                     one_year_num = int(re.findall(r"\d+", str(row[8]))[0])
                 else:
                     raise Exception("过去一年销售数量填写有误！")
+            else:
+                one_year_num = 0
             three_year_money = str(row[9]).strip()
             if three_year_money:
                 if len(three_year_money) > 11:
@@ -420,6 +442,8 @@ def update_many(request):
                     three_year_money = float(row[9])
                 else:
                     raise Exception("过去三年销售额填写有误！")
+            else:
+                three_year_money = 0
             three_year_num = str(row[10]).strip()
             if three_year_num:
                 if len(three_year_num) > 11:
@@ -428,13 +452,23 @@ def update_many(request):
                     three_year_num = int(re.findall(r"\d+", str(row[10]))[0])
                 else:
                     raise Exception("过去三年销售数量填写有误！")
+            else:
+                three_year_num = 0
 
             pCompany = str(row[11]).strip()
             if pCompany:
-                if get_key(dict(COMPANY_CHOICE), pCompany):
-                    pCompany = int(get_key(dict(COMPANY_CHOICE), pCompany)[0])
+                if pCompany in dict(COMPANY_CHOICE).values():
+                    if group.id != 1:  # 不是超级管理员
+                        if pCompany == dict(COMPANY_CHOICE).get(user.uCompany):
+                            pCompany = user.uCompany
+                        else:
+                            raise Exception("公司只能为当前登陆者所在公司！")
+                    else:
+                        pCompany = get_key(dict(COMPANY_CHOICE), pCompany)
                 else:
                     raise Exception("公司填写有误！")
+            else:
+                raise Exception("公司不能为空！")
 
             maturity = str(row[12]).strip()
             independence = str(row[13]).strip()
@@ -466,17 +500,40 @@ def update_many(request):
                 raise Exception("备注不能超过1024个字符！")
 
             # 判断是否是更新
-            if old_product_name:
-                old_product_exist_list = Product.objects.filter(product_name=old_product_name).order_by('-version')
-            else:
-                old_product_exist_list = []
-            product_exist_list = Product.objects.filter(product_name=product_name).order_by('-version')
-            if len(product_exist_list)>0 or len(old_product_exist_list)>0 :  # 存在同名产品则判断为更新
-                if product_exist_list.count()>0:
-                    product_exist = product_exist_list[0]
-                else:
-                    product_exist = old_product_exist_list[0]
-                if introduction==product_exist.introduction and is_overlap==product_exist.is_overlap and\
+            product_exist_list = Product.objects.exclude(Q(apply_type=ApplyStatus.INVALID)& Q(status=ProductStatus.PASS))\
+                .filter(product_name=product_name)  # 在所有没停用的产品里找重名的
+            if len(product_exist_list)>0: # 有重名的，看重名是否合法
+                if group.id == 1: # 超级管理员
+                    b = product_exist_list.filter(Q(status=ProductStatus.PASS) & Q(is_vaild=True)).order_by('-version')
+                else: # 分公司
+                    b = product_exist_list.filter(Q(pCompany=user.uCompany) & Q(status=ProductStatus.PASS) & Q(is_vaild=True))\
+                        .order_by('-version')
+                # b是合法重名的
+                if len(product_exist_list) > len(b): # 有不合法重名产品
+                    raise Exception("产品名称重复！")
+                else: # 重名合法->是更新
+                    product_exist = b[0]
+            else: # 产品名称没和自己公司的重复->查旧产品名称
+                if old_product_name:
+                    if group.id == 1:  # 超级管理员
+                        old_product_exist_list = Product.objects.exclude(Q(apply_type=ApplyStatus.INVALID) & Q(status=ProductStatus.PASS))\
+                            .filter(Q(product_name=old_product_name) & Q(status=ProductStatus.PASS) & Q(is_vaild=True))\
+                            .order_by('-version')
+                    else:
+                        old_product_exist_list = Product.objects.exclude(Q(apply_type=ApplyStatus.INVALID) & Q(status=ProductStatus.PASS))\
+                            .filter(Q(product_name=old_product_name) & Q(pCompany=user.uCompany) & Q(status=ProductStatus.PASS) & Q(is_vaild=True)). \
+                            order_by('-version')
+                    if len(old_product_exist_list) > 0:  # 旧产品名称和自己公司合法产品的重复->是更新
+                        product_exist = old_product_exist_list[0]
+                    else:
+                        product_exist = None
+                else:  # 没有旧产品名称->是新建
+                    product_exist = None
+
+            if product_exist: # 更新的话
+                # 更新内容和原来判重
+                if  product_name==product_exist.product_name and old_product_name==product_exist.old_product_name and \
+                    introduction==product_exist.introduction and is_overlap==product_exist.is_overlap and\
                     target_field==product_exist.target_field and apply_situation==product_exist.apply_situation and \
                     example == product_exist.example and one_year_money==product_exist.one_year_money and \
                     one_year_num == product_exist.one_year_num and three_year_money==product_exist.three_year_money and\
@@ -486,8 +543,8 @@ def update_many(request):
                     Attribute.objects.get(second_class=business) == product_exist.business and \
                     Attribute.objects.get(second_class=technology) == product_exist.technology and \
                     contact_people==product_exist.contact_people and remark == product_exist.remark:
-                    continue
-                else: # 更新
+                    continue  # 都一样就跳过
+                else: # 有不一样的，更新
                     apply_type = ApplyStatus.ALTER
                     version = product_exist.version+1
             else: # 新建
@@ -568,6 +625,7 @@ def update_many(request):
 @permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def edit_product(request, pid, template_name):
     user = request.user.userprofile
+    group = Group.objects.get(user=user)
     user_company = ''
     user_company_name = ''
     pid = int(pid)
@@ -591,13 +649,14 @@ def edit_product(request, pid, template_name):
             print(real_name)
         except Exception as e:
             return ajax_error("产品不存在!"+str(e))
-
     else:  # 新建
-        user_company = user.uCompany
-        user_company_name = dict(COMPANY_CHOICE).get(user_company)
         path = os.path.join(TEMP_FILES_PATH, user.username)   # 如果是新建，则原文件在temp/user路径
         if os.path.exists(path) and len(os.listdir(path)):
             file_name = os.listdir(path)[0].split('_')[0]
+    if group.id != 1: # 不是超级管理员
+        user_company = user.uCompany
+        user_company_name = dict(COMPANY_CHOICE).get(user_company)
+
     page_dict = {"pid": pid, "product": product_value, "file_name": file_name, "company_choice": company_choice,
                  "m_choice": m_choice, "i_choice": i_choice, "b_choice":b_choice, "t_choice":t_choice,
                  "user_company":user_company, "user_company_name":user_company_name}
@@ -665,7 +724,7 @@ def edit_delete_file(request, pid):
             full_name = product.save_name
             status = product.status
             product_list = Product.objects.filter(save_name=full_name)
-            if len(product_list)==0:  # 如果还有关联产品就不删
+            if len(product_list)==1:  # 如果还有关联产品就不删
                 if status == ProductStatus.WAIT_SUBMIT:
                     os.remove(os.path.join(PRODUCT_TEMP_ZIP_PATH, full_name))
                 else:
@@ -697,12 +756,31 @@ def edit_submit(request, pid):
             raise Exception("未上传审批文件！")
         if file_name == '[]' or file_name == 'None':
             raise Exception("未上传审批文件！")
-
         product_name = request.POST.get("product_name").strip()
-        product_list = Product.objects.filter(product_name=product_name, is_vaild=True)
-        count = len(product_list)
-        if count > 0 and pid == 0:
-            raise Exception("产品名称已存在!")
+        if pid == 0:  # 新建
+            flag_new = True
+        else: # 单个更新或待提交修改或未通过修改
+            product = Product.objects.get(id=pid)
+            if product.apply_type == ApplyStatus.NEW:
+                flag_new = True
+            else:
+                flag_new = False
+
+        if flag_new:  # 新建
+            product_exist = Product.objects.exclude(Q(apply_type=ApplyStatus.INVALID) & Q(status=ProductStatus.PASS))\
+                .filter(product_name=product_name)
+            count = len(product_exist)
+            if count > 0:
+                raise Exception("产品名称已存在!")
+        else:  # 更新
+            old_name = Product.objects.filter(product_num=product.product_num).order_by('-version')[0].product_name
+            if product_name != old_name:
+                product_exist = Product.objects.exclude(Q(apply_type=ApplyStatus.INVALID) & Q(status=ProductStatus.PASS)) \
+                .filter(product_name=product_name)
+                count = len(product_exist)
+                if count > 0:
+                    raise Exception("产品名称已存在!")
+
         old_product_name = request.POST.get("old_product_name")
         if old_product_name == 'N.A.' or not old_product_name:
             old_product_name = None
@@ -1068,6 +1146,7 @@ def cancel_check_product(request):
     # a=product.reason
     # b=product.status
     return ajax_success()
+
 
 def get_key(dict, value):
     return [k for k, v in dict.items() if v == value]

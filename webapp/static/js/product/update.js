@@ -34,8 +34,8 @@ var UpdateTable = function () {
                         // "sTitle": '<input id="checkall" name="" type="checkbox" value="">',
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
-                            element.append("<input type='checkbox' name='checkList' />");
-                        }
+                            var input = '<input id=' + oData["id"] + ' type="checkbox" name="checkList" class="updatecheck"/>';
+                            element.append(input);                        }
                     },
                     {
                         "mData": "product_name", "sTitle": "产品名称",
@@ -71,7 +71,7 @@ var UpdateTable = function () {
                                 if (con) {
                                     $.get("/product_management/update/invalid/" + id + "/", function (data) {
                                         if (data.success) {
-                                            $.growlService("取消提交！", {type: "success"});
+                                            $.growlService("停用成功！", {type: "success"});
                                             location.href = "/product_management/page_waitsubmit_product/";
                                         } else {
                                             $.growlService(data.error_messag, {type: "danger"});
@@ -85,7 +85,7 @@ var UpdateTable = function () {
                                 if (con) {
                                     $.get("/product_management/update/delete/" + id + "/", function (data) {
                                         if (data.success) {
-                                            $.growlService("提交成功！", {type: "success"});
+                                            $.growlService("删除成功！", {type: "success"});
                                             location.href = "/product_management/page_waitsubmit_product/";
                                         } else {
                                             $.growlService(data.error_messag, {type: "danger"});
@@ -129,8 +129,6 @@ var UpdateTable = function () {
                 var check = $(this).parent("span").hasClass("checked");
                 if (!check) {
                     $(this).prop("checked", true).uniform('refresh');
-                } else {
-                    $(this).prop("checked", false).uniform('refresh');
                 }
                 $(this).parents("tr").toggleClass("selected")
             });
@@ -149,16 +147,16 @@ var UpdateTable = function () {
                 alert("请至少选择一项！");
                 return
             } else {
-                var con = confirm("确定提交吗?");
+                var con = confirm("确定停用吗?");
                 if (con) {
                     // 选中全部通过
-                    var checkedBox_all = $("input[class='check']");
+                    var checkedBox_all = $("input[class='updatecheck']");
                     for (var i = 0; i < checkedBox_all.length; i++) {
                         if (checkedBox_all[i].checked) {
                             var data = $("#update_table").DataTable().row(i).data();
                             $.get("/product_management/update/invalid/" + data["id"] + "/", function (data) {
                                 if (data.success) {
-                                    $.growlService("提交成功！", {type: "success"});
+                                    $.growlService("停用成功！", {type: "success"});
                                     location.href = "/product_management/page_waitsubmit_product/";
                                 } else {
                                     $.growlService(data.error_messag, {type: "danger"});
@@ -177,15 +175,15 @@ var UpdateTable = function () {
                 return
             } else {
                 // 选中全部不通过
-                var con = confirm("确定取消吗?");
+                var con = confirm("确定删除吗?");
                 if (con) {
-                    var checkedBox_all = $("input[class='check']");
+                    var checkedBox_all = $("input[class='updatecheck']");
                     for (var i = 0; i < checkedBox_all.length; i++) {
                         if (checkedBox_all[i].checked) {
                             var data = $("#update_table").DataTable().row(i).data();
                             $.get("/product_management/update/delete/" + data["id"] + "/", function (data) {
                                 if (data.success) {
-                                    $.growlService("提交成功！", {type: "success"});
+                                    $.growlService("删除成功！", {type: "success"});
                                     location.href = "/product_management/page_waitsubmit_product/";
                                 } else {
                                     $.growlService(data.error_messag, {type: "danger"});

@@ -61,7 +61,10 @@ var WaitSubmitTable = function () {
                             var modify = $('<a href="/product_management/edit_product/' + oData["id"] + '/" class="btn btn-xs">修改</a>');
                             var cancel = $('<a href="javascript:;" class="btn btn-xs btn-danger">删除</a>');
                             var submit = $('<a href="javascript:;" class="btn btn-xs btn-info">提交</a>');
-                            element.append(modify);
+                            if(oData["apply_type"] == 1 || oData["apply_type"] == 2){
+                                element.append(modify);
+                            }
+
                             element.append(cancel);
                             element.append(submit);
 
@@ -129,8 +132,6 @@ var WaitSubmitTable = function () {
                 var check = $(this).parent("span").hasClass("checked");
                 if (!check) {
                     $(this).prop("checked", true).uniform('refresh');
-                } else {
-                    $(this).prop("checked", false).uniform('refresh');
                 }
                 $(this).parents("tr").toggleClass("selected")
             });
