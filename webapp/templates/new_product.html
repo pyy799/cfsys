@@ -135,11 +135,14 @@
                             {% endfor %}
                         </select>
                         <button class="btn btn-sm yellow filter-submit"><i class="fa fa-search"></i> 查询</button>
-                        <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> 取消查询</button>
+                        <button class="btn btn-sm red filter-cancel"><i class="fa fa-search-plus"></i> 全部显示</button>
+                    <button class="btn btn-sm blue" data-toggle="modal" data-target="#update_many">
+                            <i class="fa fa-plus"></i> 批量更新</button>
+                    <br>
+                    <br>
                         <button class="btn btn-sm green checkall" id="checkall"><i class="fa fa-check"></i> 全选</button>
                         <button class="btn btn-sm red clearall" id="clearall"><i class="fa fa-times"></i> 清除</button>
-                        <button class="btn btn-sm blue" data-toggle="modal" data-target="#update_many">
-                            <i class="fa fa-plus"></i> 批量更新</button>
+
                         <div class="modal fade" id="update_many" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content" style="height: 400px">
@@ -222,7 +225,9 @@
                             {% endfor %}
                         </select>
                         <button class="btn btn-sm yellow filter-submit"><i class="fa fa-search"></i> 查询</button>
-                        <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> 取消查询</button>
+                        <button class="btn btn-sm red filter-cancel"><i class="fa fa-search-plus"></i> 全部显示</button>
+                    <br>
+                    <br>
                         <button class="btn btn-sm green checkall" id="checkall"><i class="fa fa-check"></i> 全选</button>
                         <button class="btn btn-sm red clearall" id="clearall"><i class="fa fa-times"></i> 清除</button>
                     </div>
@@ -263,7 +268,7 @@
                             {% endfor %}
                         </select>
                         <button class="btn btn-sm yellow filter-submit"><i class="fa fa-search"></i> 查询</button>
-                        <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> 取消查询</button>
+                        <button class="btn btn-sm red filter-cancel"><i class="fa fa-search-plus"></i> 全部显示</button>
                     </div>
                     <table class="table table-striped table-bordered table-hover dataTable no-footer"
                         id="waitpass_table" style="word-break: keep-all">
@@ -303,7 +308,7 @@
                             <option value=4>审核不通过</option>
                         </select>
                         <button class="btn btn-sm yellow filter-submit"><i class="fa fa-search"></i> 查询</button>
-                        <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> 取消查询</button>
+                        <button class="btn btn-sm red filter-cancel"><i class="fa fa-search-plus"></i> 全部显示</button>
                     </div>
                     <table class="table table-striped table-bordered table-hover dataTable no-footer"
                         id="passed_table" style="word-break: keep-all">
