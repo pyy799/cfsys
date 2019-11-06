@@ -20,7 +20,11 @@ from webapp.utils.query import get_query, create_data
 @login_required
 @permission_required('webapp.product_information_manege_check')
 def index(request, template_name):
-    return render(request, template_name)
+    page_dict = {}
+    company_choice = COMPANY_CHOICE
+    apply_choice = APPLY_CHOICE
+    page_dict.update({"company_choice": company_choice, "apply_choice": apply_choice})
+    return render(request, template_name, page_dict)
 
 
 # 单纯跳转页面
@@ -1099,7 +1103,7 @@ def check_product(request, pid):
         product.is_vaild = True
         product.save()
     elif product.apply_type==ApplyStatus.ALTER:
-        product_old=Product.objects.get(Q(product_num=product.product_num),Q(version=product.version-1),Q(is_vaild=True))
+        product_old=Product.objects.get(Q(product_num=product.product_num),Q(version=product.version-1),Q(status=ProductStatus.PASS))
         product_old.is_vaild=False
         product_old.save()
         product.is_vaild = True
@@ -1118,7 +1122,7 @@ def check_product(request, pid):
 @permission_required('webapp.product_information_manege_check')
 def checked(request):
     fil = {"status__gte": ProductStatus.PASS}
-    product_list, count, error = get_query(request, Product, **fil)
+    product_list, count, error = get_query(request, Product, **fil,order=["-pass_time"])
     pack_list = [i.pack_data() for i in product_list]
     res = create_data(request.POST.get("draw", 1), pack_list, count)
     return HttpResponse(res)
