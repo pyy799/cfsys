@@ -38,8 +38,7 @@ def jump(request, template_name):
 # 查询页数据
 def search(request):
     fil = {"status": ProductStatus.PASS, "is_vaild": True}
-    product_list = Product.objects.filter(**fil).order_by('pass_time')
-    count = len(product_list)
+    product_list, count, error = get_query(request, Product, **fil, order=["-pass_time"])
     pack_list = [i.pack_data() for i in product_list]
     res = create_data(request.POST.get("draw", 1), pack_list, count)
     return HttpResponse(res)
