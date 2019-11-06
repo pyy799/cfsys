@@ -29,8 +29,34 @@
             <div class="tab-content">
 
                 <div {% if request.path == '/product_management/page_pass_product/' %} class="active table-container no-padding tab-pane" {% endif %} class="table-container no-padding tab-pane" id="waitcheck" style="padding:14px">
-                    <button class="btn btn-sm green checkall" id="checkall"><i class="fa fa-check"></i> 全选 </button>
+                     <div class="table-actions-wrapper">
+                    <label>产品名称</label>
+                        <input type="text" class="form-control input-inline input-middle input-sm form-filter"
+                               name="product_name__icontains" placeholder="产品名称" style="width: 200px">
+                        <label>公司</label>
+                        <select class="form-control input-inline input-small input-sm form-filter select"
+                                name="pCompany" data-placeholder='公司'>
+                            <option value=''></option>
+                            {% for s in company_choice %}
+                                <option value="{{ s.0 }}">{{ s.1 }}</option>
+                            {% endfor %}
+                        </select>
+                        <label>申请类型</label>
+                        <select class="form-control input-inline input-small input-sm form-filter select"
+                                name="apply_type" data-placeholder='申请类型'>
+                            <option value=''></option>
+                            {% for s in apply_choice %}
+                                <option value="{{ s.0 }}">{{ s.1 }}</option>
+                            {% endfor %}
+                        </select>
+                        <button class="btn btn-sm yellow filter-submit"><i class="fa fa-search"></i> 查询</button>
+                        <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> 取消查询</button>
+                     <br><br>
+                                         <button class="btn btn-sm green checkall" id="checkall"><i class="fa fa-check"></i> 全选 </button>
                     <button type="button" class="btn btn-warning btn-sm red clearAll" id="clearall"><i class="fa fa-times"></i> 清除 </button>
+
+                    </div>
+
                     <table class="table table-striped table-bordered table-hover dataTable no-footer"
                         id="waitcheck_table" style="word-break: keep-all">
                         <thead></thead>
@@ -43,6 +69,37 @@
                 </div>
 
                 <div {% if request.path == '/product_management/page_checked_product/' %} class="active table-container no-padding tab-pane" {% endif %} class="table-container no-padding tab-pane" id="checked" style="padding:14px">
+                    <div class="table-actions-wrapper">
+                    <label>产品名称</label>
+                        <input type="text" class="form-control input-inline input-middle input-sm form-filter"
+                               name="product_name__icontains" placeholder="产品名称" style="width: 200px">
+                        <label>公司</label>
+                        <select class="form-control input-inline input-small input-sm form-filter select"
+                                name="pCompany" data-placeholder='公司'>
+                            <option value=''></option>
+                            {% for s in company_choice %}
+                                <option value="{{ s.0 }}">{{ s.1 }}</option>
+                            {% endfor %}
+                        </select>
+                        <label>申请类型</label>
+                        <select class="form-control input-inline input-small input-sm form-filter select"
+                                name="apply_type" data-placeholder='申请类型'>
+                            <option value=''></option>
+                            {% for s in apply_choice %}
+                                <option value="{{ s.0 }}">{{ s.1 }}</option>
+                            {% endfor %}
+                        </select>
+                        <label>审核状态</label>
+                        <select class="form-control input-inline input-small input-sm form-filter select"
+                                name="status" data-placeholder='审核状态'>
+                            <option value=''></option>
+                            <option value=3>审核通过</option>
+                            <option value=4>审核不通过</option>
+                        </select>
+                        <button class="btn btn-sm yellow filter-submit"><i class="fa fa-search"></i> 查询</button>
+                        <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> 取消查询</button>
+                    </div>
+
                     <table class="table table-striped table-bordered table-hover dataTable no-footer"
                         id="checked_table" style="word-break: keep-all">
                         <thead></thead>
