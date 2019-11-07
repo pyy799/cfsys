@@ -43,7 +43,7 @@ var SearchTable = function () {
                     {"mData": "independence_name", "sTitle": "自主度"},
                     {"mData": "business_name", "sTitle": "业务领域"},
                     {"mData": "technology_name", "sTitle": "技术形态"},
-                    {"mData": "pass_time", "sTitle": "发布时间"}
+                    {"mData": "pass_time", "sTitle": "发布日期"}
 
                 ],
                 "fnRowCallback": function (nRow, aData, iDisplayIndex) {// 当创建了行，但还未绘制到屏幕上的时候调用，通常用于改变行的class风格

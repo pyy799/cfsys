@@ -130,7 +130,7 @@ def show(request, template_name):
             serial = 0
             bpl = []
             if maturity_choice == i.first_class:
-                product_list = Product.objects.filter(**maturity_search_dict)
+                product_list = Product.objects.filter(**maturity_search_dict).order_by('-pass_time')
                 num = len(product_list)
                 for s in product_list:
                     serial += 1
@@ -152,7 +152,7 @@ def show(request, template_name):
     else:
         for i in maturity1:
             maturity_search_dict.update({"maturity__first_class": i.first_class})
-            product_list = Product.objects.filter(**maturity_search_dict)
+            product_list = Product.objects.filter(**maturity_search_dict).order_by('-pass_time')
             num = len(product_list)
             str1 = ""
             serial = 0
@@ -182,7 +182,7 @@ def show(request, template_name):
             serial = 0
             bpl = []
             if independence_choice == i.first_class:
-                product_list = Product.objects.filter(**independence_search_dict)
+                product_list = Product.objects.filter(**independence_search_dict).order_by('-pass_time')
                 num = len(product_list)
                 for s in product_list:
                     serial += 1
@@ -204,7 +204,7 @@ def show(request, template_name):
     else:
         for i in independence1:
             independence_search_dict.update({"independence__first_class": i.first_class})
-            product_list = Product.objects.filter(**independence_search_dict)
+            product_list = Product.objects.filter(**independence_search_dict).order_by('-pass_time')
             num = len(product_list)
             str1 = ""
             serial = 0
@@ -233,7 +233,7 @@ def show(request, template_name):
             serial = 0
             bpl = []
             if business_choice == i.first_class:
-                product_list = Product.objects.filter(**business_search_dict)
+                product_list = Product.objects.filter(**business_search_dict).order_by('-pass_time')
                 num = len(product_list)
                 for s in product_list:
                     serial += 1
@@ -251,7 +251,7 @@ def show(request, template_name):
     else:
         for i in business:
             business_search_dict.update({"business__first_class": i.first_class})
-            product_list = Product.objects.filter(**business_search_dict)
+            product_list = Product.objects.filter(**business_search_dict).order_by('-pass_time')
             num = len(product_list)
             str1 = ""
             serial = 0
@@ -275,7 +275,7 @@ def show(request, template_name):
             serial = 0
             bpl = []
             if technology_choice == i.first_class:
-                product_list = Product.objects.filter(**technology_search_dict)
+                product_list = Product.objects.filter(**technology_search_dict).order_by('-pass_time')
                 num = len(product_list)
                 for s in product_list:
                     serial += 1
@@ -292,7 +292,7 @@ def show(request, template_name):
     else:
         for i in technology:
             technology_search_dict.update({"technology__first_class": i.first_class})
-            product_list = Product.objects.filter(**technology_search_dict)
+            product_list = Product.objects.filter(**technology_search_dict).order_by('-pass_time')
             technology_list.append(i.meaning)
             num = len(product_list)
             str1 = ""
@@ -324,7 +324,7 @@ def show(request, template_name):
                         bpl = []
                         if maturity_choice == mat.first_class:
                             product_list = Product.objects.filter(
-                                **maturity_independence_search_dict)
+                                **maturity_independence_search_dict).order_by('-pass_time')
                             num3 = len(product_list)
                             for s in product_list:
                                 serial += 1
@@ -346,7 +346,7 @@ def show(request, template_name):
                         serial = 0
                         bpl = []
                         maturity_independence_search_dict["maturity__first_class"] = mat.first_class
-                        product_list = Product.objects.filter(**maturity_independence_search_dict)
+                        product_list = Product.objects.filter(**maturity_independence_search_dict).order_by('-pass_time')
                         num3 = len(product_list)
                         for s in product_list:
                             serial += 1
@@ -385,7 +385,7 @@ def show(request, template_name):
                     serial = 0
                     bpl = []
                     if maturity_choice == mat.first_class:
-                        product_list = Product.objects.filter(**maturity_independence_search_dict)
+                        product_list = Product.objects.filter(**maturity_independence_search_dict).order_by('-pass_time')
                         num3 = len(product_list)
                         for s in product_list:
                             serial += 1
@@ -404,7 +404,7 @@ def show(request, template_name):
             else:
                 for mat in maturity:
                     maturity_independence_search_dict["maturity__first_class"] = mat.first_class
-                    product_list = Product.objects.filter(**maturity_independence_search_dict)
+                    product_list = Product.objects.filter(**maturity_independence_search_dict).order_by('-pass_time')
                     num3 = len(product_list)
                     str1 = ""
                     serial = 0
@@ -441,7 +441,7 @@ def show(request, template_name):
                         serial = 0
                         bpl = []
                         if business_choice == bus.first_class:
-                            product_list = Product.objects.filter(**business_technology_search_dict)
+                            product_list = Product.objects.filter(**business_technology_search_dict).order_by('-pass_time')
                             num3 = len(product_list)
                             for s in product_list:
                                 serial += 1
@@ -460,7 +460,7 @@ def show(request, template_name):
                 else:
                     for bus in business:
                         business_technology_search_dict["business__first_class"] = bus.first_class
-                        product_list = Product.objects.filter(**business_technology_search_dict)
+                        product_list = Product.objects.filter(**business_technology_search_dict).order_by('-pass_time')
                         num3 = len(product_list)
                         str1 = ""
                         serial = 0
@@ -502,7 +502,7 @@ def show(request, template_name):
                     serial = 0
                     bpl = []
                     if business_choice == bus.first_class:
-                        product_list = Product.objects.filter(**business_technology_search_dict)
+                        product_list = Product.objects.filter(**business_technology_search_dict).order_by('-pass_time')
                         num3 = len(product_list)
                         for s in product_list:
                             serial += 1
@@ -521,7 +521,7 @@ def show(request, template_name):
             else:
                 for bus in business:
                     business_technology_search_dict["business__first_class"] = bus.first_class
-                    product_list = Product.objects.filter(**business_technology_search_dict)
+                    product_list = Product.objects.filter(**business_technology_search_dict).order_by('-pass_time')
                     num3 = len(product_list)
                     str1 = ""
                     serial = 0

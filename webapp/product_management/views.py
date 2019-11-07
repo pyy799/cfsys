@@ -1,4 +1,3 @@
-
 import os
 import re
 import shutil
@@ -17,6 +16,7 @@ from webapp.shortcuts.ajax import ajax_success, ajax_error
 from cfsys.settings import *
 from webapp.utils.query import get_query, create_data
 
+
 @login_required
 @permission_required('webapp.product_information_manege_check')
 def index(request, template_name):
@@ -30,6 +30,7 @@ def index(request, template_name):
 # 单纯跳转页面
 def jump(request, template_name):
     return render(request, template_name)
+
 
 # 新建及更新页面
 @login_required
@@ -48,10 +49,11 @@ def page_new_product(request, template_name):
     fil.update({"uploader": user})
     product_list = Product.objects.filter(**fil)
     nopass_num = product_list.count()
-    page_dict.update({"company_choice": company_choice, "apply_choice": apply_choice, "waitsubmit_num":waitsubmit_num,
-                      "nopass_num":nopass_num})
+    page_dict.update({"company_choice": company_choice, "apply_choice": apply_choice, "waitsubmit_num": waitsubmit_num,
+                      "nopass_num": nopass_num})
 
     return render(request, template_name, page_dict)
+
 
 # 更新页面数据
 @csrf_exempt
@@ -77,7 +79,7 @@ def update_invalid(request, pid):
     try:
         product = Product.objects.get(id=pid)
     except Exception as e:
-        return ajax_error("停用失败!"+str(e))
+        return ajax_error("停用失败!" + str(e))
     product.apply_type = ApplyStatus.INVALID
     product.status = ProductStatus.WAIT_SUBMIT
     product.save()
@@ -91,7 +93,7 @@ def update_delete(request, pid):
     try:
         product = Product.objects.get(id=pid)
     except Exception as e:
-        return ajax_error("取消失败!"+str(e))
+        return ajax_error("取消失败!" + str(e))
     product.apply_type = ApplyStatus.DELETE
     product.status = ProductStatus.WAIT_SUBMIT
     product.save()
@@ -132,7 +134,7 @@ def new_many(request):
         save_zip = os.path.splitext(zip.name)[1]
         if save_zip != '.zip' and save_zip != '.rar':
             raise Exception("审批信息文件类型有误！")
-        zip_file_name = save_name+save_zip
+        zip_file_name = save_name + save_zip
         if not os.path.exists(PRODUCT_TEMP_ZIP_PATH):
             os.makedirs(PRODUCT_TEMP_ZIP_PATH)
         destination = open(os.path.join(PRODUCT_TEMP_ZIP_PATH, zip_file_name), "wb+")  # 把文件写入
@@ -144,7 +146,7 @@ def new_many(request):
         save_excel = os.path.splitext(excel.name)[1]
         if save_excel != '.xls' and save_excel != '.xlsx':
             raise Exception("产品信息文件类型有误！")
-        excel_file_name = save_name+save_excel
+        excel_file_name = save_name + save_excel
         if not os.path.exists(PRODUCT_TEMP_EXCEL_PATH):
             os.makedirs(PRODUCT_TEMP_EXCEL_PATH)
         destination = open(os.path.join(PRODUCT_TEMP_EXCEL_PATH, excel_file_name), "wb+")  # 把文件写入
@@ -162,37 +164,38 @@ def new_many(request):
             product_name = str(row[0]).strip()
             if not product_name:
                 raise Exception("产品名称不能为空！")
-            if len(product_name)>64:
+            if len(product_name) > 64:
                 raise Exception("产品名称不能超过64个字符！")
-            product_exist = Product.objects.exclude(Q(apply_type=ApplyStatus.INVALID)& Q(status=ProductStatus.PASS)).filter(product_name=product_name)
-            if len(product_exist)>0:
+            product_exist = Product.objects.exclude(
+                Q(apply_type=ApplyStatus.INVALID) & Q(status=ProductStatus.PASS)).filter(product_name=product_name)
+            if len(product_exist) > 0:
                 raise Exception("产品名称已存在！")
             old_product_name = str(row[1]).strip()
-            if len(old_product_name)>64:
+            if len(old_product_name) > 64:
                 raise Exception("旧产品名称不能超过64个字符！")
             if old_product_name == 'N.A.' or not old_product_name:
                 old_product_name = None
             introduction = str(row[2]).strip()
             if not introduction:
                 raise Exception("产品描述不能为空！")
-            if len(introduction)>1024:
+            if len(introduction) > 1024:
                 raise Exception("产品描述不能超过1024个字符！")
             is_overlap = str(row[3]).strip()
             if is_overlap:
-                if is_overlap=="是":
+                if is_overlap == "是":
                     is_overlap = True
-                elif is_overlap=="否":
+                elif is_overlap == "否":
                     is_overlap = False
                 else:
                     raise Exception("是否重叠填写有误！")
             target_field = str(row[4]).strip()
-            if len(target_field)>1024:
+            if len(target_field) > 1024:
                 raise Exception("目标行业不能超过1024个字符！")
             apply_situation = str(row[5]).strip()
-            if len(apply_situation)>1024:
+            if len(apply_situation) > 1024:
                 raise Exception("应用场景不能超过1024个字符！")
             example = str(row[6]).strip()
-            if len(example)>1024:
+            if len(example) > 1024:
                 raise Exception("市场案例不能超过1024个字符！")
             one_year_money = str(row[7]).strip()
             if one_year_money:
@@ -263,7 +266,7 @@ def new_many(request):
                 if not independence_a:
                     raise Exception("自主度填写有误！")
                 if not business_a:
-                    raise Exception("业务类别填写有误！")
+                    raise Exception("业务领域填写有误！")
                 if not technology_a:
                     raise Exception("技术性态填写有误！")
             else:
@@ -280,7 +283,7 @@ def new_many(request):
             upload_time = datetime.date.today()
             real_name = zip.name
 
-            attribute_num = maturity+independence+business+technology
+            attribute_num = maturity + independence + business + technology
             status = ProductStatus.WAIT_SUBMIT
             apply_type = ApplyStatus.NEW
             version = 1
@@ -327,7 +330,7 @@ def new_many(request):
         if excel_file_name:
             os.remove(os.path.join(PRODUCT_TEMP_EXCEL_PATH, excel_file_name))
         if i:
-            return ajax_error("产品文件上传失败:"+"第"+str(i+1)+"行"+str(e))
+            return ajax_error("产品文件上传失败:" + "第" + str(i + 1) + "行" + str(e))
         else:
             return ajax_error("产品文件上传失败:" + str(e))
 
@@ -358,7 +361,7 @@ def update_many(request):
         save_zip = os.path.splitext(zip.name)[1]
         if save_zip != '.zip' and save_zip != '.rar':
             raise Exception("审批信息文件类型有误！")
-        zip_file_name = save_name+save_zip
+        zip_file_name = save_name + save_zip
         if not os.path.exists(PRODUCT_TEMP_ZIP_PATH):
             os.makedirs(PRODUCT_TEMP_ZIP_PATH)
         destination = open(os.path.join(PRODUCT_TEMP_ZIP_PATH, zip_file_name), "wb+")  # 把文件写入
@@ -370,7 +373,7 @@ def update_many(request):
         save_excel = os.path.splitext(excel.name)[1]
         if save_excel != '.xls' and save_excel != '.xlsx':
             raise Exception("产品信息文件类型有误！")
-        excel_file_name = save_name+save_excel
+        excel_file_name = save_name + save_excel
         if not os.path.exists(PRODUCT_TEMP_EXCEL_PATH):
             os.makedirs(PRODUCT_TEMP_EXCEL_PATH)
         destination = open(os.path.join(PRODUCT_TEMP_EXCEL_PATH, excel_file_name), "wb+")  # 把文件写入
@@ -389,23 +392,23 @@ def update_many(request):
             if not product_name:
                 raise Exception("产品名称不能为空！")
 
-            if len(product_name)>64:
+            if len(product_name) > 64:
                 raise Exception("产品名称不能超过64个字符！")
             old_product_name = str(row[1]).strip()
-            if len(old_product_name)>64:
+            if len(old_product_name) > 64:
                 raise Exception("旧产品名称不能超过64个字符！")
             if old_product_name == 'N.A.' or not old_product_name:
                 old_product_name = None
             introduction = str(row[2]).strip()
             if not introduction:
                 raise Exception("产品描述不能为空！")
-            if len(introduction)>1024:
+            if len(introduction) > 1024:
                 raise Exception("产品描述不能超过1024个字符！")
             is_overlap = str(row[3]).strip()
             if is_overlap:
-                if is_overlap=="是":
+                if is_overlap == "是":
                     is_overlap = True
-                elif is_overlap=="否":
+                elif is_overlap == "否":
                     is_overlap = False
                 else:
                     raise Exception("是否重叠填写有误！")
@@ -488,7 +491,7 @@ def update_many(request):
                 if not independence_a:
                     raise Exception("自主度填写有误！")
                 if not business_a:
-                    raise Exception("业务类别填写有误！")
+                    raise Exception("业务领域填写有误！")
                 if not technology_a:
                     raise Exception("技术性态填写有误！")
             else:
@@ -504,28 +507,33 @@ def update_many(request):
                 raise Exception("备注不能超过1024个字符！")
 
             # 判断是否是更新
-            product_exist_list = Product.objects.exclude(Q(apply_type=ApplyStatus.INVALID)& Q(status=ProductStatus.PASS))\
+            product_exist_list = Product.objects.exclude(
+                Q(apply_type=ApplyStatus.INVALID) & Q(status=ProductStatus.PASS)) \
                 .filter(product_name=product_name)  # 在所有没停用的产品里找重名的
-            if len(product_exist_list)>0: # 有重名的，看重名是否合法
-                if group.id == 1: # 超级管理员
+            if len(product_exist_list) > 0:  # 有重名的，看重名是否合法
+                if group.id == 1:  # 超级管理员
                     b = product_exist_list.filter(Q(status=ProductStatus.PASS) & Q(is_vaild=True)).order_by('-version')
-                else: # 分公司
-                    b = product_exist_list.filter(Q(pCompany=user.uCompany) & Q(status=ProductStatus.PASS) & Q(is_vaild=True))\
+                else:  # 分公司
+                    b = product_exist_list.filter(
+                        Q(pCompany=user.uCompany) & Q(status=ProductStatus.PASS) & Q(is_vaild=True)) \
                         .order_by('-version')
                 # b是合法重名的
-                if len(product_exist_list) > len(b): # 有不合法重名产品
+                if len(product_exist_list) > len(b):  # 有不合法重名产品
                     raise Exception("产品名称重复！")
-                else: # 重名合法->是更新
+                else:  # 重名合法->是更新
                     product_exist = b[0]
-            else: # 产品名称没和自己公司的重复->查旧产品名称
+            else:  # 产品名称没和自己公司的重复->查旧产品名称
                 if old_product_name:
                     if group.id == 1:  # 超级管理员
-                        old_product_exist_list = Product.objects.exclude(Q(apply_type=ApplyStatus.INVALID) & Q(status=ProductStatus.PASS))\
-                            .filter(Q(product_name=old_product_name) & Q(status=ProductStatus.PASS) & Q(is_vaild=True))\
+                        old_product_exist_list = Product.objects.exclude(
+                            Q(apply_type=ApplyStatus.INVALID) & Q(status=ProductStatus.PASS)) \
+                            .filter(Q(product_name=old_product_name) & Q(status=ProductStatus.PASS) & Q(is_vaild=True)) \
                             .order_by('-version')
                     else:
-                        old_product_exist_list = Product.objects.exclude(Q(apply_type=ApplyStatus.INVALID) & Q(status=ProductStatus.PASS))\
-                            .filter(Q(product_name=old_product_name) & Q(pCompany=user.uCompany) & Q(status=ProductStatus.PASS) & Q(is_vaild=True)). \
+                        old_product_exist_list = Product.objects.exclude(
+                            Q(apply_type=ApplyStatus.INVALID) & Q(status=ProductStatus.PASS)) \
+                            .filter(Q(product_name=old_product_name) & Q(pCompany=user.uCompany) & Q(
+                            status=ProductStatus.PASS) & Q(is_vaild=True)). \
                             order_by('-version')
                     if len(old_product_exist_list) > 0:  # 旧产品名称和自己公司合法产品的重复->是更新
                         product_exist = old_product_exist_list[0]
@@ -534,30 +542,30 @@ def update_many(request):
                 else:  # 没有旧产品名称->是新建
                     product_exist = None
 
-            if product_exist: # 更新的话
+            if product_exist:  # 更新的话
                 # 更新内容和原来判重
-                if  product_name==product_exist.product_name and old_product_name==product_exist.old_product_name and \
-                    introduction==product_exist.introduction and is_overlap==product_exist.is_overlap and\
-                    target_field==product_exist.target_field and apply_situation==product_exist.apply_situation and \
-                    example == product_exist.example and one_year_money==product_exist.one_year_money and \
-                    one_year_num == product_exist.one_year_num and three_year_money==product_exist.three_year_money and\
-                    three_year_num == product_exist.three_year_num and pCompany==product_exist.pCompany and \
-                    Attribute.objects.get(first_class=maturity) == product_exist.maturity and \
-                    Attribute.objects.get(first_class=independence) == product_exist.independence and \
-                    Attribute.objects.get(second_class=business) == product_exist.business and \
-                    Attribute.objects.get(second_class=technology) == product_exist.technology and \
-                    contact_people==product_exist.contact_people and remark == product_exist.remark:
+                if product_name == product_exist.product_name and old_product_name == product_exist.old_product_name and \
+                        introduction == product_exist.introduction and is_overlap == product_exist.is_overlap and \
+                        target_field == product_exist.target_field and apply_situation == product_exist.apply_situation and \
+                        example == product_exist.example and one_year_money == product_exist.one_year_money and \
+                        one_year_num == product_exist.one_year_num and three_year_money == product_exist.three_year_money and \
+                        three_year_num == product_exist.three_year_num and pCompany == product_exist.pCompany and \
+                        Attribute.objects.get(first_class=maturity) == product_exist.maturity and \
+                        Attribute.objects.get(first_class=independence) == product_exist.independence and \
+                        Attribute.objects.get(second_class=business) == product_exist.business and \
+                        Attribute.objects.get(second_class=technology) == product_exist.technology and \
+                        contact_people == product_exist.contact_people and remark == product_exist.remark:
                     continue  # 都一样就跳过
-                else: # 有不一样的，更新
+                else:  # 有不一样的，更新
                     apply_type = ApplyStatus.ALTER
-                    version = product_exist.version+1
-            else: # 新建
+                    version = product_exist.version + 1
+            else:  # 新建
                 apply_type = ApplyStatus.NEW
                 version = 1
 
             upload_time = datetime.date.today()
             real_name = zip.name
-            attribute_num = maturity+independence+business+technology
+            attribute_num = maturity + independence + business + technology
             status = ProductStatus.WAIT_SUBMIT
             is_vaild = False
 
@@ -606,14 +614,14 @@ def update_many(request):
                 product.delete()
         if product_invaild_list:
             for product in product_invaild_list:
-                product_exist.is_vaild = True
-                product_exist.save()
+                product.is_vaild = True
+                product.save()
         if zip_file_name:
             os.remove(os.path.join(PRODUCT_TEMP_ZIP_PATH, zip_file_name))
         if excel_file_name:
             os.remove(os.path.join(PRODUCT_TEMP_EXCEL_PATH, excel_file_name))
         if i:
-            return ajax_error("产品文件上传失败:"+"第"+str(i+1)+"行"+str(e))
+            return ajax_error("产品文件上传失败:" + "第" + str(i + 1) + "行" + str(e))
         else:
             return ajax_error("产品文件上传失败:" + str(e))
 
@@ -650,20 +658,20 @@ def edit_product(request, pid, template_name):
             product_value = product.pack_data()
             real_name = product.real_name
             file_name = real_name
-            print(real_name)
+            # print(real_name)
         except Exception as e:
-            return ajax_error("产品不存在!"+str(e))
+            return ajax_error("产品不存在!" + str(e))
     else:  # 新建
-        path = os.path.join(TEMP_FILES_PATH, user.username)   # 如果是新建，则原文件在temp/user路径
+        path = os.path.join(TEMP_FILES_PATH, user.username)  # 如果是新建，则原文件在temp/user路径
         if os.path.exists(path) and len(os.listdir(path)):
             file_name = os.listdir(path)[0].split('_')[0]
-    if group.id != 1: # 不是超级管理员
+    if group.id != 1:  # 不是超级管理员
         user_company = user.uCompany
         user_company_name = dict(COMPANY_CHOICE).get(user_company)
 
     page_dict = {"pid": pid, "product": product_value, "file_name": file_name, "company_choice": company_choice,
-                 "m_choice": m_choice, "i_choice": i_choice, "b_choice":b_choice, "t_choice":t_choice,
-                 "user_company":user_company, "user_company_name":user_company_name}
+                 "m_choice": m_choice, "i_choice": i_choice, "b_choice": b_choice, "t_choice": t_choice,
+                 "user_company": user_company, "user_company_name": user_company_name}
     return render(request, template_name, page_dict)
 
 
@@ -684,7 +692,7 @@ def edit_upload_file(request, pid):
             save_zip = os.path.splitext(zip.name)[1]
             if save_zip != '.zip' and save_zip != '.rar':
                 raise Exception("审批文件类型有误！")
-            zip_file_name = save_name+save_zip
+            zip_file_name = save_name + save_zip
             path = PRODUCT_TEMP_ZIP_PATH
             if not os.path.exists(path):
                 os.makedirs(path)
@@ -703,7 +711,7 @@ def edit_upload_file(request, pid):
             save_zip = os.path.splitext(zip.name)[1]
             if save_zip != '.zip' and save_zip != '.rar':
                 raise Exception("审批文件类型有误！")
-            zip_file_name = save_name+save_zip
+            zip_file_name = save_name + save_zip
             path = os.path.join(TEMP_FILES_PATH, user.username)
             if not os.path.exists(path):
                 os.makedirs(path)
@@ -728,7 +736,7 @@ def edit_delete_file(request, pid):
             full_name = product.save_name
             status = product.status
             product_list = Product.objects.filter(save_name=full_name)
-            if len(product_list)==1:  # 如果还有关联产品就不删
+            if len(product_list) == 1:  # 如果还有关联产品就不删
                 if status == ProductStatus.WAIT_SUBMIT:
                     os.remove(os.path.join(PRODUCT_TEMP_ZIP_PATH, full_name))
                 else:
@@ -737,13 +745,13 @@ def edit_delete_file(request, pid):
             product.real_name = None
             product.save()
         except Exception as e:
-            return ajax_error("找不到产品!"+str(e))
+            return ajax_error("找不到产品!" + str(e))
     else:  # 新建-编辑-删文件
         path = os.path.join(TEMP_FILES_PATH, user.username)
         if os.path.exists(path):
             shutil.rmtree(path)
 
-    return HttpResponseRedirect("/product_management/edit_product/"+str(pid)+"/")
+    return HttpResponseRedirect("/product_management/edit_product/" + str(pid) + "/")
 
 
 # 编辑产品页面提交
@@ -763,7 +771,7 @@ def edit_submit(request, pid):
         product_name = request.POST.get("product_name").strip()
         if pid == 0:  # 新建
             flag_new = True
-        else: # 单个更新或待提交修改或未通过修改
+        else:  # 单个更新或待提交修改或未通过修改
             product = Product.objects.get(id=pid)
             if product.apply_type == ApplyStatus.NEW:
                 flag_new = True
@@ -771,16 +779,17 @@ def edit_submit(request, pid):
                 flag_new = False
 
         if flag_new:  # 新建
-            product_exist = Product.objects.exclude(Q(apply_type=ApplyStatus.INVALID) & Q(status=ProductStatus.PASS))\
-                .filter(product_name=product_name)
+            product_exist = Product.objects.exclude(Q(apply_type=ApplyStatus.INVALID) & Q(status=ProductStatus.PASS)) \
+                .filter(Q(product_name=product_name), ~Q(id=pid))
             count = len(product_exist)
             if count > 0:
                 raise Exception("产品名称已存在!")
         else:  # 更新
             old_name = Product.objects.filter(product_num=product.product_num).order_by('-version')[0].product_name
             if product_name != old_name:
-                product_exist = Product.objects.exclude(Q(apply_type=ApplyStatus.INVALID) & Q(status=ProductStatus.PASS)) \
-                .filter(product_name=product_name)
+                product_exist = Product.objects.exclude(
+                    Q(apply_type=ApplyStatus.INVALID) & Q(status=ProductStatus.PASS)) \
+                    .filter(product_name=product_name)
                 count = len(product_exist)
                 if count > 0:
                     raise Exception("产品名称已存在!")
@@ -803,12 +812,12 @@ def edit_submit(request, pid):
             if not str(request.POST.get("one_year_money")).strip():
                 one_year_money = 0
             elif pattern.match(str(request.POST.get("one_year_money")).strip()):
-                one_year_money= float(request.POST.get("one_year_money") or 0)
+                one_year_money = float(request.POST.get("one_year_money") or 0)
             else:
                 raise Exception("过去一年销售额填写有误！")
         else:
             one_year_money = 0
-        one_year_num= int(request.POST.get("one_year_num") or 0)
+        one_year_num = int(request.POST.get("one_year_num") or 0)
         if request.POST.get("three_year_money"):
             if not str(request.POST.get("three_year_money")).strip():
                 three_year_money = 0
@@ -818,12 +827,12 @@ def edit_submit(request, pid):
                 raise Exception("过去三年销售额填写有误！")
         else:
             three_year_money = 0
-        three_year_num= int(request.POST.get("three_year_num") or 0)
-        contact_people= request.POST.get("contact_people").strip()
-        introduction= request.POST.get("introduction").strip()
+        three_year_num = int(request.POST.get("three_year_num") or 0)
+        contact_people = request.POST.get("contact_people").strip()
+        introduction = request.POST.get("introduction").strip()
         target_field = request.POST.get("target_field").strip()
         apply_situation = request.POST.get("apply_situation").strip()
-        example= request.POST.get("example").strip()
+        example = request.POST.get("example").strip()
         remark = request.POST.get("remark").strip()
         upload_time = datetime.date.today()
 
@@ -839,14 +848,14 @@ def edit_submit(request, pid):
         if pid != 0:
             product = Product.objects.get(id=pid)
             if product.status == ProductStatus.PASS:  # 单个更新
-                product_old = Product.objects.get(product_num=product.product_num, version=product.version-1)
+                product_old = Product.objects.get(product_num=product.product_num, version=product.version - 1)
                 product_old.is_vaild = False
                 product_old.save()
                 # apply_type = ApplyStatus.ALTER
                 # version = product_old.version+1
             # else:  # 待提交修改和审核不通过修改
-                # apply_type = product.apply_type
-                # version = product.version
+            # apply_type = product.apply_type
+            # version = product.version
 
         else:  # 单个新建
             product = Product()
@@ -892,7 +901,7 @@ def edit_submit(request, pid):
                     os.makedirs(PRODUCT_TEMP_ZIP_PATH)
                 shutil.move(file_path, dest_path)
                 shutil.rmtree(path)
-                product.real_name = os.path.splitext(file)[0].split('_')[0]+os.path.splitext(file)[1]
+                product.real_name = os.path.splitext(file)[0].split('_')[0] + os.path.splitext(file)[1]
                 product.save_name = file
                 product.save()
 
@@ -911,7 +920,7 @@ def edit_submit(request, pid):
 @permission_required(['webapp.product_information_manage_new', 'webapp.product_information_manage_update'])
 def update_edit_product(request, pid):
     pid = int(pid)
-    product = Product.objects.get(id = pid)
+    product = Product.objects.get(id=pid)
     product_new = Product()
     product_new.product_name = product.product_name
     product_new.old_product_name = product.old_product_name
@@ -934,6 +943,7 @@ def update_edit_product(request, pid):
     product_new.attribute_num = product.attribute_num
     product_new.contact_people = product.contact_people
     product_new.remark = product.remark
+    product_new.real_name = product.real_name
 
     product_new.status = ProductStatus.PASS
     product_new.apply_type = ApplyStatus.ALTER
@@ -951,10 +961,14 @@ def cancel_submit_product(request, pid):
     try:
         product = Product.objects.get(id=pid)
     except Exception as e:
-        return ajax_error("取消失败!"+str(e))
+        return ajax_error("取消失败!" + str(e))
     # 取消更新/新建
     if product.apply_type == ApplyStatus.NEW or product.apply_type == ApplyStatus.ALTER:
         file = product.save_name
+        if product.apply_type == ApplyStatus.ALTER:#修改类型的删除恢复原状
+            product_old = Product.objects.get(product_num=product.product_num, version=product.version - 1)
+            product_old.is_vaild = True
+            product_old.save()
         product.delete()
         if file:
             product_list = Product.objects.filter(save_name=file)
@@ -985,8 +999,8 @@ def submit_product(request, pid):
     try:
         product = Product.objects.get(id=pid)
     except Exception as e:
-        return ajax_error("提交失败!"+str(e))
-    product.status=ProductStatus.WAIT_PASS
+        return ajax_error("提交失败!" + str(e))
+    product.status = ProductStatus.WAIT_PASS
     product.save()
     # 把文件从temp路径转移到正式路径
     file = product.save_name
@@ -1066,7 +1080,7 @@ def passed(request):
     # 只能看到自己的
     user = request.user.userprofile
     fil.update({"uploader": user})
-    product_list, count, error = get_query(request, Product, **fil,order=["-status"])
+    product_list, count, error = get_query(request, Product, **fil, order=["-status"])
     pack_list = [i.pack_data() for i in product_list]
     res = create_data(request.POST.get("draw", 1), pack_list, count)
     return HttpResponse(res)
@@ -1083,6 +1097,7 @@ def wait_check(request):
     res = create_data(request.POST.get("draw", 1), pack_list, count)
     return HttpResponse(res)
 
+
 # 通过审核操作
 @csrf_exempt
 @login_required
@@ -1091,30 +1106,32 @@ def check_product(request, pid):
     try:
         product = Product.objects.get(id=pid)
     except Exception as e:
-        return ajax_error("审核失败!"+str(e))
+        return ajax_error("审核失败!" + str(e))
     print(product.product_name)
-    product.status=ProductStatus.PASS
+    product.status = ProductStatus.PASS
     product.pass_time = datetime.date.today()
-    product.reason=""
+    product.reason = ""
     # product.is_vaild=True
-    a=product.pass_time
-    b=product.apply_type
-    if product.apply_type==ApplyStatus.NEW:
+    a = product.pass_time
+    b = product.apply_type
+    if product.apply_type == ApplyStatus.NEW:
         product.is_vaild = True
         product.save()
-    elif product.apply_type==ApplyStatus.ALTER:
-        product_old=Product.objects.get(Q(product_num=product.product_num),Q(version=product.version-1),Q(status=ProductStatus.PASS))
-        product_old.is_vaild=False
+    elif product.apply_type == ApplyStatus.ALTER:
+        product_old = Product.objects.get(Q(product_num=product.product_num), Q(version=product.version - 1),
+                                          Q(status=ProductStatus.PASS))
+        product_old.is_vaild = False
         product_old.save()
         product.is_vaild = True
         product.save()
-    elif product.apply_type==ApplyStatus.DELETE:
+    elif product.apply_type == ApplyStatus.DELETE:
         product.delete()
-    elif product.apply_type==ApplyStatus.INVALID:
+    elif product.apply_type == ApplyStatus.INVALID:
         product.is_vaild = False
         product.save()
 
     return ajax_success()
+
 
 # 已审核
 @csrf_exempt
@@ -1122,10 +1139,11 @@ def check_product(request, pid):
 @permission_required('webapp.product_information_manege_check')
 def checked(request):
     fil = {"status__gte": ProductStatus.PASS}
-    product_list, count, error = get_query(request, Product, **fil,order=["-pass_time"])
+    product_list, count, error = get_query(request, Product, **fil, order=["-pass_time"])
     pack_list = [i.pack_data() for i in product_list]
     res = create_data(request.POST.get("draw", 1), pack_list, count)
     return HttpResponse(res)
+
 
 # 不通过审核操作
 @csrf_exempt
@@ -1137,10 +1155,10 @@ def cancel_check_product(request):
     try:
         product = Product.objects.get(id=pid)
     except Exception as e:
-        return ajax_error("不通过失败!"+str(e))
+        return ajax_error("不通过失败!" + str(e))
     product.status = ProductStatus.FAIL
     product.pass_time = datetime.date.today()
-    product.reason=request.POST.get('reason')
+    product.reason = request.POST.get('reason')
     # if product.apply_type == ApplyStatus.ALTER:
     #     product_old = Product.objects.get(Q(product_num=product.product_num), Q(version=product.version - 1))
     #     if product_old:
