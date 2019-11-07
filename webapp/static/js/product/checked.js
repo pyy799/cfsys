@@ -48,7 +48,7 @@ var CheckedTable = function () {
                     {"mData": "technology_name", "sTitle": "技术形态"},
                     {"mData": "uploader", "sTitle": "申请人"},
                     {"mData": "apply_type_name", "sTitle": "申请类型"},
-                    {"mData": "pass_time", "sTitle": "审核时间"},
+                    {"mData": "pass_time", "sTitle": "审核日期"},
                     {"mData": "status_name", "sTitle": "审核结果"},
                     {"mData": "reason", "sTitle": "原因"},
 
