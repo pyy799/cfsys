@@ -11,6 +11,7 @@
 {% block content %}
 <div class="box box-solid" style="padding-left: 100px;">
     <input type="hidden" id="group_login" value="{{ group_login }}">
+    <input type="hidden" id="id_login" value="{{ id_login }}">
     <div><h3 class="box-header with-border" style="margin-top: 0;padding-top: 30px">用户管理</h3></div>
     <div class="box-body">
         <form style="float:left">
@@ -99,7 +100,7 @@
                         {% else %}
                         <td id="active_{{ user.id }}">已停用</td>
                         {% endif %}
-                        {% if user.group == "超级管理员" and group_login != "超级管理员" %}
+                        {% if  user.group == "超级管理员" and group_login != "超级管理员"%}
                             <td>
                             <button type="button" class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"
                                     disabled title="你没有权限修改该用户" onclick="goModify('{{ user.id }}')">修改</button>
@@ -115,7 +116,23 @@
                                 data-target="#delete" onclick="goDelete('{% url "delete_user"  user.id %}','{{ user.id }}')">删除</button>
                             </td>
                         {% else %}
-                            <td>
+                            {% if user.id == id_login %}
+                                <td>
+                            <button type="button" class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"
+                                    disabled title="你没有权限修改该用户" onclick="goModify('{{ user.id }}')">修改</button>
+                            {% if user.is_active %}
+                            <button type="button" class="btn btn-info btn-sm" onclick="changeUse('{{ user.id }}')"
+                                    id="change_{{ user.id }}" disabled title="你没有权限停用该用户">停用</button>
+                            {% else %}
+                            <button type="button" class="btn  btn-info btn-sm" onclick="changeUse('{{ user.id }}')"
+                                    id="change_{{ user.id }}" disabled title="你没有权限启用该用户">启用</button>
+                            {% endif %}
+                            <button type="button" class="btn  btn-danger btn-sm" data-toggle="modal"
+                                    disabled title="你没有权限删除该用户"
+                                data-target="#delete" onclick="goDelete('{% url "delete_user"  user.id %}','{{ user.id }}')">删除</button>
+                            </td>
+                            {% else %}
+                                <td>
                             <button type="button" class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"
                                      onclick="goModify('{{ user.id }}')">修改</button>
                             {% if user.is_active %}
@@ -128,6 +145,7 @@
                             <button type="button" class="btn  btn-danger btn-sm" data-toggle="modal"
                                 data-target="#delete" onclick="goDelete('{% url "delete_user"  user.id %}','{{ user.id }}')">删除</button>
                         </td>
+                            {% endif %}
                         {% endif %}
                     </tr>
                     {% endfor %}
@@ -468,6 +486,7 @@
             'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
         }
         var group_login = $('#group_login').val()
+        var id_login = $('#id_login').val()
         $.ajax({
             url:'search/',
             data:data,
@@ -502,7 +521,7 @@
                    var deleteString
                    if(value.is_active===true){
                        activeString = '<td id="active_'+value.id+'">'+'正在使用</td>'
-                       if(value.group==="超级管理员" && group_login !=="超级管理员") {
+                       if((value.group==="超级管理员"&& group_login !=="超级管理员")||id_login == value.id) {
                            useString = '<button type="button"class="btn btn-info btn-sm" onclick="changeUse('
                        +value.id+')" id="change_'+value.id+'" disabled title="你没有权限停用该用户">停用</button>'
                        }
@@ -513,7 +532,7 @@
                    }
                    else{
                        activeString = '<td id="active_'+value.id+'">'+'已停用</td>'
-                       if(value.group==="超级管理员"&& group_login!=="超级管理员"){
+                       if((value.group==="超级管理员"&& group_login !=="超级管理员")||id_login == value.id){
                            useString = '<button type="button"class="btn btn-info btn-sm" onclick="changeUse('
                        +value.id+')" id="change_'+value.id+'" disabled title="你没有权限启用该用户">启用</button>'
                        }
@@ -523,7 +542,7 @@
                        }
 
                    }
-                   if(value.group==="超级管理员"&& group_login !=="超级管理员"){
+                   if((value.group==="超级管理员"&& group_login !=="超级管理员")||id_login == value.id){
                         modifyString = '<button type="button"class="btn  btn-success btn-sm" data-toggle="modal" data-target="#modify"'
                         +'onclick="goModify('+value.id + ')" disabled title="你没有权限修改该用户">修改</button>'
                         deleteString = '<button type="button" class="btn  btn-danger btn-sm" data-toggle="modal"'+'data-target="#delete" onclick="goDelete('

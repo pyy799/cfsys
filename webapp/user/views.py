@@ -13,6 +13,7 @@ def jump_user(request, template_name):
     group_login = Group.objects.get(user=request.user)  # 登陆人员的group
     company_login = request.user.userprofile.uCompany  # 登陆人员的公司
     company_login_name = request.user.userprofile.get_company(company_login)
+    id_login = request.user.userprofile.id
     page = 1
     pageLimit = 10
     if group_login.name == "超级管理员":
@@ -35,7 +36,7 @@ def jump_user(request, template_name):
         user.group = gr.name
     return render(request, template_name, {"users": users, "groups": groups, "pageCounts": pageCounts,
                                            "company_login": company_login,"group_login": group_login.name,
-                                           "company_login_name": company_login_name})
+                                           "company_login_name": company_login_name,"id_login":id_login})
 
 
 @login_required
