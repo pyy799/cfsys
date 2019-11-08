@@ -49,7 +49,7 @@
             </ul>
             <div style="clear:both"></div>
             <div class="tab-content">
-                <div {% if request.path == '/product_management/page_new_product/' %}
+                 <div {% if request.path == '/product_management/page_new_product/' %}
                 class="active table-container no-padding tab-pane" {% endif %}
                  class="table-container no-padding tab-pane" id="new" style="padding:14px">
                     <div class="table-actions-wrapper">
@@ -138,8 +138,6 @@
                         <button class="btn btn-sm red filter-cancel"><i class="fa fa-search-plus"></i> 全部显示</button>
                     <button class="btn btn-sm blue" data-toggle="modal" data-target="#update_many">
                             <i class="fa fa-plus"></i> 批量更新</button>
-                    <br>
-                    <br>
                         <button class="btn btn-sm green checkall" id="checkall"><i class="fa fa-check"></i> 全选</button>
                         <button class="btn btn-sm red clearall" id="clearall"><i class="fa fa-times"></i> 清除</button>
 
@@ -226,8 +224,6 @@
                         </select>
                         <button class="btn btn-sm yellow filter-submit"><i class="fa fa-search"></i> 查询</button>
                         <button class="btn btn-sm red filter-cancel"><i class="fa fa-search-plus"></i> 全部显示</button>
-                    <br>
-                    <br>
                         <button class="btn btn-sm green checkall" id="checkall"><i class="fa fa-check"></i> 全选</button>
                         <button class="btn btn-sm red clearall" id="clearall"><i class="fa fa-times"></i> 清除</button>
                     </div>
@@ -278,10 +274,12 @@
                 </div>
 
                 <div {% if request.path == '/product_management/page_passed_product/' %}
-                class="active table-container no-padding tab-pane" {% endif %}
-                 class="table-container no-padding tab-pane" id="passed" style="padding:14px">
+                    class="active table-container no-padding tab-pane"
+                    {% else %}
+                    class="table-container no-padding tab-pane"{% endif %}
+                    id="passed" style="padding:14px" >
                     <div class="table-actions-wrapper">
-                    <label>产品名称</label>
+                        <label>产品名称</label>
                         <input type="text" class="form-control input-inline input-middle input-sm form-filter"
                                name="product_name__icontains" placeholder="产品名称" style="width: 200px">
                         <label>公司</label>

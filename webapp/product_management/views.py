@@ -847,7 +847,7 @@ def edit_submit(request, pid):
 
         if pid != 0:
             product = Product.objects.get(id=pid)
-            if product.status == ProductStatus.PASS:  # 单个更新
+            if product.apply_type == ApplyStatus.ALTER and product.status==ProductStatus.WAIT_SUBMIT:  # 单个更新
                 product_old = Product.objects.get(product_num=product.product_num, version=product.version - 1)
                 product_old.is_vaild = False
                 product_old.save()
@@ -943,9 +943,9 @@ def update_edit_product(request, pid):
     product_new.attribute_num = product.attribute_num
     product_new.contact_people = product.contact_people
     product_new.remark = product.remark
-    product_new.real_name = product.real_name
+    # product_new.real_name = product.real_name
 
-    product_new.status = ProductStatus.PASS
+    product_new.status = ProductStatus.WAIT_SUBMIT
     product_new.apply_type = ApplyStatus.ALTER
     product_new.version = product.version + 1
     product_new.is_vaild = False
