@@ -7,7 +7,7 @@ from webapp.shortcuts.ajax import ajax_success
 def import_attribute():
 
     #录入属性数据库
-    file = os.path.join('D:\Rong\PycharmProjects\cfsys\webapp\static', '属性.xlsx')
+    file = os.path.join('D:\Rong\PycharmProjects\cfsys\webapp\static\documents', '属性.xlsx')
     wb = xlrd.open_workbook(file)
     sheet = wb.sheet_by_name("属性")
     nrows = sheet.nrows
