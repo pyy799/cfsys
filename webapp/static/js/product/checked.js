@@ -32,7 +32,7 @@ var CheckedTable = function () {
                 "aoColumns": [ //这个属性下的设置会应用到所有列，按顺序没有是空,bVisible是否可见
 
                     {"mData": "id", "sTitle": "ID", "bVisible": false},
-                    {"mData": "product_name", "sTitle": "产品名称",
+                    {"sWidth":"200px","mData": "product_name", "sTitle": "产品名称",
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
                             var detail = $('<a href="/product_search/page_product_detail/' + oData["id"] + '">' + oData["product_name"] + '</a>');

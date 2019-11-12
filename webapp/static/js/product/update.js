@@ -38,7 +38,7 @@ var UpdateTable = function () {
                             element.append(input);                        }
                     },
                     {
-                        "mData": "product_name", "sTitle": "产品名称",
+                        "sWidth":"200px","mData": "product_name", "sTitle": "产品名称",
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
                             var detail = $('<a href="/product_search/page_product_detail/' + oData["id"] + '">' + oData["product_name"] + '</a>');

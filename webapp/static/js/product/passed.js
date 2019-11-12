@@ -30,6 +30,7 @@ var PassedTable = function () {
                 //"sAjaxSource": "{{rootUrl}}", //给服务器发请求的url
                 "aoColumns": [ //这个属性下的设置会应用到所有列，按顺序没有是空,bVisible是否可见
                     {
+                        "sWidth": "200px",
                         "mData": "product_name", "sTitle": "产品名称",
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
@@ -45,13 +46,14 @@ var PassedTable = function () {
                     {"mData": "uploader", "sTitle": "申请人"},
                     {"mData": "apply_type_name", "sTitle": "申请类型"},
                     {"mData": "status_name", "sTitle": "审核状态"},
-                    {"mData": "reason","sTitle":"不通过原因"},
-                    {"mData":null,"sTitle":"操作", "sClass": "center",
+                    {"mData": "reason", "sTitle": "不通过原因"},
+                    {
+                        "mData": null, "sTitle": "操作", "sClass": "center",
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
-                            var modify = $('<a href="/product_management/edit_product/'+oData["id"]+'/" class="btn btn-xs">修改</a>');
+                            var modify = $('<a href="/product_management/edit_product/' + oData["id"] + '/" class="btn btn-xs">修改</a>');
                             var status_name = oData["status_name"];
-                            if(status_name == '审核不通过')
+                            if (status_name == '审核不通过')
                                 element.append(modify);
                         }
                     }
