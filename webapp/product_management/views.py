@@ -471,7 +471,7 @@ def update_many(request):
                         else:
                             raise Exception("公司只能为当前登陆者所在公司！")
                     else:
-                        pCompany = get_key(dict(COMPANY_CHOICE), pCompany)
+                        pCompany = get_key(dict(COMPANY_CHOICE), pCompany)[0]
                 else:
                     raise Exception("公司填写有误！")
             else:
