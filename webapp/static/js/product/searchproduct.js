@@ -31,6 +31,7 @@ var SearchTable = function () {
                 "aoColumns": [ //这个属性下的设置会应用到所有列，按顺序没有是空,bVisible是否可见
                     {"mData": "id", "sTitle": "ID", "bVisible": false},
                     {
+                        "sWidth": "200px",
                         "mData": "product_name", "sTitle": "产品名称",
                         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                             var element = $(nTd).empty();
