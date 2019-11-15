@@ -163,23 +163,23 @@ def new_many(request):
             row = sheet.row_values(i)
             product_name = str(row[0]).strip()
             if not product_name:
-                raise Exception("产品名称不能为空！")
+                raise Exception("A列产品名称不能为空！")
             if len(product_name) > 64:
-                raise Exception("产品名称不能超过64个字符！")
+                raise Exception("A列产品名称不能超过64个字符！")
             product_exist = Product.objects.exclude(
                 Q(apply_type=ApplyStatus.INVALID) & Q(status=ProductStatus.PASS)).filter(product_name=product_name)
             if len(product_exist) > 0:
-                raise Exception("产品名称已存在！")
+                raise Exception("A列产品名称已存在！")
             old_product_name = str(row[1]).strip()
             if len(old_product_name) > 64:
-                raise Exception("旧产品名称不能超过64个字符！")
+                raise Exception("B列旧产品名称不能超过64个字符！")
             if old_product_name == 'N.A.' or not old_product_name:
                 old_product_name = None
             introduction = str(row[2]).strip()
             if not introduction:
-                raise Exception("产品描述不能为空！")
+                raise Exception("C列产品描述不能为空！")
             if len(introduction) > 1024:
-                raise Exception("产品描述不能超过1024个字符！")
+                raise Exception("C列产品描述不能超过1024个字符！")
             is_overlap = str(row[3]).strip()
             if is_overlap:
                 if is_overlap == "是":
@@ -187,54 +187,54 @@ def new_many(request):
                 elif is_overlap == "否":
                     is_overlap = False
                 else:
-                    raise Exception("是否重叠填写有误！")
+                    raise Exception("D列是否重叠填写有误！")
             target_field = str(row[4]).strip()
             if len(target_field) > 1024:
-                raise Exception("目标行业不能超过1024个字符！")
+                raise Exception("E列目标行业不能超过1024个字符！")
             apply_situation = str(row[5]).strip()
             if len(apply_situation) > 1024:
-                raise Exception("应用场景不能超过1024个字符！")
+                raise Exception("F列应用场景不能超过1024个字符！")
             example = str(row[6]).strip()
             if len(example) > 1024:
-                raise Exception("市场案例不能超过1024个字符！")
+                raise Exception("G列市场案例不能超过1024个字符！")
             one_year_money = str(row[7]).strip()
             if one_year_money:
                 if len(one_year_money) > 11:
-                    raise Exception("过去一年销售额不能超过11个字符！")
+                    raise Exception("H列过去一年销售额不能超过11个字符！")
                 if type(row[7]) is int or type(row[7]) is float:
                     one_year_money = float(row[7])
                 else:
-                    raise Exception("过去一年销售额填写有误！")
+                    raise Exception("H列过去一年销售额填写有误！")
             else:
                 one_year_money = 0
             one_year_num = str(row[8]).strip()
             if one_year_num:
                 if len(one_year_num) > 11:
-                    raise Exception("过去一年销售数量不能超过11个字符！")
+                    raise Exception("I列过去一年销售数量不能超过11个字符！")
                 if re.findall(r"\d+", one_year_num):
                     one_year_num = int(re.findall(r"\d+", str(row[8]))[0])
                 else:
-                    raise Exception("过去一年销售数量填写有误！")
+                    raise Exception("I列过去一年销售数量填写有误！")
             else:
                 one_year_num = 0
             three_year_money = str(row[9]).strip()
             if three_year_money:
                 if len(three_year_money) > 11:
-                    raise Exception("过去三年销售额不能超过11个字符！")
+                    raise Exception("J列过去三年销售额不能超过11个字符！")
                 if type(row[9]) is int or type(row[9]) is float:
                     three_year_money = float(row[9])
                 else:
-                    raise Exception("过去三年销售额填写有误！")
+                    raise Exception("J列过去三年销售额填写有误！")
             else:
                 three_year_money = 0
             three_year_num = str(row[10]).strip()
             if three_year_num:
                 if len(three_year_num) > 11:
-                    raise Exception("过去三年销售数量不能超过11个字符！")
+                    raise Exception("K列过去三年销售数量不能超过11个字符！")
                 if re.findall(r"\d+", three_year_num):
                     three_year_num = int(re.findall(r"\d+", str(row[10]))[0])
                 else:
-                    raise Exception("过去三年销售数量填写有误！")
+                    raise Exception("K列过去三年销售数量填写有误！")
             else:
                 three_year_num = 0
             pCompany = str(row[11]).strip()
@@ -244,13 +244,13 @@ def new_many(request):
                         if pCompany == dict(COMPANY_CHOICE).get(user.uCompany):
                             pCompany = user.uCompany
                         else:
-                            raise Exception("公司只能为当前登陆者所在公司！")
+                            raise Exception("L列公司只能为当前登陆者所在公司！")
                     else:
                         pCompany = get_key(dict(COMPANY_CHOICE), pCompany)[0]
                 else:
-                    raise Exception("公司填写有误！")
+                    raise Exception("L列公司填写有误！")
             else:
-                raise Exception("公司不能为空！")
+                raise Exception("L列公司不能为空！")
 
             maturity = str(row[12]).strip()
             independence = str(row[13]).strip()
@@ -262,24 +262,24 @@ def new_many(request):
                 business_a = Attribute.objects.filter(second_class=business)
                 technology_a = Attribute.objects.filter(second_class=technology)
                 if not maturity_a:
-                    raise Exception("成熟度填写有误！")
+                    raise Exception("M列成熟度填写有误！")
                 if not independence_a:
-                    raise Exception("自主度填写有误！")
+                    raise Exception("N列自主度填写有误！")
                 if not business_a:
-                    raise Exception("业务领域填写有误！")
+                    raise Exception("O列业务领域填写有误！")
                 if not technology_a:
-                    raise Exception("技术性态填写有误！")
+                    raise Exception("P列技术性态填写有误！")
             else:
-                raise Exception("属性不能为空！")
+                raise Exception("M-P列属性不能为空！")
 
             contact_people = str(row[16]).strip()
             if not contact_people:
-                raise Exception("联系人不能为空！")
+                raise Exception("Q列联系人不能为空！")
             if len(contact_people) > 64:
-                raise Exception("联系人不能超过64个字符！")
+                raise Exception("Q列联系人不能超过64个字符！")
             remark = str(row[17]).strip()
             if len(remark) > 1024:
-                raise Exception("备注不能超过1024个字符！")
+                raise Exception("R列备注不能超过1024个字符！")
             upload_time = datetime.date.today()
             real_name = zip.name
 
@@ -390,20 +390,20 @@ def update_many(request):
             row = sheet.row_values(i)
             product_name = str(row[0]).strip()
             if not product_name:
-                raise Exception("产品名称不能为空！")
+                raise Exception("A列产品名称不能为空！")
 
             if len(product_name) > 64:
-                raise Exception("产品名称不能超过64个字符！")
+                raise Exception("A列产品名称不能超过64个字符！")
             old_product_name = str(row[1]).strip()
             if len(old_product_name) > 64:
-                raise Exception("旧产品名称不能超过64个字符！")
+                raise Exception("B列旧产品名称不能超过64个字符！")
             if old_product_name == 'N.A.' or not old_product_name:
                 old_product_name = None
             introduction = str(row[2]).strip()
             if not introduction:
-                raise Exception("产品描述不能为空！")
+                raise Exception("C列产品描述不能为空！")
             if len(introduction) > 1024:
-                raise Exception("产品描述不能超过1024个字符！")
+                raise Exception("C列产品描述不能超过1024个字符！")
             is_overlap = str(row[3]).strip()
             if is_overlap:
                 if is_overlap == "是":
@@ -411,54 +411,54 @@ def update_many(request):
                 elif is_overlap == "否":
                     is_overlap = False
                 else:
-                    raise Exception("是否重叠填写有误！")
+                    raise Exception("D列是否重叠填写有误！")
             target_field = str(row[4]).strip()
             if len(target_field) > 1024:
-                raise Exception("目标行业不能超过1024个字符！")
+                raise Exception("E列目标行业不能超过1024个字符！")
             apply_situation = str(row[5]).strip()
             if len(apply_situation) > 1024:
-                raise Exception("应用场景不能超过1024个字符！")
+                raise Exception("F列应用场景不能超过1024个字符！")
             example = str(row[6]).strip()
             if len(example) > 1024:
-                raise Exception("市场案例不能超过1024个字符！")
+                raise Exception("G列市场案例不能超过1024个字符！")
             one_year_money = str(row[7]).strip()
             if one_year_money:
                 if len(one_year_money) > 11:
-                    raise Exception("过去一年销售额不能超过11个字符！")
+                    raise Exception("H列过去一年销售额不能超过11个字符！")
                 if type(row[7]) is int or type(row[7]) is float:
                     one_year_money = float(row[7])
                 else:
-                    raise Exception("过去一年销售额填写有误！")
+                    raise Exception("H列过去一年销售额填写有误！")
             else:
                 one_year_money = 0
             one_year_num = str(row[8]).strip()
             if one_year_num:
                 if len(one_year_num) > 11:
-                    raise Exception("过去一年销售数量不能超过11个字符！")
+                    raise Exception("I列过去一年销售数量不能超过11个字符！")
                 if re.findall(r"\d+", one_year_num):
                     one_year_num = int(re.findall(r"\d+", str(row[8]))[0])
                 else:
-                    raise Exception("过去一年销售数量填写有误！")
+                    raise Exception("I列过去一年销售数量填写有误！")
             else:
                 one_year_num = 0
             three_year_money = str(row[9]).strip()
             if three_year_money:
                 if len(three_year_money) > 11:
-                    raise Exception("过去三年销售额不能超过11个字符！")
+                    raise Exception("J列过去三年销售额不能超过11个字符！")
                 if type(row[9]) is int or type(row[9]) is float:
                     three_year_money = float(row[9])
                 else:
-                    raise Exception("过去三年销售额填写有误！")
+                    raise Exception("J列过去三年销售额填写有误！")
             else:
                 three_year_money = 0
             three_year_num = str(row[10]).strip()
             if three_year_num:
                 if len(three_year_num) > 11:
-                    raise Exception("过去三年销售数量不能超过11个字符！")
+                    raise Exception("K列过去三年销售数量不能超过11个字符！")
                 if re.findall(r"\d+", three_year_num):
                     three_year_num = int(re.findall(r"\d+", str(row[10]))[0])
                 else:
-                    raise Exception("过去三年销售数量填写有误！")
+                    raise Exception("K列过去三年销售数量填写有误！")
             else:
                 three_year_num = 0
 
@@ -469,13 +469,13 @@ def update_many(request):
                         if pCompany == dict(COMPANY_CHOICE).get(user.uCompany):
                             pCompany = user.uCompany
                         else:
-                            raise Exception("公司只能为当前登陆者所在公司！")
+                            raise Exception("L列公司只能为当前登陆者所在公司！")
                     else:
                         pCompany = get_key(dict(COMPANY_CHOICE), pCompany)[0]
                 else:
-                    raise Exception("公司填写有误！")
+                    raise Exception("L列公司填写有误！")
             else:
-                raise Exception("公司不能为空！")
+                raise Exception("L列公司不能为空！")
 
             maturity = str(row[12]).strip()
             independence = str(row[13]).strip()
@@ -487,24 +487,24 @@ def update_many(request):
                 business_a = Attribute.objects.filter(second_class=business)
                 technology_a = Attribute.objects.filter(second_class=technology)
                 if not maturity_a:
-                    raise Exception("成熟度填写有误！")
+                    raise Exception("M列成熟度填写有误！")
                 if not independence_a:
-                    raise Exception("自主度填写有误！")
+                    raise Exception("N列自主度填写有误！")
                 if not business_a:
-                    raise Exception("业务领域填写有误！")
+                    raise Exception("O列业务领域填写有误！")
                 if not technology_a:
-                    raise Exception("技术性态填写有误！")
+                    raise Exception("P列技术性态填写有误！")
             else:
-                raise Exception("属性不能为空！")
+                raise Exception("M-P列属性不能为空！")
 
             contact_people = str(row[16]).strip()
             if not contact_people:
-                raise Exception("联系人不能为空！")
+                raise Exception("Q列联系人不能为空！")
             if len(contact_people) > 64:
-                raise Exception("联系人不能超过64个字符！")
+                raise Exception("Q列联系人不能超过64个字符！")
             remark = str(row[17]).strip()
             if len(remark) > 1024:
-                raise Exception("备注不能超过1024个字符！")
+                raise Exception("R列备注不能超过1024个字符！")
 
             # 判断是否是更新
             product_exist_list = Product.objects.exclude(
@@ -519,7 +519,7 @@ def update_many(request):
                         .order_by('-version')
                 # b是合法重名的
                 if len(product_exist_list) > len(b):  # 有不合法重名产品
-                    raise Exception("产品名称重复！")
+                    raise Exception("A列产品名称重复！")
                 else:  # 重名合法->是更新
                     product_exist = b[0]
             else:  # 产品名称没和自己公司的重复->查旧产品名称
