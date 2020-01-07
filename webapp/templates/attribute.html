@@ -115,18 +115,18 @@
                 <div {% if request.path == '/attribute/page_attribute/I/' %} class="active table-container no-padding tab-pane" {% endif %} class="table-container no-padding tab-pane" id="I" style="padding:14px">
                     <div class="table-actions-wrapper">
                         <div class="box box-solid" style=" ">
-                         <div class="box-header with-border">
+                        <div class="box-header with-border">
                             <h3 class="box-title">基本信息</h3>
-                             <div class="box-tools pull-right">
+                            <div class="box-tools pull-right">
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
                                         class="fa fa-minus"></i></button>
                             </div>
-                         </div>
-                        <div class="box-body" style="width: 100%">
-                        <table border="1"id='attribute'class="table table-bordered table-hover" style="text-align: left">
+                        </div>
+                    <div class="box-body" style="width: 100%">
+                          <table border="1"id='attribute'class="table table-bordered table-hover" style="text-align: left">
                                     <tbody>
                                     {% for attr in independence %}
-                                        {% if attr.ACT == 'a' %}
+                                        {% if attr.ACT == 'a'%}
                                             <tr>
                                                 <td style="width: 100px;"><b>属性</b></td>
                                                 <td>{{ attr.attribute }}</td>
@@ -146,11 +146,9 @@
                                     {% endfor %}
                                     </tbody>
                                 </table>
+                    </div>
                         </div>
-                        </div>
-
-
-                        <hr style="height: 5px;border: none;border-top: 5px double skyblue"/>
+                        <hr style="height: 5px;border-top: 5px double skyblue"/>
                     <div class="box box-solid" style=" ">
                         <div class="box-header with-border">
                                 <h3 class="box-title">属性分类</h3>
@@ -159,8 +157,8 @@
                                         class="fa fa-minus"></i></button>
                             </div>
                         </div>
-                    <div class="box-body" style="width: 100%">
-                    <table border="1"id='attrclass'class="table table-bordered table-hover" style="text-align: center">
+                     <div class="box-body" style="width: 100%">
+                        <table border="1"id='attrclass'class="table table-bordered table-hover" style="text-align: center">
                                     <thead>
                                     <tr>
                                         <th style="text-align: center;width: 150px">属性</th>
@@ -173,7 +171,7 @@
                                     </thead>
                                     <tbody>
                                     {% for attr in independence %}
-                                        {% if attr.ACT != 'a' %}
+                                        {% if attr.ACT != 'a'%}
                                             <tr>
                                                 <td>{{ attr.attribute }}</td>
                                                 <td>{{ attr.first_class }}</td>
@@ -182,18 +180,19 @@
                                                 <td>{{ attr.information }}</td>
                                                 <td>
                                                     <button type="button"class="btn  btn-success btn-sm green" data-toggle="modal" data-target="#class-edit"
-                                                    onclick="classEdit('{{ attr.id }}','{{ attr.ACT }}','{{ attr.attribute }}','{{ attr.first_class }}',
+                                                            onclick="classEdit('{{ attr.id }}','{{ attr.ACT }}','{{ attr.attribute }}','{{ attr.first_class }}',
                                                                     '{{ attr.second_class }}','{{ attr.meaning }}','{{ attr.information }}')">修改</button>
                                                     <button type="button" class="btn  btn-danger btn-sm red" data-toggle="modal" data-target="#class-delete" onclick="classDelete('{{ attr.id }}','{{ attr.ACT }}','{{ attr.first_class }}')">删除</button>
                                                 </td>
                                             </tr>
                                         {% endif %}
                                     {% endfor %}
-                                      <button class="btn btn-sm pull-right blue" style="height: 30px" data-toggle="modal" data-target="#class-add" onclick="addClass('I')"><i class="fa fa-plus"></i> 增加分类</button>
+                                    <button class="btn btn-sm pull-right blue" style="height: 30px" data-toggle="modal" data-target="#class-add" onclick="addClass('I')"><i class="fa fa-plus"></i> 增加分类</button>
+{#                                    <button class="btn btn-sm pull-right yellow" style="height: 30px" data-toggle="modal" data-target="#class2-add" onclick="addClass2('I')"><i class="fa fa-plus"></i> 增加小类</button>#}
 
                                     </tbody>
                                 </table>
-                    </div>
+                     </div>
                     </div>
                     </div>
                 </div>

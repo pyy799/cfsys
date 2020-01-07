@@ -125,7 +125,7 @@ def show(request, template_name):
     p1 = re.compile(r'[(or（](.*?)[)or）]', re.S)  # 取（）内文字
     # 成熟度
     if maturity_choice:
-        for i in maturity1:
+        for i in maturity:
             str1 = ""
             serial = 0
             bpl = []
@@ -150,7 +150,7 @@ def show(request, template_name):
             maturity_product_list.append(bpl)
             maturity_product1.append({"name": i.meaning, "value": num})
     else:
-        for i in maturity1:
+        for i in maturity:
             maturity_search_dict.update({"maturity__first_class": i.first_class})
             product_list = Product.objects.filter(**maturity_search_dict).order_by('-pass_time')
             num = len(product_list)
@@ -177,7 +177,7 @@ def show(request, template_name):
 
     # 自主度
     if independence_choice:
-        for i in independence1:
+        for i in independence:
             str1 = ""
             serial = 0
             bpl = []
@@ -202,7 +202,7 @@ def show(request, template_name):
             independence_product_list.append(bpl)
             independence_product1.append({"name": i.meaning, "value": num})
     else:
-        for i in independence1:
+        for i in independence:
             independence_search_dict.update({"independence__first_class": i.first_class})
             product_list = Product.objects.filter(**independence_search_dict).order_by('-pass_time')
             num = len(product_list)
@@ -313,12 +313,12 @@ def show(request, template_name):
     num2 = 0
     maturity_independence_max_num = 0
     if independence_choice:
-        for ind in independence:
+        for ind in independence1:
             maturity_independence_product1 = []
             maturity_independence_product_list1 = []
             if independence_choice == ind.first_class:
                 if maturity_choice:
-                    for mat in maturity:
+                    for mat in maturity1:
                         str1 = ""
                         serial = 0
                         bpl = []
@@ -341,7 +341,7 @@ def show(request, template_name):
                         maturity_independence.append(maturity_independence_one)
                         num2 += 1
                 else:
-                    for mat in maturity:
+                    for mat in maturity1:
                         str1 = ""
                         serial = 0
                         bpl = []
@@ -361,7 +361,7 @@ def show(request, template_name):
                         maturity_independence.append(maturity_independence_one)
                         num2 += 1
             else:
-                for mat in maturity:
+                for mat in maturity1:
                     num3 = 0
                     str1 = ""
                     bpl = []
@@ -375,12 +375,12 @@ def show(request, template_name):
             num1 += 1
             num2 = 0
     else:
-        for ind in independence:
+        for ind in independence1:
             maturity_independence_product1 = []
             maturity_independence_product_list1 = []
             maturity_independence_search_dict["independence__first_class"] = ind.first_class
             if maturity_choice:
-                for mat in maturity:
+                for mat in maturity1:
                     str1 = ""
                     serial = 0
                     bpl = []
@@ -402,7 +402,7 @@ def show(request, template_name):
                     maturity_independence.append(maturity_independence_one)
                     num2 += 1
             else:
-                for mat in maturity:
+                for mat in maturity1:
                     maturity_independence_search_dict["maturity__first_class"] = mat.first_class
                     product_list = Product.objects.filter(**maturity_independence_search_dict).order_by('-pass_time')
                     num3 = len(product_list)
@@ -574,8 +574,8 @@ def show(request, template_name):
                       "independence_product_list": json.dumps(independence_product_list),
                       "business_product_list": json.dumps(business_product_list),
                       "technology_product_list": json.dumps(technology_product_list),
-                      "maturity_independence_product_list": maturity_independence_product_list,
-                      "business_technology_product_list": business_technology_product_list,
+                      "maturity_independence_product_list": json.dumps(maturity_independence_product_list),
+                      "business_technology_product_list": json.dumps(business_technology_product_list),
 
                       "maturity_independence_max_num": maturity_independence_max_num,
                       "business_technology_max_num": business_technology_max_num,
