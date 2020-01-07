@@ -53,10 +53,10 @@ def add_attribute(request):
     # meaning=meaning.strip()
     # information=information.strip()
 
-    first_class=first_class.replace(' ','')
-    second_class=second_class.replace(' ','')
-    meaning=meaning.replace(' ','')
-    information=information.replace(' ','')
+    first_class=first_class.replace("\n", "").replace(' ','')
+    second_class=second_class.replace("\n", "").replace(' ','')
+    meaning=meaning.replace("\n", "").replace(' ','')
+    information=information.replace("\n", "").replace(' ','')
 
     # check_meaning = Attribute.objects.filter(meaning=meaning)
     # if len(check_meaning) == 0:
@@ -118,7 +118,9 @@ def jump(request,template_name):
 def attribute_edit(request):
     attribute_id = request.POST.get("attribute_id")
     information =request.POST.get("information_edit")
-    information=information.strip()
+    # information = information.replace("\n", "")
+    information=information.replace("\n", "").strip()
+
     # print(attribute_id)
     attribute = Attribute.objects.filter(id=attribute_id).first()
     if attribute:
@@ -156,6 +158,10 @@ def class_edit(request):
     # second_class_edit=second_class_edit.strip()
     # class_meaning=class_meaning.strip()
     # class_information=class_information.strip()
+    first_class_edit=first_class_edit.replace("\n", "")
+    second_class_edit=second_class_edit.replace("\n", "")
+    class_meaning=class_meaning.replace("\n", "")
+    class_information=class_information.replace("\n", "")
 
     attr_class = Attribute.objects.filter(Q(id=class_id), Q(ACT=class_act), Q(attribute=class_attribute)).first()
     ex_first = attr_class.first_class

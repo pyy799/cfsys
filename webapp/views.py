@@ -21,7 +21,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate
 
 def index(request, template_name):
-    # import_attribute()
+   # import_attribute()
     return render(request, template_name)
 
 

@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 Django settings for cfsys project.
 
@@ -25,7 +26,7 @@ SECRET_KEY = '$(f%x^2_^j9*-5beg4mtt08&40+wps%s1h$znhl9z!_5%v0%f8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['39.99.192.63','127.0.0.1']
 
 
 # Application definition
@@ -78,9 +79,9 @@ WSGI_APPLICATION = 'cfsys.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cfdatabase2',
+        'NAME': 'cfdatabase',
         'USER': 'root',
-        'PASSWORD': '10213213',
+        'PASSWORD': '123456',
         'HOST': '127.0.0.1',
         'PORT': 3306,
     }
@@ -93,7 +94,7 @@ DATABASES = {
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
-
+DEFAULT_CHARSET = 'utf-8'
 USE_I18N = True
 
 USE_L10N = True
@@ -103,12 +104,20 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
-STATIC_ROOT = os.path.join(BASE_DIR, "webapp/static")
+STATIC_ROOT = os.path.join(BASE_DIR, "/webapp/static")
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR,'webapp/static'),
+)
 STATIC_URL = '/static/'
+#STATICFILES_FINDERS = (
+ #   'django.contrib.staticfiles.finders.FileSystemFinder',
+ #   'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 
-PATH = "/Volumes/Transcend/cfsys/files/"
-FILES_PATH = "/Volumes/Transcend/cfsys/files/formal/"
-TEMP_FILES_PATH = "/Volumes/Transcend/cfsys/files/temp/"
+#)
+
+PATH = "cfsys/files/"
+FILES_PATH = "files/formal/"
+TEMP_FILES_PATH = "files/temp/"
 
 
 PRODUCT_TEMP_EXCEL_PATH = os.path.join(TEMP_FILES_PATH, "excel/")

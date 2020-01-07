@@ -1,3 +1,4 @@
+# coding=utf-8
 import os
 from django.conf.urls import include, url
 from django.contrib import admin
@@ -5,6 +6,7 @@ from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
 from webapp import views
+from django.contrib.staticfiles import views as gen_views
 
 
 APPROOT = os.path.join(settings.BASE_DIR, "webapp")
@@ -26,6 +28,14 @@ urlpatterns = [
     url(r'^product_search/', include('webapp.product_search.urls')),
     url(r'^attribute/', include('webapp.attribute.urls')),
     url(r'^user/', include('webapp.user.urls')),
+    # url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}, name='static')
 ]
 urlpatterns += static(settings.FILES_PATH, document_root=settings.FILES_PATH)
+
+if settings.DEBUG:
+    urlpatterns += [
+        url(r'^static/(?P<path>.*)$',
+            gen_views.serve,
+            {'document_root': os.path.join(APPROOT, 'static/')})
+    ]
 
