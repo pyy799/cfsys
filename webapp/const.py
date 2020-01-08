@@ -17,13 +17,13 @@ class Company:
     """公司"""
     GU_FEN = 1   # 股份
     YI_LIAO = 2  # 医疗
-    JI_SUAN_JI = 3  # 计算机
+    DIAN_YUAN = 9  # 朝阳电源
     KE_JI = 4  # 科技
     KE_WEI = 5  # 科威
     ZHE_ZI = 6  # 科发
     BO_KE = 7  # 柏克
     JING_YI = 8  # 精一
-    YUN_NAN = 9  #云南CY
+
 
 
 
