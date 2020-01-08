@@ -6,13 +6,12 @@ from webapp.const import *
 COMPANY_CHOICE = (
     (Company.GU_FEN, "长峰股份"),
     (Company.YI_LIAO, "长峰医疗分公司"),
-    (Company.JI_SUAN_JI, "长峰计算机分公司"),
     (Company.KE_JI, "长峰科技"),
     (Company.KE_WEI, "长峰科威"),
     (Company.ZHE_ZI, "长峰科发"),
     (Company.BO_KE, "航天柏克"),
     (Company.JING_YI, "航天精一"),
-    (Company.YUN_NAN, "云南CY航天")
+    (Company.DIAN_YUAN, "朝阳电源")
 )
 
 
