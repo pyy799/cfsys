@@ -16,12 +16,15 @@ class AttributeType:
 class Company:
     """公司"""
     GU_FEN = 1   # 股份
-    JING_YI = 2  # 精一
-    KE_WEI = 3   # 科威
-    YI_LIAO = 4  # 医疗
-    BO_KE = 5    # 柏克
-    KE_JI = 6    # 科技
-    ZHE_ZI = 7   # 浙子
+    YI_LIAO = 2  # 医疗
+    JI_SUAN_JI = 3  # 计算机
+    KE_JI = 4  # 科技
+    KE_WEI = 5  # 科威
+    ZHE_ZI = 6  # 科发
+    BO_KE = 7  # 柏克
+    JING_YI = 8  # 精一
+    YUN_NAN = 9  #云南CY
+
 
 
 class ApplyStatus:
