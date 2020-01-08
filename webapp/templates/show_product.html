@@ -1,11 +1,11 @@
 {% extends 'base1.html' %}
 
 {% block header_js %}
-{#    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap.css">#}
+    {#    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap.css">#}
     <link rel="stylesheet" href="/static/css/components.css">
-{#    <link rel="stylesheet" href="/static/css/jpage.css">#}
+    {#    <link rel="stylesheet" href="/static/css/jpage.css">#}
     <!-- Morris chart -->
-{#    <link rel="stylesheet" href="/static/plugins/morris/morris.css">#}
+    {#    <link rel="stylesheet" href="/static/plugins/morris/morris.css">#}
     <script src="/static/js/echarts/echarts.min.js"></script>
     <script src="/static/plugins/jQuery/jquery-2.2.3.min.js"></script>
 
@@ -22,41 +22,51 @@
                 <form method="post" action="{% url 'page_show_product' %}" style="float: left;margin-left: 20px">
                     {% csrf_token %}
                     <div class="row" style="margin-top: 0px" id="company_checkbox">
-                        <label><b>公司</b></label>
+                        <label><b>公司&nbsp;&nbsp;&nbsp;</b></label>
                         {% if "1" in check_box_list %}
-                            <input class="" type='checkbox' value="1" name="check_box_list" checked><label>股份</label>
+                            <input class="" type='checkbox' value="1" name="check_box_list" checked><label>长峰股份&nbsp;&nbsp;&nbsp;</label>
                         {% else %}
-                            <input class="" type='checkbox' value="1" name="check_box_list"><label>股份</label>
+                            <input class="" type='checkbox' value="1" name="check_box_list"><label>长峰股份&nbsp;&nbsp;&nbsp;</label>
                         {% endif %}
                         {% if "2" in check_box_list %}
-                            <input class="" type='checkbox' value="2" name="check_box_list" checked><label>精一</label>
+                            <input class="" type='checkbox' value="2" name="check_box_list" checked><label>长峰医疗分公司&nbsp;&nbsp;&nbsp;</label>
                         {% else %}
-                            <input class="" type='checkbox' value="2" name="check_box_list"><label>精一</label>
+                            <input class="" type='checkbox' value="2" name="check_box_list"><label>长峰医疗分公司&nbsp;&nbsp;&nbsp;</label>
                         {% endif %}
                         {% if "3" in check_box_list %}
-                            <input class="" type='checkbox' value="3" name="check_box_list" checked><label>科威</label>
+                            <input class="" type='checkbox' value="3" name="check_box_list" checked><label>长峰计算机分公司&nbsp;&nbsp;&nbsp;</label>
                         {% else %}
-                            <input class="" type='checkbox' value="3" name="check_box_list"><label>科威</label>
+                            <input class="" type='checkbox' value="3" name="check_box_list"><label>长峰计算机分公司&nbsp;&nbsp;&nbsp;</label>
                         {% endif %}
                         {% if "4" in check_box_list %}
-                            <input class="" type='checkbox' value="4" name="check_box_list" checked><label>医疗</label>
+                            <input class="" type='checkbox' value="4" name="check_box_list" checked><label>长峰科技&nbsp;&nbsp;&nbsp;</label>
                         {% else %}
-                            <input class="" type='checkbox' value="4" name="check_box_list"><label>医疗</label>
+                            <input class="" type='checkbox' value="4" name="check_box_list"><label>长峰科技&nbsp;&nbsp;&nbsp;</label>
                         {% endif %}
                         {% if "5" in check_box_list %}
-                            <input class="" type='checkbox' value="5" name="check_box_list" checked><label>柏克</label>
+                            <input class="" type='checkbox' value="5" name="check_box_list" checked><label>长峰科威&nbsp;&nbsp;&nbsp;</label>
                         {% else %}
-                            <input class="" type='checkbox' value="5" name="check_box_list"><label>柏克</label>
+                            <input class="" type='checkbox' value="5" name="check_box_list"><label>长峰科威&nbsp;&nbsp;&nbsp;</label>
                         {% endif %}
                         {% if "6" in check_box_list %}
-                            <input class="" type='checkbox' value="6" name="check_box_list" checked><label>科技</label>
+                            <input class="" type='checkbox' value="6" name="check_box_list" checked><label>长峰科发&nbsp;&nbsp;&nbsp;</label>
                         {% else %}
-                            <input class="" type='checkbox' value="6" name="check_box_list"><label>科技</label>
+                            <input class="" type='checkbox' value="6" name="check_box_list"><label>长峰科发&nbsp;&nbsp;&nbsp;</label>
                         {% endif %}
                         {% if "7" in check_box_list %}
-                            <input class="" type='checkbox' value="7" name="check_box_list" checked><label>浙子</label>
+                            <input class="" type='checkbox' value="7" name="check_box_list" checked><label>航天柏克&nbsp;&nbsp;&nbsp;</label>
                         {% else %}
-                            <input class="" type='checkbox' value="7" name="check_box_list"><label>浙子</label>
+                            <input class="" type='checkbox' value="7" name="check_box_list"><label>航天柏克&nbsp;&nbsp;&nbsp;</label>
+                        {% endif %}
+                        {% if "8" in check_box_list %}
+                            <input class="" type='checkbox' value="8" name="check_box_list" checked><label>航天精一&nbsp;&nbsp;&nbsp;</label>
+                        {% else %}
+                            <input class="" type='checkbox' value="8" name="check_box_list"><label>航天精一&nbsp;&nbsp;&nbsp;</label>
+                        {% endif %}
+                        {% if "9" in check_box_list %}
+                            <input class="" type='checkbox' value="9" name="check_box_list" checked><label>云南CY航天&nbsp;&nbsp;&nbsp;</label>
+                        {% else %}
+                            <input class="" type='checkbox' value="9" name="check_box_list"><label>云南CY航天&nbsp;&nbsp;&nbsp;</label>
                         {% endif %}
                         <button type="button" class="btn btn-sm green checkall" id="checkall"><i
                                 class="fa fa-check"></i>
@@ -68,7 +78,7 @@
                     </div>
 
                     <div class="row" style="margin-top: 20px;margin-bottom: 20px">
-                        <label><b>属性</b></label>
+                        <label><b>属性&nbsp;&nbsp;&nbsp;</b></label>
                         <label style="letter-spacing: 0.35em">成熟度 </label>
                         <select class="form-control input-inline input-small input-sm form-filter select "
                                 name="maturity__first_class" data-placeholder='成熟度' style="width: 145px">
@@ -134,7 +144,7 @@
                     </div>
                 </form>
             </div>
-            <section class="content" >
+            <section class="content">
                 <!-- Main row -->
                 <div class="row">
                     <!--/.left col -->
@@ -828,81 +838,81 @@
                             </div>
                         </div>
                         <!-- 产品列表弹框 -->
-{#                        <div class="modal fade" id="chart_product_list" role="dialog" aria-labelledby="addLabel"#}
-{#                             aria-hidden="true">#}
-{#                            <div class="modal-dialog modal-lg" style="width:1000px;">#}
-{#                                <div class="modal-content">#}
-{#                                    <div class="modal-header">#}
-{#                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="false">#}
-{#                                            &times;#}
-{#                                        </button>#}
-{#                                        <h4 class="modal-title" id="addLabel" style="font-weight:bold">产品列表</h4>#}
-{#                                    </div>#}
-{#                                    <div class="modal-body">#}
-                                        {#                                        <div class="box box-primary">#}
-                                        {#                                            <br>#}
-                                        {#                                            <div class="table-container no-padding tab-pane active" id=""#}
-                                        {#                                                 style="padding:14px">#}
-                                        {#                                                <div class="table-actions-wrapper">#}
-                                        {#                                                    <table border="1" id='product_detail'#}
-                                        {#                                                           class="table table-bordered table-hover"#}
-                                        {#                                                           style="text-align: left">#}
-                                        {#                                                        <tbody>#}
-                                        {#                                                        <tr>#}
-                                        {#                                                            <th style="vertical-align: middle;text-align:center; width: 150px"#}
-                                        {#                                                                bgcolor="#f0ffff">#}
-                                        {#                                                                <b>产品名称</b>#}
-                                        {#                                                            <th style="vertical-align: middle;text-align:center;width: 150px"#}
-                                        {#                                                                bgcolor="#f0ffff">#}
-                                        {#                                                                <b>公司名称</b>#}
-                                        {#                                                            <th style="vertical-align: middle;text-align:center;width: 150px"#}
-                                        {#                                                                bgcolor="#f0ffff">#}
-                                        {#                                                                <b>成熟度</b>#}
-                                        {#                                                            <th style="vertical-align: middle;text-align:center;width: 150px"#}
-                                        {#                                                                bgcolor="#f0ffff">#}
-                                        {#                                                                <b>自主度</b>#}
-                                        {#                                                            <th style="vertical-align: middle;text-align:center; width: 150px"#}
-                                        {#                                                                bgcolor="#f0ffff">#}
-                                        {#                                                                <b>业务领域</b>#}
-                                        {#                                                            <th style="vertical-align: middle;text-align:center;width: 150px"#}
-                                        {#                                                                bgcolor="#f0ffff">#}
-                                        {#                                                                <b>技术形态</b>#}
-                                        {#                                                            <th style="vertical-align: middle;text-align:center; width: 150px"#}
-                                        {#                                                                bgcolor="#f0ffff">#}
-                                        {#                                                                <b>发布时间</b>#}
-                                        {#                                                        </tr>#}
-                                        {#                                                        <tr>#}
-                                        {##}
-                                        {#                                                        </tr>#}
-                                        {#                                                        <script>console.log(product_list)</script>#}
-                                        {#                                                        {% for i in product_list %}#}
-                                        {#                                                            <lable></lable>#}
-                                        {#                                                            <tr>#}
-                                        {#                                                                <td style="vertical-align: middle;text-align:center"><a#}
-                                        {#                                                                        href="/product_search/page_product_detail/{{ i.id }}">{{ i.product_name }}</a>#}
-                                        {#                                                                </td>#}
-                                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.pCompany_name }}</td>#}
-                                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.maturity_name }}</td>#}
-                                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.independence_name }}</td>#}
-                                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.business_name }}</td>#}
-                                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.technology_name }}</td>#}
-                                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.pass_time }}</td>#}
-                                        {#                                                            </tr>#}
-                                        {#                                                        {% endfor %}#}
-                                        {#                                                        </tbody>#}
-                                        {#                                                    </table>#}
-                                        {#                                                </div>#}
-                                        {#                        M结束#}
-                                        {#                                            </div>#}
-{##}
-                                        {#                                        </div>#}
-{#                                    </div>#}
-{#                                    <button type="button" class="btn btn-default" data-dismiss="modal">#}
-{#                                        取消#}
-{#                                    </button>#}
-{#                                </div><!-- /.modal-content -->#}
-{#                            </div><!-- /.modal -->#}
-{#                        </div>#}
+                        {#                        <div class="modal fade" id="chart_product_list" role="dialog" aria-labelledby="addLabel"#}
+                        {#                             aria-hidden="true">#}
+                        {#                            <div class="modal-dialog modal-lg" style="width:1000px;">#}
+                        {#                                <div class="modal-content">#}
+                        {#                                    <div class="modal-header">#}
+                        {#                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="false">#}
+                        {#                                            &times;#}
+                        {#                                        </button>#}
+                        {#                                        <h4 class="modal-title" id="addLabel" style="font-weight:bold">产品列表</h4>#}
+                        {#                                    </div>#}
+                        {#                                    <div class="modal-body">#}
+                        {#                                        <div class="box box-primary">#}
+                        {#                                            <br>#}
+                        {#                                            <div class="table-container no-padding tab-pane active" id=""#}
+                        {#                                                 style="padding:14px">#}
+                        {#                                                <div class="table-actions-wrapper">#}
+                        {#                                                    <table border="1" id='product_detail'#}
+                        {#                                                           class="table table-bordered table-hover"#}
+                        {#                                                           style="text-align: left">#}
+                        {#                                                        <tbody>#}
+                        {#                                                        <tr>#}
+                        {#                                                            <th style="vertical-align: middle;text-align:center; width: 150px"#}
+                        {#                                                                bgcolor="#f0ffff">#}
+                        {#                                                                <b>产品名称</b>#}
+                        {#                                                            <th style="vertical-align: middle;text-align:center;width: 150px"#}
+                        {#                                                                bgcolor="#f0ffff">#}
+                        {#                                                                <b>公司名称</b>#}
+                        {#                                                            <th style="vertical-align: middle;text-align:center;width: 150px"#}
+                        {#                                                                bgcolor="#f0ffff">#}
+                        {#                                                                <b>成熟度</b>#}
+                        {#                                                            <th style="vertical-align: middle;text-align:center;width: 150px"#}
+                        {#                                                                bgcolor="#f0ffff">#}
+                        {#                                                                <b>自主度</b>#}
+                        {#                                                            <th style="vertical-align: middle;text-align:center; width: 150px"#}
+                        {#                                                                bgcolor="#f0ffff">#}
+                        {#                                                                <b>业务领域</b>#}
+                        {#                                                            <th style="vertical-align: middle;text-align:center;width: 150px"#}
+                        {#                                                                bgcolor="#f0ffff">#}
+                        {#                                                                <b>技术形态</b>#}
+                        {#                                                            <th style="vertical-align: middle;text-align:center; width: 150px"#}
+                        {#                                                                bgcolor="#f0ffff">#}
+                        {#                                                                <b>发布时间</b>#}
+                        {#                                                        </tr>#}
+                        {#                                                        <tr>#}
+                        {##}
+                        {#                                                        </tr>#}
+                        {#                                                        <script>console.log(product_list)</script>#}
+                        {#                                                        {% for i in product_list %}#}
+                        {#                                                            <lable></lable>#}
+                        {#                                                            <tr>#}
+                        {#                                                                <td style="vertical-align: middle;text-align:center"><a#}
+                        {#                                                                        href="/product_search/page_product_detail/{{ i.id }}">{{ i.product_name }}</a>#}
+                        {#                                                                </td>#}
+                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.pCompany_name }}</td>#}
+                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.maturity_name }}</td>#}
+                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.independence_name }}</td>#}
+                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.business_name }}</td>#}
+                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.technology_name }}</td>#}
+                        {#                                                                <td style="vertical-align: middle;text-align:center">{{ i.pass_time }}</td>#}
+                        {#                                                            </tr>#}
+                        {#                                                        {% endfor %}#}
+                        {#                                                        </tbody>#}
+                        {#                                                    </table>#}
+                        {#                                                </div>#}
+                        {#                        M结束#}
+                        {#                                            </div>#}
+                        {##}
+                        {#                                        </div>#}
+                        {#                                    </div>#}
+                        {#                                    <button type="button" class="btn btn-default" data-dismiss="modal">#}
+                        {#                                        取消#}
+                        {#                                    </button>#}
+                        {#                                </div><!-- /.modal-content -->#}
+                        {#                            </div><!-- /.modal -->#}
+                        {#                        </div>#}
 
                     </section>
                     <!-- right col -->
